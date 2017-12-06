@@ -1,7 +1,7 @@
 defmodule Akd.Mixfile do
   use Mix.Project
 
-  @version "0.1.1"
+  @version "0.1.3"
   @url "https://github.com/annkissam/akd"
 
   def project do

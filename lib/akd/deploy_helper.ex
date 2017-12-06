@@ -4,7 +4,7 @@ defmodule Akd.DeployHelper do
   and add hooks to a deployment, and execute it.
   """
 
-  alias Akd.{Deployment, Hook}
+  alias Akd.{Destination, Deployment, Hook}
 
   # @supported_hooks ~w(stopapp startapp migratedb prebuild)a
   @native_types ~w(fetch build publish)a
@@ -15,18 +15,17 @@ defmodule Akd.DeployHelper do
   def add_hook(deployment, exec_dest, {type, :default}, opts) when type in @native_types do
     add_hook(deployment, exec_dest, commands({type, :default}, deployment, opts), nil)
   end
-  def add_hook(deployment, exec_dest, hook_mod, opts) do
-    add_hook(deployment, exec_dest, commands(hook_mod, deployment, opts), nil)
-  end
-
   @doc """
   This function runs a command on a given environment of deployment.
   The command can be either an atom (if it is supported) or a string
   of bash commands.
   """
-  def add_hook(%Deployment{hooks: hooks} = deployment, exec_dest, commands, _opts) do
+  def add_hook(%Deployment{hooks: hooks} = deployment, %Destination{} = exec_dest, commands, _opts) do
     hooks = hooks ++ [%Hook{commands: commands, exec_dest: exec_dest}]
     %Deployment{deployment | hooks: hooks}
+  end
+  def add_hook(deployment, exec_dest, hook_mod, opts) do
+    add_hook(deployment, exec_dest, commands(hook_mod, deployment, opts), nil)
   end
 
   # TODO: Implement rollback
