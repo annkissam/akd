@@ -8,7 +8,7 @@ defmodule Akd.Destination do
   @typedoc ~s(Generic type for Destination with all enforced keys)
   @type t :: %__MODULE__{
     sshuser: String.t | :local,
-    sshserver: String.t |:local,
+    sshserver: String.t | :local,
     path: String.t
   }
 

@@ -13,10 +13,9 @@ defmodule Akd.Mix.Task do
         def run(_args) do
           opts()
           |> init_deploy()
-          |> add_fetch_hook()
+          |> add_hook(:fetch)
           |> add_build_hook()
           |> add_publish_hook()
-          |> add_hook(:cleanup)
           |> exec()
         end
 

@@ -32,9 +32,9 @@ defmodule Akd.DeployHelper do
   # TODO: Implement rollback
   def exec(%Deployment{hooks: hooks}), do: Enum.each(hooks, &Hook.exec(&1))
 
-  defp commands({:fetch, :default}, d, opts), do: commands(Akd.fetcher(), d, opts)
-  defp commands({:build, :default}, d, opts), do: commands(Akd.builder(), d, opts)
-  defp commands({:publish, :default}, d, opts), do: commands(Akd.publisher(), d, opts)
+  defp commands({:fetch, :default}, d, opts), do: commands(Akd.Fetcher.SCP, d, opts)
+  defp commands({:build, :default}, d, opts), do: commands(Akd.Builder.Distillery, d, opts)
+  defp commands({:publish, :default}, d, opts), do: commands(Akd.Publisher.CP, d, opts)
   defp commands(mod, d, opts), do: apply(mod, :commands, [d, opts])
 
   # defp get_cmds(deployment, :stopapp), do: "bin/#{deployment.appname} stop"
