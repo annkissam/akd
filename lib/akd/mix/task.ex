@@ -20,12 +20,12 @@ defmodule Akd.Mix.Task do
         end
 
         defp opts() do
-          %{env: "prod",
+          %{app_env: "prod",
             dest: %Akd.Deployment.Destination{
               sshuser: "dragonborn",
               sshserver: "127.0.0.1",
               path: "~/myapp"},
-            deployable: :myapp}
+            appname: :myapp}
         end
       end
   """

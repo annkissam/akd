@@ -4,10 +4,16 @@ defmodule Akd.Builder.Distillery do
   on that server.
   """
 
-  @behavior Akd.Hook
+  @behaviour Akd.Hook
 
   @doc """
   Callback implementation for `commands`.
   """
-  def commands(d, _opts), do: "MIX_ENV=#{d.app_env} mix release --env=#{d.app_env}"
+  def commands(d, _opts) do
+    """
+    mix deps.get
+    mix compile
+    MIX_ENV=#{d.app_env} mix release --env=#{d.app_env}
+    """
+  end
 end
