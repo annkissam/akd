@@ -11,8 +11,8 @@ defmodule Akd.DeployHelper do
 
   def init_deployment(opts), do: struct(Deployment, opts)
 
-  def add_hook(deployment, exec_dest, type, mod, opts \\ []) when type in @native_types do
-    add_hook(deployment, exec_dest, commands(type, mod, deployment, opts))
+  def add_hook(deployment, exec_dest, hook_mod, opts \\ []) when type in @native_types do
+    add_hook(deployment, exec_dest, commands(hook_mod, deployment, opts))
   end
 
   @doc """
@@ -25,12 +25,13 @@ defmodule Akd.DeployHelper do
     %Deployment{deployment | hooks: hooks}
   end
 
+  # TODO: Implement rollback
   def exec(%Deployment{hooks: hooks}), do: Enum.each(hooks, &Hook.exec(&1))
 
-  defp commands(:fetch, :default, d, opts), do: commands(nil, Akd.fetcher(), d, opts)
-  defp commands(:build, :default, d, opts), do: commands(nil, Akd.builder(), d, opts)
-  defp commands(:publish, :default, d, opts), do: commands(nil, Akd.publisher(), d, opts)
-  defp commands(_type, mod, d, opts), do: apply(mod, :commands, [d, opts])
+  defp commands({:fetch, :default}, d, opts), do: commands(Akd.fetcher(), d, opts)
+  defp commands({:build, :default}, d, opts), do: commands(Akd.builder(), d, opts)
+  defp commands({:publish, :default}, d, opts), do: commands(Akd.publisher(), d, opts)
+  defp commands(mod, d, opts), do: apply(mod, :commands, [d, opts])
 
   # defp get_cmds(deployment, :stopapp), do: "bin/#{deployment.appname} stop"
   # defp get_cmds(deployment, :startapp), do: "bin/#{deployment.appname} start"
