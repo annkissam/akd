@@ -1,33 +1,79 @@
 defmodule Akd.Mixfile do
   use Mix.Project
 
+  @version "0.1.0"
+  @url "https://github.com/annkissam/akd"
+
   def project do
-    [app: :akd,
-     version: "0.1.0",
-     elixir: "~> 1.4",
-     build_embedded: Mix.env == :prod,
-     start_permanent: Mix.env == :prod,
-     deps: deps()]
+    [
+      app: :akd,
+      version: @version,
+      elixir: "~> 1.4",
+      deps: deps(),
+      build_embedded: Mix.env == :prod,
+      start_permanent: Mix.env == :prod,
+
+      # Test
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [coveralls: :test],
+      aliases: aliases(),
+      elixirc_paths: elixirc_paths(Mix.env),
+
+      # Hex
+      description: description(),
+      package: package(),
+
+      # Docs
+      name: "Akd",
+      docs: docs(),
+    ]
   end
 
-  # Configuration for the OTP application
-  #
-  # Type "mix help compile.app" for more information
   def application do
-    # Specify extra applications you'll use from Erlang/Elixir
-    [extra_applications: [:logger]]
+    [
+      applications: [
+        :logger
+      ],
+    ]
   end
 
-  # Dependencies can be Hex packages:
-  #
-  #   {:my_dep, "~> 0.3.0"}
-  #
-  # Or git/path repositories:
-  #
-  #   {:my_dep, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
-  #
-  # Type "mix help deps" for more examples and options
-  defp deps do
-    [{:simple_docker, "~> 0.1.0"}]
+  def package do
+    [
+      files: ["lib", "mix.exs", "README.md"],
+      maintainers: ["Adi Iyengar"],
+      licenses: ["MIT"],
+      links: %{"Github" => @url},
+    ]
   end
+
+  defp deps do
+    [
+      {:simple_docker, "~> 0.1.0"},
+      {:credo, "~> 0.5", only: [:dev, :test]},
+      {:excoveralls, "~> 0.3", only: :test},
+      {:ex_doc, "~> 0.14", only: :dev, runtime: false},
+      {:inch_ex, "~> 0.5", only: [:dev, :test, :docs]},
+    ]
+  end
+
+  defp description do
+    """
+    An interface that provides tools to deploy an elixir application
+    """
+  end
+
+  def docs do
+    [
+      main: "Akd",
+      source_url: @url,
+      source_ref: "v#{@version}"
+    ]
+  end
+
+  defp aliases do
+    []
+  end
+
+  defp elixirc_paths(:test), do: ["lib", "priv", "test/support"]
+  defp elixirc_paths(_),     do: ["lib"]
 end

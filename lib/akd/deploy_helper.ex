@@ -11,8 +11,12 @@ defmodule Akd.DeployHelper do
 
   def init_deployment(opts), do: struct(Deployment, opts)
 
-  def add_hook(deployment, exec_dest, hook_mod, opts \\ []) when type in @native_types do
-    add_hook(deployment, exec_dest, commands(hook_mod, deployment, opts))
+  def add_hook(deployment, exec_dest, hook_mod, opts \\ [])
+  def add_hook(deployment, exec_dest, {type, :default}, opts) when type in @native_types do
+    add_hook(deployment, exec_dest, commands({type, :default}, deployment, opts), nil)
+  end
+  def add_hook(deployment, exec_dest, hook_mod, opts) do
+    add_hook(deployment, exec_dest, commands(hook_mod, deployment, opts), nil)
   end
 
   @doc """
@@ -20,7 +24,7 @@ defmodule Akd.DeployHelper do
   The command can be either an atom (if it is supported) or a string
   of bash commands.
   """
-  def add_hook(%Deployment{hooks: hooks} = deployment, exec_dest, commands) do
+  def add_hook(%Deployment{hooks: hooks} = deployment, exec_dest, commands, _opts) do
     hooks = hooks ++ [%Hook{commands: commands, exec_dest: exec_dest}]
     %Deployment{deployment | hooks: hooks}
   end
