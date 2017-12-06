@@ -11,8 +11,8 @@ defmodule Akd.Builder.Distillery do
   """
   def commands(d, _opts) do
     """
-    mix deps.get
-    mix compile
+    MIX_ENV=#{d.app_env} mix deps.get
+    MIX_ENV=#{d.app_env} mix compile
     MIX_ENV=#{d.app_env} mix release --env=#{d.app_env}
     """
   end
