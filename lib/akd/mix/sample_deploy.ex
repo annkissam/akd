@@ -1,5 +1,6 @@
 defmodule Mix.Tasks.Akd.SampleDeploy do
   use Akd.Task
+  alias Akd.Mix.SampleDeploy.ParamsHelper
 
   @valid_params ~w(appname buildat env publishto)a
 
@@ -17,22 +18,27 @@ defmodule Mix.Tasks.Akd.SampleDeploy do
     p: :publishto
   ]
 
+  def run(argv) do
+    {parsed, _, _} = OptionParser.parse(argv, switches: @switches, aliases: @aliases)
+    execute :deploy, with: ParamsHelper.translated_params(parsed)
+  end
+
   pipeline :fetch do
-    hook {:base, :fetch, strategy: :git, container: :remote, branch: "master"}
+    hook {:base, :fetch, type: :git, container: :remote, branch: "master"}
   end
 
   pipeline :init do
-    hook {:base, :init, strategy: :distillery, container: :remote}
+    hook {:base, :init, type: :distillery, container: :remote}
   end
 
   pipeline :build do
-    hook {:base, :build, strategy: :distillery, container: :remote}
+    hook {:base, :build, type: :distillery, container: :remote}
   end
 
   pipeline :publish do
-    hook {:base, :stopapp}
-    hook {:base, :publish, strategy: :distillery, container: :remote}
-    hook {:base, :startapp}
+    hook {:base, :stopapp, type: :distillery, container: :remote}
+    hook {:base, :publish, type: :distillery, container: :remote}
+    hook {:base, :startapp, type: :distillery, container: :remote}
   end
 
   pipeline :deploy do
@@ -40,30 +46,5 @@ defmodule Mix.Tasks.Akd.SampleDeploy do
     pipe_through :init
     pipe_through :build
     pipe_through :publish
-  end
-
-  def run(argv) do
-    {parsed_params, _rem, invalid} =
-      OptionParser.parse(
-        argv,
-        strict: @switches,
-        aliases: @aliases)
-
-    case invalid do
-      [] -> {:ok, execute(parsed_params)}
-      _ -> raise "Invalid set of Arguments given."
-    end
-  end
-
-  defp execute(parsed_params) do
-    parsed_params
-    |> sort_keys()
-    |> translate_params()
-  end
-
-  defp sort_keys(params), do: Enum.sort_by(params, &elem(&1, 0))
-
-  defp translate_params([env: env, buildat: buildat, publishto: publishto]) do
-    %{env: env, buildat: buildat, publishto: publishto, appname: }
   end
 end
