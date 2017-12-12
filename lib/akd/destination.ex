@@ -19,4 +19,10 @@ defmodule Akd.Destination do
   def to_s(%Destination{sshuser: user, sshserver: ip, path: path}) do
     "#{user}@#{ip}:#{path}"
   end
+
+  @spec parse(String.t) :: Destination.t
+  def parse(string) do
+    [user, server, path] = Regex.split(~r{@|:}, string)
+    %Destination{sshuser: user, sshserver: server, path: path}
+  end
 end
