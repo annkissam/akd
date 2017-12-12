@@ -1,4 +1,4 @@
-defmodule Akd.Publisher.CP do
+defmodule Akd.Publisher.Cp do
   @moduledoc """
   This module connects to a given remote server through ssh and publishes a
   release on that server.

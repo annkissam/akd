@@ -22,7 +22,7 @@ defmodule Mix.Tasks.Akd.SampleDeploy do
   end
 
   pipeline :fetch do
-    hook {:base, :fetch, type: :git, container: :remote, branch: "master"}
+    hook {:base, :fetch, type: :scp, container: :remote, branch: "master"}
   end
 
   pipeline :init do

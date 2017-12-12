@@ -4,11 +4,12 @@ defmodule Akd.Fetcher.Git do
   the code that the task is ran from to the build env
   """
 
-  @behavior Akd.Hook
+  @behaviour Akd.Hook
 
   alias Akd.{Deployment, Destination}
 
-  def commands(%Deployment{buildat: _buildat}, _opts) do
-    raise "Not implemented"
+  def get_hook(%Deployment{}, opts) do
+    branch = opts[:branch] || "master"
+    src = opts[:src] || :local
   end
 end
