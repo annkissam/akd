@@ -8,7 +8,7 @@ defmodule Akd.Publisher.CP do
 
   alias Akd.{Deployment, Destination}
 
-  def commands(%Deployment{publish_env: dest, release: release}, opts \\ []) do
-    "cp -r #{release.path} #{dest.path}"
+  def commands(%Deployment{publishto: dest, deployable: deployable}, opts \\ []) do
+    "cp -r #{deployable.path} #{dest.path}"
   end
 end

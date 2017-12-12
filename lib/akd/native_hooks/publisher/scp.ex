@@ -8,7 +8,7 @@ defmodule Akd.Publisher.SCP do
 
   alias Akd.{Deployment, Destination}
 
-  def commands(%Deployment{publish_env: dest, release: release}, opts \\ []) do
-    "scp -r #{Destination.to_s(release)} #{Destination.to_s(dest)}"
+  def commands(%Deployment{publishto: dest, deployable: deployable}, opts \\ []) do
+    "scp -r #{Destination.to_s(deployable)} #{Destination.to_s(dest)}"
   end
 end

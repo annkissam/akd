@@ -8,9 +8,9 @@ defmodule Akd.Fetcher.SCP do
 
   alias Akd.{Deployment, Destination}
 
-  def commands(%Deployment{build_env: build_env}, _opts) do
+  def commands(%Deployment{buildat: buildat}, _opts) do
     """
-    scp -r . #{Destination.to_s(build_env)}
+    scp -r . #{Destination.to_s(buildat)}
     """
   end
 end

@@ -8,7 +8,7 @@ defmodule Akd.Fetcher.Git do
 
   alias Akd.{Deployment, Destination}
 
-  def commands(%Deployment{build_env: _build_env}, _opts) do
+  def commands(%Deployment{buildat: _buildat}, _opts) do
     raise "Not implemented"
   end
 end
