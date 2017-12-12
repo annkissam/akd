@@ -18,8 +18,8 @@ defmodule Akd.Deployment do
     buildat: Destination.t,
     publishto: Destination.t,
     appname: Atom.t,
-    version: String.t,
+    version: String.t | nil,
     deployable: Destination.t | nil,
-    hooks: [Akd.Hook.t],
+    hooks: [Akd.Hook.t] | nil,
   }
 end
