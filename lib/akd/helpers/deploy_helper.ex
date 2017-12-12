@@ -4,7 +4,7 @@ defmodule Akd.DeployHelper do
   and add hooks to a deployment, and execute it.
   """
 
-  alias Akd.{Destination, Deployment, Hook, HookResolver}
+  alias Akd.{Destination, DestinationResolver, Deployment, Hook, HookResolver}
 
   @base_types ~w(fetch init build stopapp publish startapp)a
 
@@ -37,11 +37,19 @@ defmodule Akd.DeployHelper do
   def add_hook(deployment, {:base, type, opts}) when type in @base_types do
     add_hook(deployment, get_hook(deployment, type, opts))
   end
+  def add_hook(deployment, opts) do
+    commands = Keyword.fetch!(opts, :commands)
+    runat = opts
+      |> Keyword.fetch!(:runat)
+      |> DestinationResolver.resolve(deployment)
+
+    cleanup = opts[:cleanup]
+    hookopts = opts[:opts]
+    env = opts[:env]
+
+    add_hook(deployment,
+      %Hook{commands: commands, runat: runat, cleanup: cleanup, opts: hookopts, env: env})
+  end
 
   defp get_hook(type, d, opts), do: apply(HookResolver, type, [d, opts])
-
-  defp commands({:fetch, :default}, d, opts), do: commands(Akd.Fetcher.SCP, d, opts)
-  defp commands({:build, :default}, d, opts), do: commands(Akd.Builder.Distillery, d, opts)
-  defp commands({:publish, :default}, d, opts), do: commands(Akd.Publisher.CP, d, opts)
-  defp commands(mod, d, opts), do: apply(mod, :commands, [d, opts])
 end
