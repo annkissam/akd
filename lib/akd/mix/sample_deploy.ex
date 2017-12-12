@@ -2,8 +2,6 @@ defmodule Mix.Tasks.Akd.SampleDeploy do
   use Akd.Task
   alias Akd.Mix.SampleDeploy.ParamsHelper
 
-  @valid_params ~w(appname buildat env publishto)a
-
   @switches [
     appname: :string,
     buildat: :string,
