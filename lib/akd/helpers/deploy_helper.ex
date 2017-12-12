@@ -51,5 +51,5 @@ defmodule Akd.DeployHelper do
       %Hook{commands: commands, runat: runat, cleanup: cleanup, opts: hookopts, env: env})
   end
 
-  defp get_hook(type, d, opts), do: apply(HookResolver, type, [d, opts])
+  defp get_hook(d, type, opts), do: apply(HookResolver, type, [d, opts])
 end

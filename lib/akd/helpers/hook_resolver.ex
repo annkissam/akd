@@ -5,6 +5,7 @@ defmodule Akd.HookResolver do
   alias Akd.Config
 
   @stages ~w(fetch init build publish)a
+
   for stage <- @stages do
     noun = stage
       |> (&(to_string(&1) <> "er")).()
