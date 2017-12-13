@@ -12,7 +12,7 @@ defmodule Akd.Fetcher.Scp do
     {commands, cleanup} = commands(opts[:src] || ".", buildat)
     runat = opts[:runat] || DestinationResolver.resolve(:local, deployment)
 
-    %Hook{commands: commands, runat: runat, cleanup: cleanup, opts: [], env: opts[:env]}
+    %Hook{commands: commands, runat: runat, cleanup: cleanup, env: opts[:env]}
   end
 
   # This assumes that you're running this command from the same server
@@ -27,7 +27,10 @@ defmodule Akd.Fetcher.Scp do
       """}
   end
   defp commands(src, %Destination{} = dest) when is_binary(src) do
-    {"scp -r #{src} #{Destination.to_s(dest)}",
+    {
+    """
+    rsync -krav -e ssh --exclude="_build" --exclude=".git" --exclude="deps" #{src} #{Destination.to_s(dest)}
+    """,
       """
       ssh #{dest.user}@#{dest.server}
       rm -rf #{dest.path}

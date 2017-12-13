@@ -7,6 +7,7 @@ defmodule Akd.Deployment do
 
   alias Akd.{Destination, Hook}
 
+  # TODO default hooks to []
   @enforce_keys ~w(env buildat publishto appname version)a
   @optional_keys ~w(deployable hooks)a
 

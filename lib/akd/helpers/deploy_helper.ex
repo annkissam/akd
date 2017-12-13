@@ -20,10 +20,25 @@ defmodule Akd.DeployHelper do
   end
 
   def exec(%Deployment{hooks: hooks}) do
-    Enum.reduce(hooks, [], &Hook.exec(&1))
+    {stop, called_hooks} = Enum.reduce(hooks, {false, []}, fn(hook, {stop, called_hooks}) ->
+      with false <- stop,
+        {:ok, output} <- Hook.exec(hook)
+      do
+        {stop, [hook | called_hooks]}
+      else
+        {:error, error} -> {true, called_hooks}
+        true -> {true, called_hooks}
+      end
+    end)
+
+    Enum.each(called_hooks, &Hook.cleanup/1)
   end
 
-  def init_deployment(opts), do: struct(Deployment, opts)
+  def init_deployment(params) do
+    Deployment
+    |> struct!(params)
+    |> sanitize()
+  end
 
   @spec add_hook(Deployment.t, Hook.t | tuple()) :: Deployment.t
   def add_hook(deployment, hook)
@@ -44,12 +59,17 @@ defmodule Akd.DeployHelper do
       |> DestinationResolver.resolve(deployment)
 
     cleanup = opts[:cleanup]
-    hookopts = opts[:opts]
     env = opts[:env]
 
     add_hook(deployment,
-      %Hook{commands: commands, runat: runat, cleanup: cleanup, opts: hookopts, env: env})
+      %Hook{commands: commands, runat: runat, cleanup: cleanup, env: env})
   end
 
   defp get_hook(d, type, opts), do: apply(HookResolver, type, [d, opts])
+
+  defp sanitize(%Deployment{buildat: b, publishto: p} = deployment) do
+    %Deployment{deployment | buildat: to_dest(b), publishto: to_dest(p)}
+  end
+
+  defp to_dest(d), do: is_binary(d) && Destination.parse(d) || d
 end

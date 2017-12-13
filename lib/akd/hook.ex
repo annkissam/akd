@@ -6,7 +6,7 @@ defmodule Akd.Hook do
   alias Akd.{Deployment, Destination, Hook, SecureConnection}
 
   @enforce_keys ~w(runat)a
-  @optional_keys ~w(commands cleanup opts env)a
+  @optional_keys ~w(commands cleanup env)a
 
   defstruct @enforce_keys ++ @optional_keys
 
@@ -15,7 +15,6 @@ defmodule Akd.Hook do
     commands: String.t | nil,
     runat: Destination.t,
     cleanup: String.t | nil,
-    opts: list() | nil,
     env: list(tuple()) | nil,
   }
 
@@ -25,7 +24,7 @@ defmodule Akd.Hook do
   @spec exec(Hook.t) :: {:ok, String.t} | {:error, String.t}
   def exec(hook)
   def exec(%Hook{runat: %Destination{server: :local}} = hook) do
-    with {output, 0} <- System.cmd("sh", ["-c" , hook.commands], cd: hook.runat.path) do
+    with {output, 0} <- System.cmd("sh", ["-c" , hook.commands], cd: hook.runat.path, into: IO.stream(:stdio, :line)) do
       {:ok, output}
     else
       {error, 1} -> {:error, error}
@@ -33,6 +32,24 @@ defmodule Akd.Hook do
   end
   def exec(%Hook{commands: commands, runat: runat}) do
     SecureConnection.securecmd(runat, commands)
+  end
+
+  def cleanup(hook)
+  def cleanup(%Hook{cleanup: nil}), do: {:ok, nil}
+  def cleanup(%Hook{runat: %Destination{server: :local}} = hook) do
+    with {output, 0} <- System.cmd("sh", ["-c" , hook.cleanup], cd: hook.runat.path, into: IO.stream(:stdio, :line)) do
+      {:ok, output}
+    else
+      {error, 1} -> {:error, error}
+    end
+  end
+  def cleanup(%Hook{cleanup: commands, runat: runat}) do
+    SecureConnection.securecmd(runat, commands)
+  end
+
+  def commands_with_env(%Hook{commands: commands, env: nil}), do: commands
+  def commands_with_env(%Hook{commands: commands, env: env}) do
+    commands
   end
 end
 

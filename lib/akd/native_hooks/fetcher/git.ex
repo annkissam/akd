@@ -6,10 +6,27 @@ defmodule Akd.Fetcher.Git do
 
   @behaviour Akd.Hook
 
-  alias Akd.{Deployment, Destination}
+  alias Akd.{Deployment, Destination, Hook}
 
-  def get_hook(%Deployment{}, opts) do
+  def get_hook(%Deployment{} = deployment, opts) do
     branch = opts[:branch] || "master"
-    src = opts[:src] || :local
+    src = opts[:src]
+
+    runat = opts[:runat] || DestinationResolver.resolve(:build, deployment)
+
+    %Hook{commands: commands(branch, src), runat: runat, env: opts[:env]}
+  end
+
+  defp commands(branch, nil) do
+    """
+    git checkout #{branch}
+    git pull
+    """
+  end
+  defp commands(branch, url) when is_binary(url) do
+    """
+    git clone #{url} .
+    git checkout #{branch}
+    """
   end
 end

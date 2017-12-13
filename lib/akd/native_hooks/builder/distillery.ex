@@ -6,14 +6,19 @@ defmodule Akd.Builder.Distillery do
 
   @behaviour Akd.Hook
 
-  @doc """
-  Callback implementation for `commands`.
-  """
-  def commands(d, _opts) do
+  alias Akd.{Deployment, DestinationResolver, Hook}
+
+  def get_hook(%Deployment{env: env} = deployment, opts) do
+    runat = opts[:runat] || DestinationResolver.resolve(:build, deployment)
+
+    %Hook{commands: commands(env), runat: runat, env: opts[:env]}
+  end
+
+  def commands(env) do
     """
-    MIX_ENV=#{d.app_env} mix deps.get
-    MIX_ENV=#{d.app_env} mix compile
-    MIX_ENV=#{d.app_env} mix release --env=#{d.app_env}
+    MIX_ENV=#{env} mix deps.get
+    MIX_ENV=#{env} mix compile
+    MIX_ENV=#{env} mix release --env=#{env}
     """
   end
 end

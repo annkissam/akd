@@ -22,26 +22,25 @@ defmodule Mix.Tasks.Akd.SampleDeploy do
   end
 
   pipeline :fetch do
-    hook {:base, :fetch, type: :scp, container: :remote, branch: "master"}
+    hook {:base, :fetch, type: :scp}
   end
 
   pipeline :init do
-    hook {:base, :init, type: :distillery, container: :remote}
+    hook {:base, :init, type: :distillery}
   end
 
   pipeline :build do
-    hook {:base, :build, type: :distillery, container: :remote}
+    hook {:base, :build, type: :distillery}
   end
 
   pipeline :publish do
-    hook {:base, :stopapp, type: :distillery, container: :remote}
-    hook {:base, :publish, type: :distillery, container: :remote}
-    hook {:base, :startapp, type: :distillery, container: :remote}
+    hook {:base, :stopapp}
+    hook {:base, :publish, type: :distillery}
+    hook {:base, :startapp}
   end
 
   pipeline :deploy do
     pipe_through :fetch
-    pipe_through :init
     pipe_through :build
     pipe_through :publish
   end

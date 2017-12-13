@@ -2,7 +2,7 @@ defmodule Akd.HookResolver do
   @moduledoc """
   """
 
-  alias Akd.Config
+  alias Akd.{Config, Deployment, DestinationResolver, Hook}
 
   @stages ~w(fetch init build publish)a
 
@@ -25,6 +25,19 @@ defmodule Akd.HookResolver do
       type = opts[:type] |> to_string() |> Macro.camelize()
       mod = String.to_existing_atom(unquote(modname) <> "." <> type)
       apply(mod, :get_hook, [deployment, opts])
+    end
+  end
+
+  for hook <- [:stop, :start] do
+    method_name = hook
+      |> (&Atom.to_string(&1) <> "app").()
+      |> String.to_atom()
+
+    def unquote(method_name)(%Deployment{appname: appname} = deployment, opts) do
+      runat = opts[:runat] || DestinationResolver.resolve(:publish, deployment)
+
+      %Hook{commands: "bin/#{appname} #{unquote(hook)}",
+        runat: runat, env: opts[:env]}
     end
   end
 end
