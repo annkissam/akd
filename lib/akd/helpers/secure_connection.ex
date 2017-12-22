@@ -1,4 +1,7 @@
 defmodule Akd.SecureConnection do
+  @moduledoc """
+  """
+
   def securecmd(dest, cmds) do
     cmds = "cd #{dest.path}\n" <> cmds
     ssh(dest.user, dest.server, cmds, true)
