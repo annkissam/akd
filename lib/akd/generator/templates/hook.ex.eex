@@ -1,0 +1,20 @@
+defmodule <%= @name %> do
+  @moduledoc false
+
+  use Akd.Hook
+
+  alias Akd.{Deployment, Destination, Hook}
+
+  def get_hook(%Deployment{} = deployment, opts \\ []) do
+    %Hook{
+      commands: """
+        SOME COMMAND
+        SOME OTHER COMMAND
+      """,
+      runat: Destination.parse("root@127.0.0.1:~/path/to/dir"),
+      env: [{"KEY", "VALUE"}, {"OTHER_KEY", "OTHER_VALUE"}],
+      cleanup: "SOME CLEANUP COMMAND or nil",
+      rollback: "SOME ROLLBACK COMMAND or nil"
+    }
+  end
+end
