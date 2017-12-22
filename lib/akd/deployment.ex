@@ -9,7 +9,7 @@ defmodule Akd.Deployment do
 
   # TODO default hooks to []
   @enforce_keys ~w(env buildat publishto appname version)a
-  @optional_keys ~w(deployable hooks)a
+  @optional_keys ~w(hooks)a
 
   defstruct @enforce_keys ++ @optional_keys
 
@@ -20,7 +20,6 @@ defmodule Akd.Deployment do
     publishto: Destination.t,
     appname: Atom.t,
     version: String.t | nil,
-    deployable: Destination.t | nil,
-    hooks: [Akd.Hook.t] | nil,
+    hooks: [Hook.t] | nil,
   }
 end
