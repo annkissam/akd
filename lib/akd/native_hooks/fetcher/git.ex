@@ -4,9 +4,9 @@ defmodule Akd.Fetcher.Git do
   the code that the task is ran from to the build env
   """
 
-  @behaviour Akd.Hook
+  use Akd.Hook
 
-  alias Akd.{Deployment, Destination, Hook}
+  alias Akd.{Deployment, DestinationResolver, Hook}
 
   def get_hook(%Deployment{} = deployment, opts) do
     branch = opts[:branch] || "master"
