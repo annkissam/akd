@@ -4,7 +4,7 @@ defmodule Akd.Builder.Distillery do
   on that server.
   """
 
-  @behaviour Akd.Hook
+  use Akd.Hook
 
   alias Akd.{Deployment, DestinationResolver, Hook}
 
@@ -14,7 +14,7 @@ defmodule Akd.Builder.Distillery do
     %Hook{commands: commands(env), runat: runat, env: opts[:env]}
   end
 
-  def commands(env) do
+  defp commands(env) do
     """
     MIX_ENV=#{env} mix deps.get
     MIX_ENV=#{env} mix compile
