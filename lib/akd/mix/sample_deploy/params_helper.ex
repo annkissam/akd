@@ -1,5 +1,6 @@
 defmodule Akd.Mix.SampleDeploy.ParamsHelper do
-  alias Akd.Destination
+  @moduledoc """
+  """
 
   def translated_params(parsed_params) do
     parsed_params
