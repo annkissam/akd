@@ -4,11 +4,11 @@ defmodule Akd.Publisher.Cp do
   release on that server.
   """
 
-  @behavior Akd.Hook
+  use Akd.Hook
 
-  alias Akd.{Deployment, Destination}
+  alias Akd.Deployment
 
-  def commands(%Deployment{publishto: dest, deployable: deployable}, opts \\ []) do
-    "cp -r #{deployable.path} #{dest.path}"
+  def commands(%Deployment{}) do
+    raise "Not implemented"
   end
 end

@@ -2,11 +2,11 @@ defmodule Akd.Publisher.Distillery do
   @moduledoc"""
   """
 
-  @behaviour Akd.Hook
+  use Akd.Hook
 
   alias Akd.{Deployment, Destination, DestinationResolver, Hook}
 
-  def get_hook(%Deployment{buildat: buildat, publishto: publishto} = deployment, opts) do
+  def get_hook(%Deployment{} = deployment, opts) do
     runat = DestinationResolver.resolve(:publish, deployment)
 
     %Hook{commands: commands(deployment), runat: runat, env: opts[:env]}

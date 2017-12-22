@@ -4,11 +4,11 @@ defmodule Akd.Publisher.Scp do
   release on that server.
   """
 
-  @behavior Akd.Hook
+  use Akd.Hook
 
-  alias Akd.{Deployment, Destination}
+  alias Akd.Deployment
 
-  def commands(%Deployment{publishto: dest, deployable: deployable}, opts \\ []) do
-    "scp -r #{Destination.to_s(deployable)} #{Destination.to_s(dest)}"
+  def commands(%Deployment{}) do
+    raise "Not implemented"
   end
 end
