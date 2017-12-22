@@ -1,4 +1,7 @@
 defmodule Akd.Destination do
+  @moduledoc """
+  """
+
   alias Akd.Destination
 
   @enforce_keys [:user, :server, :path]
@@ -26,7 +29,7 @@ defmodule Akd.Destination do
     %Destination{user: user, server: server, path: path}
   end
 
-  def local() do
-    %Destination{user: :current, server: :local, path: "."}
+  def local(path \\ ".") do
+    %Destination{user: :current, server: :local, path: path}
   end
 end
