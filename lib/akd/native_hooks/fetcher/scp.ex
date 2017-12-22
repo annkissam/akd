@@ -4,7 +4,7 @@ defmodule Akd.Fetcher.Scp do
   the code that the task is ran from to the build env
   """
 
-  @behaviour Akd.Hook
+  use Akd.Hook
 
   alias Akd.{Deployment, Destination, DestinationResolver, Hook}
 
