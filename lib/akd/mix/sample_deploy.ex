@@ -1,5 +1,10 @@
 defmodule Mix.Tasks.Akd.SampleDeploy do
-  use Akd.Task
+  @moduledoc """
+  TODO Improve Documentation
+  This task deploys an app
+  """
+
+  use Akd.Mix.Task
   alias Akd.Mix.SampleDeploy.ParamsHelper
 
   @switches [
@@ -22,21 +27,21 @@ defmodule Mix.Tasks.Akd.SampleDeploy do
   end
 
   pipeline :fetch do
-    hook {:base, :fetch, type: :scp}
+    hook Akd.Fetcher.Git
   end
 
   pipeline :init do
-    hook {:base, :init, type: :distillery}
+    hook Akd.Initer.Distillery
   end
 
   pipeline :build do
-    hook {:base, :build, type: :distillery}
+    hook Akd.Builder.Distillery
   end
 
   pipeline :publish do
-    hook {:base, :stopapp}
-    hook {:base, :publish, type: :distillery}
-    hook {:base, :startapp}
+    hook :stopnode
+    hook Akd.Publisher.Distillery
+    hook :startnode
   end
 
   pipeline :deploy do
