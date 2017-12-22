@@ -1,4 +1,4 @@
-defmodule Akd.Task do
+defmodule Akd.Mix.Task do
   @moduledoc """
   This module defines a `__using__` macro which allows another module
   to behave like an Akd.Task and define functions (like `add_hook/2`) which
