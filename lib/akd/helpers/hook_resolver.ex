@@ -17,7 +17,7 @@ defmodule Akd.HookResolver do
       unquote(noun)
       |> String.to_atom()
       |> (&apply(Config, &1, [])).()
-      |> apply(:get_hook, [deployment, []])
+      |> apply(:get_hooks, [deployment, []])
     end
 
     def unquote(stage)(deployment, opts) do
@@ -26,7 +26,7 @@ defmodule Akd.HookResolver do
         |> Macro.camelize()
         |> (&Module.concat(unquote(binding), &1)).()
 
-      apply(mod, :get_hook, [deployment, opts])
+      apply(mod, :get_hooks, [deployment, opts])
     end
   end
 
@@ -38,8 +38,8 @@ defmodule Akd.HookResolver do
     def unquote(method_name)(deployment, opts) do
       runat = opts[:runat] || DestinationResolver.resolve(:publish, deployment)
 
-      %Hook{commands: "bin/#{deployment.appname} #{unquote(hook)}",
-        runat: runat, env: opts[:env], ignore_failure: opts[:ignore_failure]}
+      [%Hook{commands: "bin/#{deployment.appname} #{unquote(hook)}",
+        runat: runat, env: opts[:env], ignore_failure: opts[:ignore_failure]}]
     end
   end
 end
