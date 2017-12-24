@@ -8,6 +8,7 @@ defmodule <%= @name %> do
     buildat: :string,
     env: :string,
     publishto: :string,
+    version: :string,
   ]
 
   @aliases [
@@ -15,6 +16,15 @@ defmodule <%= @name %> do
     b: :buildat,
     e: :env,
     p: :publishto,
+    v: :version,
+  ]
+
+  @defaults [
+    appname: "TODO",
+    buildat: "TODO",
+    env: "TODO",
+    publishto: "TODO",
+    version: "TODO",
   ]
 
   pipeline :fetch do
@@ -30,7 +40,8 @@ defmodule <%= @name %> do
   end
 
   pipeline :publish do
-    hook :stopnode
+    # Ignores failure in case this is the first deploy
+    hook :stopnode, ignore_failure: true
     hook <%= @publisher %>
     hook :startnode
   end
