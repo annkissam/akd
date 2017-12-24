@@ -8,11 +8,11 @@ defmodule Akd.Fetcher.Scp do
 
   alias Akd.{Deployment, Destination, DestinationResolver, Hook}
 
-  def get_hook(%Deployment{buildat: buildat} = deployment, opts) do
+  def get_hooks(%Deployment{buildat: buildat} = deployment, opts) do
     {commands, cleanup} = commands(opts[:src] || ".", buildat)
     runat = opts[:runat] || DestinationResolver.resolve(:local, deployment)
 
-    %Hook{commands: commands, runat: runat, cleanup: cleanup, env: opts[:env]}
+    [%Hook{commands: commands, runat: runat, cleanup: cleanup, env: opts[:env]}]
   end
 
   # This assumes that you're running this command from the same server

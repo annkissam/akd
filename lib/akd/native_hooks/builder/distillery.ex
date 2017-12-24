@@ -8,10 +8,10 @@ defmodule Akd.Builder.Distillery do
 
   alias Akd.{Deployment, DestinationResolver, Hook}
 
-  def get_hook(%Deployment{env: env} = deployment, opts) do
+  def get_hooks(%Deployment{env: env} = deployment, opts) do
     runat = opts[:runat] || DestinationResolver.resolve(:build, deployment)
 
-    %Hook{commands: commands(env), runat: runat, env: opts[:env]}
+    [%Hook{commands: commands(env), runat: runat, env: opts[:env]}]
   end
 
   defp commands(env) do

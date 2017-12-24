@@ -8,13 +8,13 @@ defmodule Akd.Fetcher.Git do
 
   alias Akd.{Deployment, DestinationResolver, Hook}
 
-  def get_hook(%Deployment{} = deployment, opts) do
+  def get_hooks(%Deployment{} = deployment, opts) do
     branch = opts[:branch] || "master"
     src = opts[:src]
 
     runat = opts[:runat] || DestinationResolver.resolve(:build, deployment)
 
-    %Hook{commands: commands(branch, src), runat: runat, env: opts[:env]}
+    [%Hook{commands: commands(branch, src), runat: runat, env: opts[:env]}]
   end
 
   defp commands(branch, nil) do

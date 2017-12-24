@@ -8,24 +8,20 @@ defmodule Akd.Initer.Distillery do
 
   alias Akd.{Deployment, DestinationResolver, Hook}
 
-  def get_hook(%Deployment{appname: appname} = deployment, opts) do
+  def get_hooks(%Deployment{appname: appname} = deployment, opts) do
     runat = opts[:runat] || DestinationResolver.resolve(:build, deployment)
     env = deployment.env
+    template_cmd = template_cmd(opts[:template])
+    appname_cmd = appname_cmd(appname)
 
-    %Hook{commands: commands(appname, env), runat: runat, env: opts[:env]}
+    [%Hook{commands: commands([template_cmd, appname_cmd], env),
+      runat: runat,
+      env: opts[:env]}]
   end
 
-  defp commands(nil, env) do
-    """
-    #{setup(env)}
-    MIX_ENV=#{env} mix release.init --no-doc
-    """
-  end
-  defp commands(appname, env) do
-    """
-    #{setup(env)}
-    MIX_ENV=#{env} mix release.init --no-doc --name #{appname}
-    """
+  defp commands(cmnds, env) when is_list(cmnds) do
+    Enum.reduce(cmnds, "#{setup(env)} \n MIX_ENV=#{env} mix release.init",
+                                fn(cmd, acc) -> acc <> " " <> cmd end)
   end
 
   defp setup(env) do
@@ -34,4 +30,10 @@ defmodule Akd.Initer.Distillery do
     MIX_ENV=#{env} mix compile
     """
   end
+
+  defp template_cmd(nil), do: ""
+  defp template_cmd(path), do: "--template #{path}"
+
+  defp appname_cmd(nil), do: ""
+  defp appname_cmd(name), do: "--name #{name}"
 end
