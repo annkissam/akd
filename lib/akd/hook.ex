@@ -1,68 +1,78 @@
 defmodule Akd.Hook do
   @moduledoc """
-  This module defines a hook struct and a behavior hook modules must follow
+  This module represents an `Akd.Hook` struct which contains metadata about
+  a hook.
+
+  Please refer to `Nomenclature` for more information about the terms used.
+
+  The meta data involves:
+
+  * ensure - A list of `Akd.Operation.t` structs that are ran after a deployment,
+            if the hook was successfully executed (independent of whether the
+            deployment itself was successful or not).
+  * ignore_failure - If `true`, the deployment continues to happen even if this
+                    hook fails. Defauls to `false`.
+  * main - A list of `Akd.Operation.t` that are ran when the hook is executed.
+  * rollback - A list of `Akd.Operation.t` that are ran when a deployment is a
+              failure, but the hook was called.
+
+  This struct is mainly used by native hooks in `Akd`, but it can be leveraged
+  to write custom hooks.
   """
 
-  alias Akd.{Deployment, Destination, SecureConnection}
+  alias Akd.{Deployment, Operation}
 
-  @enforce_keys ~w(runat)a
-  @optional_keys ~w(commands cleanup env rollback ignore_failure)a
+  defstruct [ensure: [], ignore_failure: false,
+              main: [], rollback: []]
 
-  defstruct @enforce_keys ++ @optional_keys
-
-  @typedoc ~s(Generic type for a Hook with all enforced keys)
+  @typedoc ~s(Generic type for a Hook struct)
   @type t :: %__MODULE__{
-    cleanup: String.t | nil,
-    commands: String.t | nil,
-    env: list(tuple()) | nil,
-    rollback: String.t | nil,
-    runat: Destination.t,
-    ignore_failure: true | false | nil,
+    ensure: Operation.t,
+    ignore_failure: boolean(),
+    main: Operation.t,
+    rollback: Operation.t,
   }
 
-  @callback get_hooks(deployment :: Deployment.t, opts :: list) :: __MODULE__.t
+  @callback get_hooks(Deployment.t, list) :: [__MODULE__.t]
 
   defmacro __using__(_) do
     quote do
       @behviour unquote(__MODULE__)
 
-      @spec get_hooks(Akd.Deployment.t, list) :: Akd.Hook.t
+      @spec get_hooks(Akd.Deployment.t, list) :: unquote(__MODULE__).t
       def get_hooks(_, _), do: raise "`get_hooks/2` not defined for #{__MODULE__}"
 
       defoverridable [get_hooks: 2]
     end
   end
 
-  @doc ~s()
-  @spec exec(__MODULE__.t) :: {:ok, String.t} | {:error, String.t}
-  def exec(hook)
-  def exec(%__MODULE__{runat: %Destination{server: :local}} = hook) do
-    case System.cmd("sh", ["-c" , hook.commands], cd: hook.runat.path, into: IO.stream(:stdio, :line)) do
-      {error, 1} -> {:error, error}
-      {output, _} -> {:ok, output}
+
+  for ops_type <- ~w(ensure main rollback)a do
+
+    @doc """
+    Takes a `Akd.Hook.t` struct and calls the list of `Akd.Operation.t`
+    corresponding to `#{ops_type}` type.
+
+    ## Examples:
+
+        iex> hook = %Akd.Hook{}
+        iex> Akd.Hook.#{ops_type}(hook)
+        []
+    """
+    @spec unquote(ops_type)(__MODULE__.t) :: list()
+    def unquote(ops_type)(%__MODULE__{} = hook) do
+      hook
+      |> Map.get(unquote(ops_type))
+      |> Enum.reduce_while([], &runop/2)
+      |> Enum.reverse()
     end
   end
-  def exec(%__MODULE__{commands: commands, runat: runat}) do
-    SecureConnection.securecmd(runat, commands)
-  end
 
-  def cleanup(hook)
-  def cleanup(%__MODULE__{cleanup: nil}), do: {:ok, nil}
-  def cleanup(%__MODULE__{runat: %Destination{server: :local}} = hook) do
-    with {output, 0} <- System.cmd("sh", ["-c" , hook.cleanup], cd: hook.runat.path, into: IO.stream(:stdio, :line)) do
-      {:ok, output}
-    else
-      {error, 1} -> {:error, error}
+  defp runop(%Operation{} = op, io) do
+    case Operation.run(op) do
+      {:error, error} -> {:halt, [error | io]}
+      {:ok, output} -> {:cont, [output | io]}
     end
   end
-  def cleanup(%__MODULE__{cleanup: commands, runat: runat}) do
-    SecureConnection.securecmd(runat, commands)
-  end
-
-  def commands_with_env(%__MODULE__{commands: commands, env: nil}), do: commands
-  def commands_with_env(%__MODULE__{commands: commands, env: _}), do: commands
-
-  def rollback(%__MODULE__{rollback: nil}), do: :ok
-  # def rollback(%__MODULE__{rollback: cmd}), do call_cmd(hook, cmd)
 end
 
