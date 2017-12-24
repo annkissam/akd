@@ -1,0 +1,73 @@
+defmodule <%= @name %> do
+  @moduledoc false
+
+  use Akd.Mix.Task
+
+  @switches [
+    appname: :string,
+    buildat: :string,
+    env: :string,
+    publishto: :string,
+    version: :string,
+  ]
+
+  @aliases [
+    a: :appname,
+    b: :buildat,
+    e: :env,
+    p: :publishto,
+    v: :version,
+  ]
+
+  @defaults [
+    appname: "TODO",
+    buildat: "TODO",
+    env: "TODO",
+    publishto: "TODO",
+    version: "TODO",
+  ]
+
+  pipeline :fetch do
+    hook <%= @fetcher %>
+  end
+
+  pipeline :init do
+    hook <%= @initer %>
+  end
+
+  pipeline :build do
+    hook <%= @builder %>
+  end
+
+  pipeline :publish do
+    # Ignores failure in case this is the first deploy
+    hook :stopnode, ignore_failure: true
+    hook <%= @publisher %>
+    hook :startnode
+  end
+
+  pipeline :deploy do
+    pipe_through :fetch
+    pipe_through :init
+    pipe_through :build
+    pipe_through :publish
+  end
+
+  def run(argv) do
+    {parsed, _, _} = OptionParser.parse(argv, switches: @switches, aliases: @aliases)
+    execute :deploy, with: parameterize(parsed)
+  end
+
+  def parameterize(params) do
+    params
+    |> sort_keys()
+    |> translate_params()
+  end
+
+  defp sort_keys(params), do: Enum.sort_by(params, &elem(&1, 0))
+
+  defp translate_params([appname: a, buildat: b, env: e, publishto: p]) do
+    %{env: e, buildat: b, publishto: p, appname: a,
+      version: Mix.Project.config[:version], hooks: []}
+  end
+end

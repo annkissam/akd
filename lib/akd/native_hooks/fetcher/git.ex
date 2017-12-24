@@ -4,11 +4,29 @@ defmodule Akd.Fetcher.Git do
   the code that the task is ran from to the build env
   """
 
-  @behavior Akd.Hook
+  use Akd.Hook
 
-  alias Akd.{Deployment, Destination}
+  alias Akd.{Deployment, DestinationResolver, Hook}
 
-  def commands(%Deployment{build_env: _build_env}, _opts) do
-    raise "Not implemented"
+  def get_hooks(%Deployment{} = deployment, opts) do
+    branch = opts[:branch] || "master"
+    src = opts[:src]
+
+    runat = opts[:runat] || DestinationResolver.resolve(:build, deployment)
+
+    [%Hook{commands: commands(branch, src), runat: runat, env: opts[:env]}]
+  end
+
+  defp commands(branch, nil) do
+    """
+    git checkout #{branch}
+    git pull
+    """
+  end
+  defp commands(branch, url) when is_binary(url) do
+    """
+    git clone #{url} .
+    git checkout #{branch}
+    """
   end
 end

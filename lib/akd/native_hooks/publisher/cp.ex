@@ -1,14 +1,14 @@
-defmodule Akd.Publisher.CP do
+defmodule Akd.Publisher.Cp do
   @moduledoc """
   This module connects to a given remote server through ssh and publishes a
   release on that server.
   """
 
-  @behavior Akd.Hook
+  use Akd.Hook
 
-  alias Akd.{Deployment, Destination}
+  alias Akd.Deployment
 
-  def commands(%Deployment{publish_env: dest, release: release}, opts \\ []) do
-    "cp -r #{release.path} #{dest.path}"
+  def commands(%Deployment{}) do
+    raise "Not implemented"
   end
 end

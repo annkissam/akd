@@ -1,7 +1,7 @@
 defmodule Akd.Mixfile do
   use Mix.Project
 
-  @version "0.1.4"
+  @version "0.1.5-rc"
   @url "https://github.com/annkissam/akd"
 
   def project do
@@ -48,11 +48,12 @@ defmodule Akd.Mixfile do
 
   defp deps do
     [
-      {:simple_docker, "~> 0.1.0"},
       {:credo, "~> 0.5", only: [:dev, :test]},
-      {:excoveralls, "~> 0.3", only: :test},
+      {:distillery, "~> 1.5", runtime: false, optional: true},
       {:ex_doc, "~> 0.14", only: :dev, runtime: false},
+      {:excoveralls, "~> 0.3", only: :test},
       {:inch_ex, "~> 0.5", only: [:dev, :test, :docs]},
+      {:simple_docker, "~> 0.1.0", runtime: false, optional: true},
     ]
   end
 
