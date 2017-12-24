@@ -20,16 +20,16 @@ defmodule Akd.Hook do
     ignore_failure: true | false | nil,
   }
 
-  @callback get_hook(deployment :: Deployment.t, opts :: list) :: __MODULE__.t
+  @callback get_hooks(deployment :: Deployment.t, opts :: list) :: __MODULE__.t
 
   defmacro __using__(_) do
     quote do
       @behviour unquote(__MODULE__)
 
-      @spec get_hook(Akd.Deployment.t, list) :: Akd.Hook.t
-      def get_hook(_, _), do: raise "`get_hook/2` not defined for #{__MODULE__}"
+      @spec get_hooks(Akd.Deployment.t, list) :: Akd.Hook.t
+      def get_hooks(_, _), do: raise "`get_hooks/2` not defined for #{__MODULE__}"
 
-      defoverridable [get_hook: 2]
+      defoverridable [get_hooks: 2]
     end
   end
 
