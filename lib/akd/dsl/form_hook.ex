@@ -2,7 +2,20 @@ defmodule Akd.Dsl.FormHook do
   @moduledoc """
   """
 
-  defmacro form_hook(opts \\ [], do: block) do
+  # TODO: Use this in future to make native hooks even cleaner
+  defmacro defhook(call, do: block) do
+    quote do
+      hooks = Module.get_attribute(__MODULE__, :hooks) || []
+      Module.put_attribute(__MODULE__, :hooks,
+                           hooks ++ [unquote(elem(call, 0))])
+
+      def unquote(call) do
+        unquote(block)
+      end
+    end
+  end
+
+  defmacro form_hook(opts, do: block) do
     quote do
       {:ok, var!(ops, unquote(__MODULE__))} = start_ops_acc()
 
@@ -11,32 +24,59 @@ defmodule Akd.Dsl.FormHook do
       val = ops
         |> var!(unquote(__MODULE__))
         |> get_ops_acc()
-        |> struct_hook(opts)
+        |> struct_hook(unquote(opts))
 
-      stop_ops_acc()
+      stop_ops_acc(var!(ops, unquote(__MODULE__)))
 
       val
     end
   end
 
-  defmacro main(cmd, dest, env: env) do
-    quote do
-      put_buffer(var!(ops, unquote(__MODULE__)),
-        {:main, {unquote(cmd), unquote(dest), unquote(env) || []}})
+  defmacro form_hook(do: block) do
+    form_hook [] do
+      quote do: unquote(block)
     end
   end
 
-  defmacro ensure(cmd, dest, env: env) do
+  defmacro main(cmd, dest) do
     quote do
-      put_buffer(var!(ops, unquote(__MODULE__)),
-        {:ensure, {unquote(cmd), unquote(dest), unquote(env) || []}})
+      put_ops_acc(var!(ops, unquote(__MODULE__)),
+        {:main, {unquote(cmd), unquote(dest), []}})
     end
   end
 
-  defmacro rollback(cmd, dest, env: env) do
+  defmacro main(cmd, dest, cmd_env: cmd_env) do
     quote do
-      put_buffer(var!(ops, unquote(__MODULE__)),
-        {:rollback, {unquote(cmd), unquote(dest), unquote(env) || []}})
+      put_ops_acc(var!(ops, unquote(__MODULE__)),
+        {:main, {unquote(cmd), unquote(dest), unquote(cmd_env)}})
+    end
+  end
+
+  defmacro ensure(cmd, dest) do
+    quote do
+      put_ops_acc(var!(ops, unquote(__MODULE__)),
+        {:ensure, {unquote(cmd), unquote(dest), []}})
+    end
+  end
+
+  defmacro ensure(cmd, dest, cmd_env: cmd_env) do
+    quote do
+      put_ops_acc(var!(ops, unquote(__MODULE__)),
+        {:ensure, {unquote(cmd), unquote(dest), unquote(cmd_env)}})
+    end
+  end
+
+  defmacro rollback(cmd, dest) do
+    quote do
+      put_ops_acc(var!(ops, unquote(__MODULE__)),
+        {:rollback, {unquote(cmd), unquote(dest), []}})
+    end
+  end
+
+  defmacro rollback(cmd, dest, cmd_env: cmd_env) do
+    quote do
+      put_ops_acc(var!(ops, unquote(__MODULE__)),
+        {:rollback, {unquote(cmd), unquote(dest), unquote(cmd_env)}})
     end
   end
 
@@ -48,7 +88,7 @@ defmodule Akd.Dsl.FormHook do
 
   def get_ops_acc(ops), do: ops |> Agent.get(& &1) |> Enum.reverse()
 
-  defp struct_hook(ops, opts) do
+  def struct_hook(ops, opts) do
     %Akd.Hook{
       ensure: translate(ops, :ensure),
       ignore_failure: !!opts[:ignore_failure],
@@ -59,8 +99,8 @@ defmodule Akd.Dsl.FormHook do
   end
 
   defp translate(keyword, type) do
-    type
-    |> Keyword.get_values()
+    keyword
+    |> Keyword.get_values(type)
     |> Enum.map(&struct_op/1)
   end
 
