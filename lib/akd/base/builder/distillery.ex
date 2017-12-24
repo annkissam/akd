@@ -13,7 +13,7 @@ defmodule Akd.Builder.Distillery do
   defp build_hook(deployment, opts) do
     destination = Akd.DestinationResolver.resolve(:build, deployment)
     mix_env = deployment.mix_env
-    distillery_env = Keyword.geT(opts, :distillery_env, mix_env)
+    distillery_env = Keyword.get(opts, :distillery_env, mix_env)
 
     form_hook opts do
       main "mix deps.get \n mix compile \n mix release --env=#{distillery_env}",
