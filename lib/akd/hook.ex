@@ -35,8 +35,13 @@ defmodule Akd.Hook do
 
   @callback get_hooks(Deployment.t, list) :: [__MODULE__.t]
 
+  @doc """
+  TODO: Add more info about this macro
+  """
   defmacro __using__(_) do
     quote do
+      import Akd.Dsl.FormHook
+
       @behviour unquote(__MODULE__)
 
       @spec get_hooks(Akd.Deployment.t, list) :: unquote(__MODULE__).t
