@@ -69,8 +69,8 @@ defmodule Akd.Hook do
   def rollback(%__MODULE__{} = hook) do
     hook
     |> Map.get(:rollback)
-    |> Enum.reduce_while([], &runop/2)
-    |> Enum.reverse()
+    |> Enum.reduce_while({:ok, []}, &runop/2)
+    |> (& {elem(&1, 0), &1 |> elem(1) |> Enum.reverse()}).()
   end
 
 
@@ -88,8 +88,8 @@ defmodule Akd.Hook do
   def main(%__MODULE__{} = hook) do
     hook
     |> Map.get(:main)
-    |> Enum.reduce_while([], &runop/2)
-    |> Enum.reverse()
+    |> Enum.reduce_while({:ok, []}, &runop/2)
+    |> (& {elem(&1, 0), &1 |> elem(1) |> Enum.reverse()}).()
   end
 
 
@@ -115,16 +115,16 @@ defmodule Akd.Hook do
   def ensure(%__MODULE__{} = hook) do
     hook
     |> Map.get(:ensure)
-    |> Enum.reduce_while([], &runop/2)
-    |> Enum.reverse()
+    |> Enum.reduce_while({:ok, []}, &runop/2)
+    |> (& {elem(&1, 0), &1 |> elem(1) |> Enum.reverse()}).()
   end
 
   # Delegates to running the operation and translates the return tuple to
   # :halt vs :cont form usable by `reduce_while`
-  defp runop(%Operation{} = op, io) do
+  defp runop(%Operation{} = op, {_, io}) do
     case Operation.run(op) do
-      {:error, error} -> {:halt, [error | io]}
-      {:ok, output} -> {:cont, [output | io]}
+      {:error, error} -> {:halt, {:error, [error | io]}}
+      {:ok, output} -> {:cont, {:ok, [output | io]}}
     end
   end
 end
