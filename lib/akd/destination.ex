@@ -57,10 +57,10 @@ defmodule Akd.Destination do
       "dragonborn@skyrim:whiterun"
 
   """
-  @spec to_s(__MODULE__.t) :: String.t
-  def to_s(dest)
-  def to_s(%__MODULE__{user: :current, host: :local, path: path}), do: path
-  def to_s(%__MODULE__{user: user, host: ip, path: path}) do
+  @spec to_string(__MODULE__.t) :: String.t
+  def to_string(dest)
+  def to_string(%__MODULE__{user: :current, host: :local, path: path}), do: path
+  def to_string(%__MODULE__{user: user, host: ip, path: path}) do
     "#{user}@#{ip}:#{path}"
   end
 
