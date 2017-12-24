@@ -41,14 +41,14 @@ defmodule Akd.DeployHelper do
   def add_hook(%Deployment{hooks: hooks} = deployment, {%Hook{} = hook, _}) do
     %Deployment{deployment | hooks: hooks ++ [hook]}
   end
-  def add_hook(deployment, {mod, opts}) when is_atom(mod) do
-    deployment
-    |> get_hooks(mod, opts)
-    |> Enum.reduce(deployment, &add_hook(&2, &1))
-  end
   def add_hook(deployment, {type, opts}) when type in @base_types do
     deployment
     |> get_hooks(type, opts)
+    |> Enum.reduce(deployment, &add_hook(&2, &1))
+  end
+  def add_hook(deployment, {mod, opts}) when is_atom(mod) do
+    deployment
+    |> get_hooks(mod, opts)
     |> Enum.reduce(deployment, &add_hook(&2, &1))
   end
 
