@@ -15,7 +15,7 @@ defmodule Akd.SecureConnection do
 
     case System.cmd("ssh", ["#{user}@#{scoped_ip}", operations], opts) do
       {output, 0} -> {:ok, output}
-      {error, 1} -> {:error, error}
+      {error, _} -> {:error, error}
     end
   end
 
@@ -25,7 +25,7 @@ defmodule Akd.SecureConnection do
     case System.cmd("scp", opts ++ [src, dest], [into: IO.stream(:stdio, :line)])
       do
       {output, 0} -> {:ok, output}
-      {error, 1} -> {:error, error}
+      {error, _} -> {:error, error}
     end
   end
 end
