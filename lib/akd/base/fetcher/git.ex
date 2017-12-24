@@ -1,14 +1,14 @@
 defmodule Akd.Fetcher.Git do
   @moduledoc """
+  TODO: Improve Docs
+
   Fetches source code using Git. This is a basic fetcher that just copies
   the code that the task is ran from to the build env
-
-  TODO: Improve Docs
   """
 
   use Akd.Hook
 
-  def get_hooks(%Akd.Deployment{} = deployment, opts) do
+  def get_hooks(deployment, opts \\ []) do
     branch = Keyword.get(opts, :branch, "master")
     src = Keyword.get(opts, :src)
     destination = Akd.DestinationResolver.resolve(:build, deployment)
@@ -21,6 +21,7 @@ defmodule Akd.Fetcher.Git do
       main "git clone #{src} .", destination
       main "git checkout #{branch}", destination
       main "git pull", destination
+
       ensure "rm -rf ./*", destination
       ensure "rm -rf ./.*", destination
     end
