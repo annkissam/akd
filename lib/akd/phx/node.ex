@@ -1,24 +1,23 @@
 defmodule Akd.Builder.Phoenix.Npm do
   @moduledoc """
+  TODO: Improve Docs
   """
 
   use Akd.Hook
 
-  alias Akd.{Deployment, DestinationResolver, Hook}
+  def get_hooks(deployment, opts // []) do
+    package_path = Keyword.get(opts, :package, ".")
 
-  def get_hooks(%Deployment{appname: appname} = deployment, opts) do
-    runat = opts[:runat] || DestinationResolver.resolve(:build, deployment)
-    appname = deployment.appname
-    env = deployment.env
-    package_path = opts[:package] || "."
-
-    [%Hook{commands: commands(env, package_path), runat: runat, env: opts[:env]}]
+    [build_hook(deployment, opts, package_path)]
   end
 
-  defp commands(env, package_path) do
-    """
-    cd #{package_path}
-    npm install
-    """
+  defp build_hook(deployment, opts, package_path) do
+    destination = Akd.DestinationResolver.resolve(:build, deployment)
+
+    form_hook opts do
+      main "cd #{package_path} \n npm install", destination
+
+      ensure "cd #{package_path} \n rm -rf node_modules", destination
+    end
   end
 end

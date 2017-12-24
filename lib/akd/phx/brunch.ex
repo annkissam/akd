@@ -1,28 +1,29 @@
 defmodule Akd.Builder.Phoenix.Brunch do
   @moduledoc """
+  TODO: Improve Docs
   """
 
   use Akd.Hook
 
-  alias Akd.{Deployment, DestinationResolver, Hook}
+  def get_hooks(deployment, opts \\ []) do
+    brunch = Keyword.get(opts, :brunch, "node_modules/brunch/bin/brunch")
+    brunch_config = Keyword.get(opts, :brunch_config, ".")
 
-  def get_hooks(%Deployment{appname: appname} = deployment, opts) do
-    runat = opts[:runat] || DestinationResolver.resolve(:build, deployment)
-    appname = deployment.appname
-    env = deployment.env
-    brunch_path = opts[:brunch] || "node_modules/brunch/bin/brunch"
-    config_path = opts[:config] || "."
-
-    [%Hook{commands: commands(env, brunch_path, config_path), runat: runat, env: opts[:env]}]
+    [build_hook(deployment, brunch, brunch_config, opts)]
   end
 
-  defp commands(env, brunch_path, config_path) do
-    """
-    MIX_ENV=#{env} mix deps.get
-    MIX_ENV=#{env} mix compile
-    cd #{config_path}
-    #{brunch_path} build --production
-    MIX_ENV=#{env} mix phx.digest
-    """
+  defp build_hook(deployment, brunch, brunch_config, opts) do
+    destination = Akd.DestinationResolver.resolve(:build, deployment)
+    mix_env = deployment.mix_env
+
+    form_hook opts do
+      main "mix deps.get \n mix compile", destination,
+        cmd_env: [{"MIX_ENV", mix_env}]
+
+      main "cd #{brunch_config} \n #{brunch} build --production", destination
+      main "mix phx.digest", destination, cmd_env: [{"MIX_ENV", mix_env}]
+
+      ensure "rm -rf deps", destination
+    end
   end
 end
