@@ -1,7 +1,7 @@
 defmodule Akd.Mixfile do
   use Mix.Project
 
-  @version "0.1.5-rc"
+  @version "0.2-rc"
   @url "https://github.com/annkissam/akd"
 
   def project do
@@ -30,11 +30,7 @@ defmodule Akd.Mixfile do
   end
 
   def application do
-    [
-      applications: [
-        :logger
-      ],
-    ]
+    [applications: [:logger]]
   end
 
   def package do
@@ -59,13 +55,14 @@ defmodule Akd.Mixfile do
 
   defp description do
     """
-    An interface that provides tools to deploy an elixir application
+    An configurable (but easy to set up) Elixir Deployment Automation library.
     """
   end
 
   def docs do
     [
       main: "Akd",
+      extras: [],
       source_url: @url,
       source_ref: "v#{@version}"
     ]
