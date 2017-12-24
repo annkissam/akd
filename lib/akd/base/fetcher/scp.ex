@@ -6,34 +6,36 @@ defmodule Akd.Fetcher.Scp do
 
   use Akd.Hook
 
-  alias Akd.{Deployment, Destination, DestinationResolver, Hook}
-
-  def get_hooks(%Deployment{buildat: buildat} = deployment, opts) do
-    {commands, cleanup} = commands(opts[:src] || ".", buildat)
-    runat = opts[:runat] || DestinationResolver.resolve(:local, deployment)
-
-    [%Hook{commands: commands, runat: runat, cleanup: cleanup, env: opts[:env]}]
+  def get_hooks(deployment, opts) do
+    src = Keyword.get(opts, :src, ".")
+    [init_hook(src, deployment, opts)]
   end
 
-  # This assumes that you're running this command from the same server
-  defp commands(%Destination{server: s} = src, %Destination{server: s} = dest) do
-    {"cp -r #{src.path} #{dest.path}", "rm -rf #{dest.path}"}
+  defp init_hook(src, deployment, opts) when is_binary(src) do
+    dest = deployment.build_at |> Akd.Destination.to_string()
+    excludes = Keyword.get(opts, :exclude, ~w(_build .git deps))
+
+    form_hook opts do
+      main rsync_cmd(src, dest, excludes), Akd.Destination.local()
+
+      ensure "rm -rf #{dest}", deployment.build_at
+    end
   end
-  defp commands(%Destination{} = src, %Destination{} = dest) do
-    {"scp -r #{Destination.to_s(src)} #{Destination.to_s(dest)}",
-      """
-      ssh #{dest.user}@#{dest.server}
-      rm -rf #{dest.path}
-      """}
+  defp init_hook(src, deployment, opts) do
+    dest = deployment.build_at |> Akd.Destination.to_string()
+    src = Akd.Destination.to_string(src)
+    excludes = Keyword.get(opts, :exclude, ~w(_build .git deps))
+
+    form_hook opts do
+      main rsync_cmd(src, dest, excludes), Akd.Destination.local()
+
+      ensure "rm -rf #{dest}", deployment.build_at
+    end
   end
-  defp commands(src, %Destination{} = dest) when is_binary(src) do
-    {
-    """
-    rsync -krav -e ssh --exclude="_build" --exclude=".git" --exclude="deps" #{src} #{Destination.to_s(dest)}
-    """,
-      """
-      ssh #{dest.user}@#{dest.server}
-      rm -rf #{dest.path}
-      """}
+
+  defp rsync_cmd(src, dest, excludes) do
+    Enum.reduce(excludes, "rsync -krav -e ssh", fn(ex, cmd) ->
+      cmd <> " --exclude=\"#{ex}\""
+    end) <> " #{src} #{dest}"
   end
 end
