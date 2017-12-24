@@ -20,11 +20,10 @@ defmodule Akd.DeployHelper do
   end
 
   def exec(%Deployment{hooks: hooks}) do
-    {stop, called_hooks} = Enum.reduce(hooks, {false, []}, &stop_and_hooks/2)
+    {failure, called_hooks} = Enum.reduce(hooks, {false, []}, &failure_and_hooks/2)
 
-    # Add rollback here
     Enum.each(called_hooks, &Hook.cleanup/1)
-    if stop, do: Enum.each(called_hooks, &Hook.rollback/1)
+    if failure, do: Enum.each(called_hooks, &Hook.rollback/1)
   end
 
   def init_deployment(params) do
@@ -43,10 +42,14 @@ defmodule Akd.DeployHelper do
     %Deployment{deployment | hooks: hooks ++ [hook]}
   end
   def add_hook(deployment, {mod, opts}) when is_atom(mod) do
-    add_hook(deployment, get_hook(deployment, mod, opts))
+    deployment
+    |> get_hooks(mod, opts)
+    |> Enum.reduce(deployment, &add_hook(&2, &1))
   end
   def add_hook(deployment, {type, opts}) when type in @base_types do
-    add_hook(deployment, get_hook(deployment, type, opts))
+    deployment
+    |> get_hooks(type, opts)
+    |> Enum.reduce(deployment, &add_hook(&2, &1))
   end
   def add_hook(deployment, opts) do
     commands = Keyword.fetch!(opts, :commands)
@@ -61,22 +64,22 @@ defmodule Akd.DeployHelper do
       %Hook{commands: commands, runat: runat, cleanup: cleanup, env: env})
   end
 
-  defp stop_and_hooks(hook, {stop, called_hooks}) do
-    with false <- stop,
+  defp failure_and_hooks(hook, {failure, called_hooks}) do
+    with false <- failure,
       {:ok, _output} <- Hook.exec(hook)
     do
-      {stop, [hook | called_hooks]}
+      {failure, [hook | called_hooks]}
     else
       {:error, _err} ->
-        hook.ignore_failure && {false, called_hooks} || {true, called_hooks}
+        {!hook.ignore_failure, called_hooks}
       true -> {true, called_hooks}
     end
   end
 
-  defp get_hook(d, type, opts) when type in @base_types do
+  defp get_hooks(d, type, opts) when type in @base_types do
     apply(HookResolver, type, [d, opts])
   end
-  defp get_hook(d, mod, opts), do: apply(mod, :get_hook, [d, opts])
+  defp get_hooks(d, mod, opts), do: apply(mod, :get_hooks, [d, opts])
 
   defp sanitize(%Deployment{buildat: b, publishto: p} = deployment) do
     %Deployment{deployment | buildat: to_dest(b), publishto: to_dest(p)}
