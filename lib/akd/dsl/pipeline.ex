@@ -74,11 +74,15 @@ defmodule Akd.Dsl.Pipeline do
     end
   end
 
+  @doc false
   def start_pipe(hooks \\ []), do: Agent.start_link(fn -> hooks end)
 
+  @doc false
   def stop_pipe(hooks), do: Agent.stop(hooks)
 
+  @doc false
   def put_pipe(hooks, hook), do: Agent.update(hooks, &[hook | &1])
 
+  @doc false
   def get_pipe(hooks), do: hooks |> Agent.get(& &1) |> Enum.reverse()
 end
