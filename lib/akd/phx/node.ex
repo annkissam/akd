@@ -5,7 +5,7 @@ defmodule Akd.Builder.Phoenix.Npm do
 
   use Akd.Hook
 
-  def get_hooks(deployment, opts // []) do
+  def get_hooks(deployment, opts \\ []) do
     package_path = Keyword.get(opts, :package, ".")
 
     [build_hook(deployment, opts, package_path)]
