@@ -8,20 +8,20 @@ defmodule Akd.Initer.Distillery do
 
   use Akd.Hook
 
-  def get_hooks(deployment, opts) do
+  def get_hooks(deployment, opts \\ []) do
     destination = DestinationResolver.resolve(:build, deployment)
     template_cmd = opts
       |> Keyword.get(:template)
       |> template_cmd()
     name_cmd = name_cmd(deployment.name)
 
-    [init_hook(destination, deployment.mix_env, [name_cmd, template_cmd])]
+    [init_hook(destination, deployment.mix_env, [name_cmd, template_cmd], opts)]
   end
 
-  defp init_hook(destination, mix_env, switches) do
+  defp init_hook(destination, mix_env, switches, opts) do
     form_hook opts do
-      main setup(), destination, env: [{"MIX_ENV", mix_env}]
-      main rel_init(switches), destination, env: [{"MIX_ENV", mix_env}]
+      main setup(), destination, cmd_env: [{"MIX_ENV", mix_env}]
+      main rel_init(switches), destination, cmd_env: [{"MIX_ENV", mix_env}]
       ensure "rm -rf ./rel", destination
       ensure "rm -rf _build/prod", destination
     end
