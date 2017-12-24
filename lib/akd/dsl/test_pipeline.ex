@@ -3,8 +3,30 @@ defmodule TestPipeline do
 
   import Akd.Pipeline
 
-  pipeline :initialize do
-    hook :init
+  pipeline :init do
+    # hook Akd.Initer.Distillery
+    hook do
+      main "mix release --init", :build, cmd_env: [{"MIX_ENV", "prod"}]
+      ensure "rm -rf rel", :build
+      rollback "rm -rf _build/prod", :build
+    end
+  end
+
+  pipeline :publish do
+    hook ignore_failure: true do
+      main "bin/app stop", :publish
+    end
+
+    hook do
+      main "scp _build/prod/path/to/rel root@host:path/to/dir", :build
+      rollback "rm app.tar.gz", :publish
+    end
+
+    hook do
+      main "bin/app start", :publish, cmd_env: [{"DATABASE_URL", "url"}]
+      ensure "rm app.tar.gz", :publish
+      rollback "bin/app stop", :publish
+    end
   end
 
   pipeline :build do
