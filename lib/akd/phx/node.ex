@@ -1,4 +1,4 @@
-defmodule Akd.Builder.Phoenix.Npm do
+defmodule Akd.Build.Phoenix.Npm do
   @moduledoc """
   TODO: Improve Docs
   """
@@ -13,9 +13,10 @@ defmodule Akd.Builder.Phoenix.Npm do
 
   defp build_hook(deployment, opts, package_path) do
     destination = Akd.DestinationResolver.resolve(:build, deployment)
+    cmd_env = Keyword.get(opts, :cmd_env, [])
 
     form_hook opts do
-      main "cd #{package_path} \n npm install", destination
+      main "cd #{package_path} \n npm install", destination, cmd_env: cmd_env
 
       ensure "cd #{package_path} \n rm -rf node_modules", destination
     end
