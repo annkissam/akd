@@ -6,7 +6,7 @@ defmodule Akd.Generator.Task do
 
   @path "lib/"
 
-  @hooks ~w(fetcher initer builder publisher)a
+  @hooks ~w(fetch init build publish)a
 
   @spec gen(list, Keyword.t) :: :ok | {:error, String.t}
   def gen([name | _], opts) do

@@ -28,21 +28,21 @@ defmodule <%= @name %> do
   ]
 
   pipeline :fetch do
-    hook <%= @fetcher %>
+    hook <%= @fetch %>
   end
 
   pipeline :init do
-    hook <%= @initer %>
+    hook <%= @init %>
   end
 
   pipeline :build do
-    hook <%= @builder %>
+    hook <%= @build %>
   end
 
   pipeline :publish do
     # Ignores failure in case this is the first deploy
     hook :stopnode, ignore_failure: true
-    hook <%= @publisher %>
+    hook <%= @publish %>
     hook :startnode
   end
 
@@ -67,7 +67,7 @@ defmodule <%= @name %> do
   defp sort_keys(params), do: Enum.sort_by(params, &elem(&1, 0))
 
   defp translate_params([appname: a, buildat: b, env: e, publishto: p]) do
-    %{env: e, buildat: b, publishto: p, appname: a,
-      version: Mix.Project.config[:version], hooks: []}
+    %{mix_env: e, build_at: b, publish_to: p, name: a,
+      vsn: Mix.Project.config[:version], hooks: []}
   end
 end
