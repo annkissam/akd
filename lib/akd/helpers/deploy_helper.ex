@@ -69,8 +69,8 @@ defmodule Akd.DeployHelper do
   end
   defp get_hooks(d, mod, opts), do: apply(mod, :get_hooks, [d, opts])
 
-  defp sanitize(%Deployment{buildat: b, publishto: p} = deployment) do
-    %Deployment{deployment | buildat: to_dest(b), publishto: to_dest(p)}
+  defp sanitize(%Deployment{build_at: b, publish_to: p} = deployment) do
+    %Deployment{deployment | build_at: to_dest(b), publish_to: to_dest(p)}
   end
 
   defp to_dest({:local, path}), do: Destination.local(path)
