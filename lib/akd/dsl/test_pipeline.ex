@@ -4,7 +4,7 @@ defmodule TestPipeline do
   import Akd.Dsl.Pipeline
 
   pipeline :init do
-    hook Akd.Initer.Distillery
+    hook Akd.Init.Distillery
   end
 
   pipeline :build do
