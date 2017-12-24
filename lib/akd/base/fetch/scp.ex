@@ -1,4 +1,4 @@
-defmodule Akd.Fetcher.Scp do
+defmodule Akd.Fetch.Scp do
   @moduledoc """
   Fetches source code using scp. This is a basic fetcher that just copies
   the code that the task is ran from to the build env

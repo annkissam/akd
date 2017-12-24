@@ -1,4 +1,4 @@
-defmodule Akd.Fetcher.Git do
+defmodule Akd.Fetch.Git do
   @moduledoc """
   TODO: Improve Docs
 

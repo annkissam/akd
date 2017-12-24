@@ -1,4 +1,4 @@
-defmodule Akd.Initer.Distillery do
+defmodule Akd.Init.Distillery do
   @moduledoc """
   This module holds the hook that could run a distillery init task for a project
   with specific parameters.

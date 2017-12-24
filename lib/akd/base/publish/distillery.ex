@@ -1,4 +1,4 @@
-defmodule Akd.Publisher.Distillery do
+defmodule Akd.Publish.Distillery do
   @moduledoc"""
   """
 
@@ -15,7 +15,7 @@ defmodule Akd.Publisher.Distillery do
     publish = DestinationResolver.resolve(:publish, deployment)
 
     form_hook opts do
-      main copy_rel(deployment), build, cmd_env: opts[:cmd_env]
+      main copy_rel(deployment), build
 
       ensure "rm  #{Destination.to_string(publish)}/#{deployment.name}.tar.gz",
         publish
