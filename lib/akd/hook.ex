@@ -27,10 +27,10 @@ defmodule Akd.Hook do
 
   @typedoc ~s(Generic type for a Hook struct)
   @type t :: %__MODULE__{
-    ensure: Operation.t,
+    ensure: [Operation.t],
     ignore_failure: boolean(),
-    main: Operation.t,
-    rollback: Operation.t,
+    main: [Operation.t],
+    rollback: [Operation.t],
   }
 
   @callback get_hooks(Deployment.t, list) :: [__MODULE__.t]
