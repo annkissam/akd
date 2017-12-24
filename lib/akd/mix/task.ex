@@ -35,6 +35,7 @@ defmodule Akd.Mix.Task do
       use Mix.Task
       import Akd.DeployHelper
       import Akd.Dsl.Pipeline
+      import Akd.Dsl.FormHook
     end
   end
 end
