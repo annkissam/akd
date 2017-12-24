@@ -4,7 +4,7 @@ defmodule Akd.SecureConnection do
 
   def securecmd(dest, cmds) do
     cmds = "cd #{dest.path}\n" <> cmds
-    ssh(dest.user, dest.server, cmds, true)
+    ssh(dest.user, dest.host, cmds, true)
   end
 
   def ssh(user, scoped_ip, operations, stdio \\ false) do

@@ -11,9 +11,9 @@ defmodule Akd.DestinationResolver do
 
   def resolve(%Destination{} = dest, _deployment), do: dest
 
-  def resolve(:build, deployment), do: deployment.buildat
+  def resolve(:build, deployment), do: deployment.build_at
 
-  def resolve(:publish, deployment), do: deployment.publishto
+  def resolve(:publish, deployment), do: deployment.publish_to
 
   def resolve(:local, _deployment), do: Destination.local()
 end

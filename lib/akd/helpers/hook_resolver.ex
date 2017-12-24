@@ -5,15 +5,13 @@ defmodule Akd.HookResolver do
   @stages ~w(fetch init build publish stop start)a
 
   for stage <- @stages do
-    noun = to_string(stage) <> "er"
-
-    binding = noun
+    binding = stage
+      |> to_string()
       |> Macro.camelize()
       |> (&Module.concat(Akd, &1)).()
 
     def unquote(stage)(deployment, []) do
-      unquote(noun)
-      |> String.to_atom()
+      unquote(stage)
       |> (&apply(Akd.Config, &1, [])).()
       |> apply(:get_hooks, [deployment, []])
     end
