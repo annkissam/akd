@@ -1,24 +1,25 @@
 defmodule Akd.Builder.Distillery do
   @moduledoc """
+  TODO: Improve Docs
+
   This module connects to a given remote server through ssh and builds a release
   on that server.
   """
 
   use Akd.Hook
 
-  alias Akd.{Deployment, DestinationResolver, Hook}
+  def get_hooks(deployment, opts), do: [build_hook(deployment, opts)]
 
-  def get_hooks(%Deployment{env: env} = deployment, opts) do
-    runat = opts[:runat] || DestinationResolver.resolve(:build, deployment)
+  defp build_hook(deployment, opts) do
+    destination = Akd.DestinationResolver.resolve(:build, deployment)
+    mix_env = deployment.mix_env
+    distillery_env = Keyword.geT(opts, :distillery_env, mix_env)
 
-    [%Hook{commands: commands(env), runat: runat, env: opts[:env]}]
-  end
+    form_hook opts do
+      main "mix deps.get \n mix compile \n mix release --env=#{distillery_env}",
+        destination, cmd_env: [{"MIX_ENV", mix_env}]
 
-  defp commands(env) do
-    """
-    MIX_ENV=#{env} mix deps.get
-    MIX_ENV=#{env} mix compile
-    MIX_ENV=#{env} mix release --env=#{env}
-    """
+      ensure "rm -rf ./_build/prod/rel", destination
+    end
   end
 end
