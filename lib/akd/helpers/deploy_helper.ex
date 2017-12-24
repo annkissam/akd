@@ -6,7 +6,7 @@ defmodule Akd.DeployHelper do
 
   alias Akd.{Destination, DestinationResolver, Deployment, Hook, HookResolver}
 
-  @base_types ~w(fetch init build stopnode publish startnode)a
+  @base_types ~w(fetch init build stop publish start)a
 
   defmacro execute(pipeline, with: block) do
     quote do
@@ -51,22 +51,10 @@ defmodule Akd.DeployHelper do
     |> get_hooks(type, opts)
     |> Enum.reduce(deployment, &add_hook(&2, &1))
   end
-  def add_hook(deployment, opts) do
-    commands = Keyword.fetch!(opts, :commands)
-    runat = opts
-      |> Keyword.fetch!(:runat)
-      |> DestinationResolver.resolve(deployment)
-
-    cleanup = opts[:cleanup]
-    env = opts[:env]
-
-    add_hook(deployment,
-      %Hook{commands: commands, runat: runat, cleanup: cleanup, env: env})
-  end
 
   defp failure_and_hooks(hook, {failure, called_hooks}) do
     with false <- failure,
-      {:ok, _output} <- Hook.exec(hook)
+      {:ok, _output} <- Hook.main(hook)
     do
       {failure, [hook | called_hooks]}
     else
