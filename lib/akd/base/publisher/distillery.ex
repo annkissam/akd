@@ -4,7 +4,7 @@ defmodule Akd.Publisher.Distillery do
 
   use Akd.Hook
 
-  alias Akd.{Deployment, Destination, DestinationResolver, Hook}
+  alias Akd.{Deployment, Destination, DestinationResolver}
 
   def get_hooks(deployment, opts \\ []) do
     [copy_release_hook(deployment, opts), publish_hook(deployment, opts)]
@@ -31,19 +31,19 @@ defmodule Akd.Publisher.Distillery do
   end
 
   # This assumes that you're running this command from the same server
-  defp copy_rel(%Deployment{buildat: %Destination{server: s, path: src_path}, publishto: %Destination{server: s, path: dest_path}} = deployment) do
+  defp copy_rel(%Deployment{build_at: %Destination{host: s}, publish_to: %Destination{host: s}} = deployment) do
     """
-    cp #{path_to_release(src_path, deployment)} #{dest_path}
+    cp #{path_to_release(deployment.build_at.path, deployment)} #{deployment.publish_to.path}
     """
   end
   # This assumes that the publish server has ssh credentials to build server
-  defp copy_rel(%Deployment{buildat: src, publishto: dest} = deployment) do
+  defp copy_rel(%Deployment{build_at: src, publish_to: dest} = deployment) do
     """
-    scp #{src |> Destination.to_s() |> path_to_release(deployment)} #{Destination.to_s(dest)}
+    scp #{src |> Destination.to_string() |> path_to_release(deployment)} #{Destination.to_string(dest)}
     """
   end
 
-  defp publish_cmds(deployment) do
+  defp publish_rel(deployment) do
     """
     cd #{deployment.publish_to.path}
     tar xzf #{deployment.name}.tar.gz

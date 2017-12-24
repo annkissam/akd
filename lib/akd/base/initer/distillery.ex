@@ -9,7 +9,7 @@ defmodule Akd.Initer.Distillery do
   use Akd.Hook
 
   def get_hooks(deployment, opts \\ []) do
-    destination = DestinationResolver.resolve(:build, deployment)
+    destination = Akd.DestinationResolver.resolve(:build, deployment)
     template_cmd = opts
       |> Keyword.get(:template)
       |> template_cmd()
