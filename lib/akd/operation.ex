@@ -62,7 +62,7 @@ defmodule Akd.Operation do
       {:ok, "dragonborn"}
 
   """
-  @spec run(__MODULE__.t)
+  @spec run(__MODULE__.t) :: {:ok, term} | {:error, term}
   def run(operation)
   def run(%__MODULE__{destination: %Destination{host: :local}} = operation) do
     case System.cmd("sh", ["-c" , environmentalize_cmd(operation)],
