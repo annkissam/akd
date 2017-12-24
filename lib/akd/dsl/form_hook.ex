@@ -53,7 +53,8 @@ defmodule Akd.Dsl.FormHook do
       ensure: translate(ops, :ensure),
       ignore_failure: !!opts[:ignore_failure],
       main: translate(ops, :main),
-      rollback: translate(ops, :rollback)
+      rollback: translate(ops, :rollback),
+      run_ensure: !!opts[:run_ensure],
     }
   end
 
