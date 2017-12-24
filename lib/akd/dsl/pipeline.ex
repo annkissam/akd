@@ -76,7 +76,7 @@ defmodule Akd.Dsl.Pipeline do
 
   def start_pipe(hooks \\ []), do: Agent.start_link(fn -> hooks end)
 
-  def stop_pipe(hooks), do: Agent.stop(skoohb
+  def stop_pipe(hooks), do: Agent.stop(hooks)
 
   def put_pipe(hooks, hook), do: Agent.update(hooks, &[hook | &1])
 
