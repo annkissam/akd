@@ -13,57 +13,57 @@ defmodule Akd do
   """
 
   @doc """
-  `:fetcher` can be set as a runtime config
+  `:fetch` can be set as a runtime config
   in the `config.exs` file
 
   ## Examples
-  when no `fetcher` config is set, if returns `Akd.Fetcher.Git`
-      iex> Akd.fetcher
-      Akd.Fetcher.Test
+  when no `fetch` config is set, if returns `Akd.Fetch.Git`
+      iex> Akd.fetch
+      Akd.Fetch.Test
   """
-  def fetcher do
-    config(:fetcher, Akd.Fetcher.Git)
+  def fetch do
+    config(:fetch, Akd.Fetch.Git)
   end
 
 
   @doc """
-  `:initer` can be set as a runtime config
+  `:init` can be set as a runtime config
   in the `config.exs` file
 
   ## Examples
-  when no `initer` config is set, if returns `Akd.Initer.Distillery`
-      iex> Akd.initer
-      Akd.Initer.Test
+  when no `init` config is set, if returns `Akd.Init.Distillery`
+      iex> Akd.init
+      Akd.Init.Test
   """
-  def initer do
-    config(:initer, Akd.Initer.Distillery)
+  def init do
+    config(:init, Akd.Init.Distillery)
   end
 
 
   @doc """
-  `:builder` can be set as a runtime config
+  `:build` can be set as a runtime config
   in the `config.exs` file
 
   ## Examples
-  when no `builder` config is set, if returns `Akd.Builder.Distillery`
-      iex> Akd.builder
-      Akd.Builder.Test
+  when no `build` config is set, if returns `Akd.Build.Distillery`
+      iex> Akd.build
+      Akd.Build.Test
   """
-  def builder do
-    config(:builder, Akd.Builder.Distillery)
+  def build do
+    config(:build, Akd.Build.Distillery)
   end
 
   @doc """
-  `:publisher` can be set as a runtime config
+  `:publish` can be set as a runtime config
   in the `config.exs` file
 
   ## Examples
-  when no `publisher` config is set, if returns `Akd.Publisher.Distillery`
-      iex> Akd.publisher
-      Akd.Publisher.Test
+  when no `publish` config is set, if returns `Akd.Publish.Distillery`
+      iex> Akd.publish
+      Akd.Publish.Test
   """
-  def publisher do
-    config(:publisher, Akd.Publisher.Distillery)
+  def publish do
+    config(:publish, Akd.Publish.Distillery)
   end
 
 
@@ -73,7 +73,7 @@ defmodule Akd do
   ## Examples
   when no config is set, if returns []
       iex> Akd.config
-      [fetcher: Akd.Fetcher.Test, initer: Akd.Initer.Test, builder: Akd.Builder.Test, publisher: Akd.Publisher.Test]
+      [fetch: Akd.Fetch.Test, init: Akd.Init.Test, build: Akd.Build.Test, publish: Akd.Publish.Test]
   """
   def config do
     Application.get_env(:akd, Akd, [])
