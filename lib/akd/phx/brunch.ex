@@ -6,20 +6,22 @@ defmodule Akd.Builder.Phoenix.Brunch do
 
   alias Akd.{Deployment, DestinationResolver, Hook}
 
-  def get_hook(%Deployment{appname: appname} = deployment, opts) do
+  def get_hooks(%Deployment{appname: appname} = deployment, opts) do
     runat = opts[:runat] || DestinationResolver.resolve(:build, deployment)
     appname = deployment.appname
     env = deployment.env
     brunch_path = opts[:brunch] || "node_modules/brunch/bin/brunch"
+    config_path = opts[:config] || "."
 
-    %Hook{commands: commands(env, brunch_path), runat: runat, env: opts[:env]}
+    [%Hook{commands: commands(env, brunch_path, config_path), runat: runat, env: opts[:env]}]
   end
 
-  defp commands(env, brunch_path) do
+  defp commands(env, brunch_path, config_path) do
     """
     MIX_ENV=#{env} mix deps.get
     MIX_ENV=#{env} mix compile
-    brunch_path build --production
+    cd #{config_path}
+    #{brunch_path} build --production
     MIX_ENV=#{env} mix phx.digest
     """
   end
