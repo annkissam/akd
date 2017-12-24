@@ -34,7 +34,7 @@ defmodule Akd.Mix.Task do
     quote do
       use Mix.Task
       import Akd.DeployHelper
-      import Akd.Pipeline
+      import Akd.Dsl.Pipeline
     end
   end
 end

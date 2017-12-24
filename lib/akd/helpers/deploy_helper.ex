@@ -22,7 +22,7 @@ defmodule Akd.DeployHelper do
   def exec(%Deployment{hooks: hooks}) do
     {failure, called_hooks} = Enum.reduce(hooks, {false, []}, &failure_and_hooks/2)
 
-    Enum.each(called_hooks, &Hook.cleanup/1)
+    Enum.each(called_hooks, &Hook.ensure/1)
     if failure, do: Enum.each(called_hooks, &Hook.rollback/1)
   end
 
