@@ -133,6 +133,13 @@ defmodule Akd do
   """
   @spec resolve_config(Tuple.t, term) :: {term}
   def resolve_config({:system, var_name}, default) do
+    IO.warn """
+    {:system, var_name} is deprecated. If you need to use a System variable in
+    the run-time, I would be explicit about what Hooks to use in the main call
+    instead of configuring it.
+
+    Read this article for more details: http://michal.muskala.eu/2017/07/30/configuring-elixir-libraries.html
+    """
     System.get_env(var_name) || default
   end
   def resolve_config(value, _default), do: value
