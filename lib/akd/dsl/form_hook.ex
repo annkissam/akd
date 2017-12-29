@@ -94,7 +94,7 @@ defmodule Akd.Dsl.FormHook do
       ignore_failure: !!opts[:ignore_failure],
       main: translate(ops, :main),
       rollback: translate(ops, :rollback),
-      run_ensure: !!opts[:run_ensure],
+      run_ensure: Keyword.get(opts, :run_ensure, true),
     }
   end
 
