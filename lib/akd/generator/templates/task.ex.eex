@@ -3,29 +3,13 @@ defmodule <%= @name %> do
 
   use Akd.Mix.Task
 
-  @switches [
-    appname: :string,
-    buildat: :string,
-    env: :string,
-    publishto: :string,
-    version: :string,
-  ]
+  @switches [name: :string, build_at: :string, env: :string,
+              publish_to: :string, vsn: :string]
 
-  @aliases [
-    a: :appname,
-    b: :buildat,
-    e: :env,
-    p: :publishto,
-    v: :version,
-  ]
+  @aliases [n: :name, b: :build_at, e: :env, p: :publish_to, v: :vsn]
 
-  @defaults [
-    appname: "TODO",
-    buildat: "TODO",
-    env: "TODO",
-    publishto: "TODO",
-    version: "TODO",
-  ]
+  @defaults [name: "node", build_at: {:local, "."}, env: "prod",
+              publish_to: "user@host:~/path/to/dir", vsn: "0.1.0"]
 
   pipeline :fetch do
     hook <%= @fetch %>
