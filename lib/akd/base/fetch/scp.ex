@@ -35,8 +35,8 @@ defmodule Akd.Fetch.Scp do
   @doc """
   Callback implementation for `get_hooks/2`.
 
-  This function returns a list of operations that can be used to fetch a source
-  code using `git` from a branch.
+  This function returns a list of operations that can be used to fetch source
+  code using `scp` from a given source.
 
   ## Examples
 
