@@ -33,8 +33,8 @@ defmodule Akd.Publish.Distillery do
   @doc """
   Callback implementation for `get_hooks/2`.
 
-  This function returns a list of operations that can be used to build a release
-  using distillery on the `build_at` destination of a deployment.
+  This function returns a list of operations that can be used to publish a release
+  using distillery on the `publish_to` destination of a deployment.
 
   ## Examples
 
