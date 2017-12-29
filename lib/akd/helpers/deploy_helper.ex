@@ -4,7 +4,7 @@ defmodule Akd.DeployHelper do
   and add hooks to a deployment, and execute it.
   """
 
-  alias Akd.{Destination, DestinationResolver, Deployment, Hook, HookResolver}
+  alias Akd.{Destination, Deployment, Hook, HookResolver}
 
   @base_types ~w(fetch init build stop publish start)a
 
@@ -23,6 +23,7 @@ defmodule Akd.DeployHelper do
     {failure, called_hooks} = Enum.reduce(hooks, {false, []}, &failure_and_hooks/2)
 
     Enum.each(called_hooks, &Hook.ensure/1)
+
     if failure, do: Enum.each(called_hooks, &Hook.rollback/1)
   end
 
