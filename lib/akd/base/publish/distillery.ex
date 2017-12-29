@@ -17,7 +17,7 @@ defmodule Akd.Publish.Distillery do
     form_hook opts do
       main copy_rel(deployment), build
 
-      ensure "rm  #{Destination.to_string(publish)}/#{deployment.name}.tar.gz",
+      ensure "rm  #{publish.path}/#{deployment.name}.tar.gz",
         publish
     end
   end
