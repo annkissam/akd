@@ -25,6 +25,45 @@ defmodule Akd.Fetch.Git do
 
   @default_opts [run_ensure: false, ignore_failure: false, branch: "master"]
 
+  @errmsg %{no_src: "No `src` given to `Akd.Fetch.Git`. Expected a git repo."}
+
+  @doc """
+  This function returns a list of operations that can be used to fetch a source
+  code using `git` from a branch.
+
+  ## Examples
+  When no `src` is given with `opts`:
+
+    iex> deployment = %Akd.Deployment{mix_env: "prod",
+    ...> build_at: nil,
+    ...> publish_to: nil,
+    ...> name: "name",
+    ...> vsn: "0.1.1"}
+    iex> Akd.Fetch.Git.get_hooks(deployment, [])
+    ** (RuntimeError) #{@errmsg[:no_src]}
+
+  When a `src` is given:
+
+    iex> deployment = %Akd.Deployment{mix_env: "prod",
+    ...> build_at: nil,
+    ...> publish_to: nil,
+    ...> name: "name",
+    ...> vsn: "0.1.1"}
+    iex> Akd.Fetch.Git.get_hooks(deployment, [src: "url"])
+    [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm -rf ./*", cmd_envs: [],
+        destination: nil},
+       %Akd.Operation{cmd: "rm -rf ./.*", cmd_envs: [],
+        destination: nil}], ignore_failure: false,
+      main: [%Akd.Operation{cmd: "git clone url .", cmd_envs: [],
+        destination: nil},
+       %Akd.Operation{cmd: "git fetch", cmd_envs: [], destination: nil},
+       %Akd.Operation{cmd: "git checkout master", cmd_envs: [],
+        destination: nil},
+       %Akd.Operation{cmd: "git pull", cmd_envs: [], destination: nil}],
+      rollback: [], run_ensure: false}]
+
+  """
+  @spec get_hooks(Akd.Deployment.t, Keyword.t) :: list(Akd.Hook.t)
   def get_hooks(deployment, opts \\ []) do
     opts = uniq_merge(opts, @default_opts)
     branch = Keyword.get(opts, :branch)
@@ -34,6 +73,9 @@ defmodule Akd.Fetch.Git do
     [fetch_hook(src, branch, destination, opts)]
   end
 
+  # This function takes a source, branch, destination and options and
+  # returns an Akd.Hook.t struct using the form_hook DSL.
+  defp fetch_hook(nil, _, _, _), do: raise @errmsg[:no_src]
   defp fetch_hook(src, branch, destination, opts) do
     form_hook opts do
       main "git clone #{src} .", destination
@@ -46,6 +88,9 @@ defmodule Akd.Fetch.Git do
     end
   end
 
+  # This function takes two keyword lists and merges them keeping the keys
+  # unique. If there are multiple values for a key, it takes the value from
+  # the first value of keyword1 corresponding to that key.
   defp uniq_merge(keyword1, keyword2) do
     keyword1
     |> Keyword.merge(keyword2)
