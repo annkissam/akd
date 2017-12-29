@@ -65,6 +65,7 @@ defmodule Akd.Operation do
   @spec run(__MODULE__.t) :: {:ok, term} | {:error, term}
   def run(operation)
   def run(%__MODULE__{destination: %Destination{host: :local}} = operation) do
+    IO.inspect environmentalize_cmd(operation)
     case System.cmd("sh", ["-c" , operation.cmd],
             env: operation.cmd_envs,
             cd: operation.destination.path,
