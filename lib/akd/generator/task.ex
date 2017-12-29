@@ -53,10 +53,10 @@ defmodule Akd.Generator.Task do
   # This function validates the name and options sent to the generator
   # and formats the options making it ready for the template to read from.
   defp validate_and_format_opts(name, opts) do
-    # TODO Do something with opts[:phx]
     opts = @hooks
       |> Enum.reduce(opts, &resolve_hook_opts/2)
       |> Keyword.put_new(:path, @path)
+      |> Keyword.put_new(:with_phx, false)
 
     [{:name, resolve_name(name)} | opts]
   end
