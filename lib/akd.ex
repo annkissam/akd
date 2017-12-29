@@ -19,7 +19,7 @@ defmodule Akd do
   ## Examples
   when no `fetch` config is set, if returns `Akd.Fetch.Git`
       iex> Akd.fetch
-      Akd.Fetch.Test
+      Akd.Fetch.Git
   """
   def fetch do
     config(:fetch, Akd.Fetch.Git)
@@ -33,7 +33,7 @@ defmodule Akd do
   ## Examples
   when no `init` config is set, if returns `Akd.Init.Distillery`
       iex> Akd.init
-      Akd.Init.Test
+      Akd.Init.Distillery
   """
   def init do
     config(:init, Akd.Init.Distillery)
@@ -47,7 +47,7 @@ defmodule Akd do
   ## Examples
   when no `build` config is set, if returns `Akd.Build.Distillery`
       iex> Akd.build
-      Akd.Build.Test
+      Akd.Build.Distillery
   """
   def build do
     config(:build, Akd.Build.Distillery)
@@ -60,10 +60,36 @@ defmodule Akd do
   ## Examples
   when no `publish` config is set, if returns `Akd.Publish.Distillery`
       iex> Akd.publish
-      Akd.Publish.Test
+      Akd.Publish.Distillery
   """
   def publish do
     config(:publish, Akd.Publish.Distillery)
+  end
+
+  @doc """
+  `:start` can be set as a runtime config
+  in the `config.exs` file
+
+  ## Examples
+  when no `start` config is set, if returns `Akd.Start.Distillery`
+      iex> Akd.start
+      Akd.Start.Distillery
+  """
+  def start do
+    config(:start, Akd.Start.Distillery)
+  end
+
+  @doc """
+  `:stop` can be set as a runtime config
+  in the `config.exs` file
+
+  ## Examples
+  when no `stop` config is set, if returns `Akd.Stop.Distillery`
+      iex> Akd.stop
+      Akd.Stop.Distillery
+  """
+  def stop do
+    config(:stop, Akd.Stop.Distillery)
   end
 
 
@@ -73,7 +99,7 @@ defmodule Akd do
   ## Examples
   when no config is set, if returns []
       iex> Akd.config
-      [fetch: Akd.Fetch.Test, init: Akd.Init.Test, build: Akd.Build.Test, publish: Akd.Publish.Test]
+      []
   """
   def config do
     Application.get_env(:akd, Akd, [])
