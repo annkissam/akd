@@ -66,7 +66,8 @@ defmodule Akd.Operation do
   def run(operation)
   def run(%__MODULE__{destination: %Destination{host: :local}} = operation) do
     IO.inspect operation
-    case System.cmd("sh", ["-c" , environmentalize_cmd(operation)],
+    case System.cmd("sh", ["-c" , operation],
+            env: operation.cmd_envs,
             cd: operation.destination.path,
             into: IO.stream(:stdio, :line)) do
       {error, 1} -> {:error, error}
