@@ -1,5 +1,5 @@
 defmodule Akd.Build.Distillery do
-  @moduledoc """
+  @moduledoc"""
   A native Hook module that comes shipped with Akd.
 
   This module uses `Akd.Hook`.
@@ -60,6 +60,8 @@ defmodule Akd.Build.Distillery do
     [build_hook(deployment, uniq_merge(opts, @default_opts))]
   end
 
+  # This function takes a deployment and options and returns an Akd.Hook.t
+  # struct using FormHook DSL
   defp build_hook(deployment, opts) do
     destination = Akd.DestinationResolver.resolve(:build, deployment)
     mix_env = deployment.mix_env
