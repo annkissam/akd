@@ -6,7 +6,7 @@ defmodule Akd.Generator.Task do
 
   @path "lib/"
 
-  @hooks ~w(fetch init build publish)a
+  @hooks ~w(fetch init build publish start stop)a
 
   @spec gen(list, Keyword.t) :: :ok | {:error, String.t}
   def gen([name | _], opts) do
@@ -18,7 +18,10 @@ defmodule Akd.Generator.Task do
 
   defp validate_and_format_opts(name, opts) do
     # TODO Do something with opts[:phx]
-    opts = Enum.reduce(@hooks, opts, &resolve_hook_opts/2)
+    opts = @hooks
+      |> Enum.reduce(opts, &resolve_hook_opts/2)
+      |> Keyword.put_new(:path, @path)
+
     [{:name, resolve_name(name)} | opts]
   end
 
@@ -39,11 +42,11 @@ defmodule Akd.Generator.Task do
   defp template(), do:  "#{__DIR__}/templates/task.ex.eex"
 
   defp text_from_template(opts) do
-    EEx.eval_file(template(), assigns: opts)
+    {Keyword.get(opts, :path), EEx.eval_file(template(), assigns: opts)}
   end
 
-  defp write_to_file(code, name) do
-    path = @path <> Macro.underscore(name) <> ".ex"
+  defp write_to_file({path, code}, name) do
+    path = path <> Macro.underscore(name) <> ".ex"
 
     case File.exists?(path) do
       true -> {:error, "File #{path} already exists."}
