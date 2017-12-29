@@ -65,8 +65,7 @@ defmodule Akd.Operation do
   @spec run(__MODULE__.t) :: {:ok, term} | {:error, term}
   def run(operation)
   def run(%__MODULE__{destination: %Destination{host: :local}} = operation) do
-    IO.inspect operation
-    case System.cmd("sh", ["-c" , operation],
+    case System.cmd("sh", ["-c" , operation.cmd],
             env: operation.cmd_envs,
             cd: operation.destination.path,
             into: IO.stream(:stdio, :line)) do
@@ -102,8 +101,13 @@ defmodule Akd.Operation do
   """
   @spec environmentalize_cmd(__MODULE__.t) :: String.t
   def environmentalize_cmd(%__MODULE__{cmd_envs: cmd_envs, cmd: cmd}) do
-    Enum.reduce(cmd_envs, cmd, fn({name, value}, acc) ->
-      "#{name}=#{value} " <> acc
-    end)
+    envs = cmd_envs
+      |> Enum.map(fn {name, value} -> "#{name}=#{value}" end)
+      |> Enum.join(" ")
+
+    cmd
+    |> String.split("\n")
+    |> Enum.map(& envs <> " " <> &1)
+    |> Enum.join("\n ")
   end
 end
