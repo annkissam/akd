@@ -1,5 +1,7 @@
 defmodule Akd.Generator.Task do
-  @moduledoc false
+  @moduledoc """
+
+  """
 
   require EEx
   require Mix.Generator
