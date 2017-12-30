@@ -1,7 +1,7 @@
 defmodule Akd.Mixfile do
   use Mix.Project
 
-  @version "0.1.5-rc"
+  @version "0.2.0-rc.0"
   @url "https://github.com/annkissam/akd"
 
   def project do
@@ -15,7 +15,7 @@ defmodule Akd.Mixfile do
 
       # Test
       test_coverage: [tool: ExCoveralls],
-      preferred_cli_env: [coveralls: :test],
+      preferred_cli_env: ["coveralls": :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html": :test],
       aliases: aliases(),
       elixirc_paths: elixirc_paths(Mix.env),
 
@@ -30,11 +30,7 @@ defmodule Akd.Mixfile do
   end
 
   def application do
-    [
-      applications: [
-        :logger
-      ],
-    ]
+    [applications: [:logger]]
   end
 
   def package do
@@ -51,7 +47,7 @@ defmodule Akd.Mixfile do
       {:credo, "~> 0.5", only: [:dev, :test]},
       {:distillery, "~> 1.5", runtime: false, optional: true},
       {:ex_doc, "~> 0.14", only: :dev, runtime: false},
-      {:excoveralls, "~> 0.3", only: :test},
+      {:excoveralls, "~> 0.8", only: [:dev, :test]},
       {:inch_ex, "~> 0.5", only: [:dev, :test, :docs]},
       {:simple_docker, "~> 0.1.0", runtime: false, optional: true},
     ]
@@ -59,13 +55,14 @@ defmodule Akd.Mixfile do
 
   defp description do
     """
-    An interface that provides tools to deploy an elixir application
+    An configurable (but easy to set up) Elixir Deployment Automation library.
     """
   end
 
   def docs do
     [
       main: "Akd",
+      extras: [],
       source_url: @url,
       source_ref: "v#{@version}"
     ]

@@ -1,0 +1,15 @@
+{
+  "coverage_options": {
+    "treat_no_relevant_lines_as_covered": true,
+    "minimum_coverage": 80,
+  },
+  "skip_files": [
+    "test",
+    "lib/akd/base/build/docker.ex",
+    "lib/akd/base/publish/scp.ex",
+    "lib/akd/base/publish/cp.ex",
+    "lib/akd/mix/sample_deploy.ex",
+    "lib/akd/mix/sample_deploy/",
+  ]
+}
+

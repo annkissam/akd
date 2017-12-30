@@ -1,20 +1,35 @@
 defmodule <%= @name %> do
-  @moduledoc false
+  @moduledoc """
+  A Custom Hook module generate by Akd.
+
+  TODO: Update Documentation
+  """
 
   use Akd.Hook
 
-  alias Akd.{Deployment, Destination, Hook}
+  @default_opts [run_ensure: true, ignore_failure: false]
 
-  def get_hook(%Deployment{} = deployment, opts \\ []) do
-    %Hook{
-      commands: """
-        SOME COMMAND
-        SOME OTHER COMMAND
-      """,
-      runat: Destination.parse("root@127.0.0.1:~/path/to/dir"),
-      env: [{"KEY", "VALUE"}, {"OTHER_KEY", "OTHER_VALUE"}],
-      cleanup: "SOME CLEANUP COMMAND or nil",
-      rollback: "SOME ROLLBACK COMMAND or nil"
-    }
+  def get_hooks(deployment, opts \\ []) do
+    opts = uniq_merge(opts, @default_opts)
+    # Replace this with some destination
+    destination = Akd.Destination.local(".")
+
+    # For more information check out Akd.Dsl.FormHook
+    form_hook opts do
+      main "main command", destination, cmd_env: [{"SOME_ENV", "some_values"}]
+
+      ensure "ensure command", destination
+
+      rollback "rollback command", destination
+    end
+  end
+
+  # This function takes two keyword lists and merges them keeping the keys
+  # unique. If there are multiple values for a key, it takes the value from
+  # the first value of keyword1 corresponding to that key.
+  defp uniq_merge(keyword1, keyword2) do
+    keyword1
+    |> Keyword.merge(keyword2)
+    |> Keyword.new()
   end
 end

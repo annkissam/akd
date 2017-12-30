@@ -1,6 +1,5 @@
 defmodule Mix.Tasks.Akd.SampleDeploy do
   @moduledoc """
-  TODO Improve Documentation
   This task deploys an app
   """
 
@@ -8,17 +7,17 @@ defmodule Mix.Tasks.Akd.SampleDeploy do
   alias Akd.Mix.SampleDeploy.ParamsHelper
 
   @switches [
-    appname: :string,
-    buildat: :string,
+    build_at: :string,
     env: :string,
-    publishto: :string
+    name: :string,
+    publish_to: :string,
   ]
 
   @aliases [
-    a: :appname,
-    b: :buildat,
+    b: :build_at,
     e: :env,
-    p: :publishto
+    n: :name,
+    p: :publish_to,
   ]
 
   def run(argv) do
@@ -27,7 +26,7 @@ defmodule Mix.Tasks.Akd.SampleDeploy do
   end
 
   pipeline :fetch do
-    hook Akd.Fetcher.Git
+    hook Akd.Fetcher.Scp
   end
 
   pipeline :init do
@@ -39,13 +38,14 @@ defmodule Mix.Tasks.Akd.SampleDeploy do
   end
 
   pipeline :publish do
-    hook :stopnode
+    hook Akd.Start.Distillery
     hook Akd.Publisher.Distillery
-    hook :startnode
+    hook Akd.Stop.Distillery
   end
 
   pipeline :deploy do
     pipe_through :fetch
+    pipe_through :init
     pipe_through :build
     pipe_through :publish
   end

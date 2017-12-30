@@ -4,14 +4,14 @@ jobs:
     docker:
       - image: circleci/elixir:1.4
 
-      - image: circleci/postgres:9.4
-
     working_directory: ~/akd
 
     steps:
       - checkout
 
+      - run: mix local.rebar --force
+      - run: mix local.hex --force
       - run: mix deps.get
-      - run: mix ecto.create
       - run: mix test
-      - run: mix coveralls.circle
+      - run: MIX_ENV=test mix coveralls.post -t OmijPrTsGlfifPeOpKoNf763HFptPgDgf -b $(git rev-parse --abbrev-ref HEAD)
+      - run: MIX_ENV=docs mix inch.report

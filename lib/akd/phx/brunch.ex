@@ -1,28 +1,105 @@
-defmodule Akd.Builder.Phoenix.Brunch do
+defmodule Akd.Build.Phoenix.Brunch do
   @moduledoc """
+  A native Hook module that comes shipped with Akd.
+
+  This module uses `Akd.Hook`.
+
+  Provides a set of operations that build a brunch release for a given phoenix app
+  at a deployment's `build_at` destination. This hook assumes that an executable
+  brunch binary file is already present or initialized by either
+  a previously executed hook or manually.
+
+  Ensures to cleanup and empty the deps folder created by this build.
+
+  Doesn't have any Rollback operations.
+
+  # Options:
+
+  * run_ensure: boolean. Specifies whether to a run a command or not.
+  * ignore_failure: boolean. Specifies whether to continue if this hook fails.
+  * brunch: string. Path to brunch executable from project's root.
+  * brunch_config: string. Path to brunch config from project's root.
+  * cmd_env: list of tuples. Specifies the environments to provide while
+        building the distillery release.
+
+  # Defaults:
+
+  * `run_ensure`: `true`
+  * `ignore_failure`: `false`
+  * `brunch`: "node_modules/brunch/bin/brunch"
+  * `brunch_config`: "."
   """
 
   use Akd.Hook
 
-  alias Akd.{Deployment, DestinationResolver, Hook}
+  @default_opts [run_ensure: true, ignore_failure: false,
+    brunch: "node_modules/brunch/bin/brunch", brunch_config: "."]
 
-  def get_hooks(%Deployment{appname: appname} = deployment, opts) do
-    runat = opts[:runat] || DestinationResolver.resolve(:build, deployment)
-    appname = deployment.appname
-    env = deployment.env
-    brunch_path = opts[:brunch] || "node_modules/brunch/bin/brunch"
-    config_path = opts[:config] || "."
+  @doc """
+  Callback implementation for `get_hooks/2`.
 
-    [%Hook{commands: commands(env, brunch_path, config_path), runat: runat, env: opts[:env]}]
+  This function returns a list of operations that can be used to build a brunch
+  release on the `build_at` destination of a deployment.
+
+  ## Examples
+
+    iex> deployment = %Akd.Deployment{mix_env: "prod",
+    ...> build_at: Akd.Destination.local("."),
+    ...> publish_to: Akd.Destination.local("."),
+    ...> name: "name",
+    ...> vsn: "0.1.1"}
+    iex> Akd.Build.Phoenix.Brunch.get_hooks(deployment, [])
+    [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm -rf deps", cmd_envs: [],
+          destination: %Akd.Destination{host: :local, path: ".",
+           user: :current}}], ignore_failure: false,
+      main: [%Akd.Operation{cmd: "mix deps.get \\n mix compile",
+          cmd_envs: [{"MIX_ENV", "prod"}],
+          destination: %Akd.Destination{host: :local, path: ".",
+               user: :current}},
+         %Akd.Operation{cmd: "cd . \\n node_modules/brunch/bin/brunch build --production",
+             cmd_envs: [],
+             destination: %Akd.Destination{host: :local, path: ".",
+                  user: :current}},
+         %Akd.Operation{cmd: "mix phx.digest",
+             cmd_envs: [{"MIX_ENV", "prod"}],
+             destination: %Akd.Destination{host: :local, path: ".",
+                  user: :current}}], rollback: [], run_ensure: true}]
+
+  """
+  @spec get_hooks(Akd.Deployment.t, Keyword.t) :: list(Akd.Hook.t)
+  def get_hooks(deployment, opts \\ []) do
+    opts = uniq_merge(opts, @default_opts)
+    brunch = Keyword.get(opts, :brunch)
+    brunch_config = Keyword.get(opts, :brunch_config)
+
+    [build_hook(deployment, brunch, brunch_config, opts)]
   end
 
-  defp commands(env, brunch_path, config_path) do
-    """
-    MIX_ENV=#{env} mix deps.get
-    MIX_ENV=#{env} mix compile
-    cd #{config_path}
-    #{brunch_path} build --production
-    MIX_ENV=#{env} mix phx.digest
-    """
+  # This function takes a deployment and options and returns an Akd.Hook.t
+  # struct using FormHook DSL
+  defp build_hook(deployment, brunch, brunch_config, opts) do
+    destination = Akd.DestinationResolver.resolve(:build, deployment)
+    mix_env = deployment.mix_env
+    cmd_env = Keyword.get(opts, :cmd_env, [])
+    cmd_env = [{"MIX_ENV", mix_env} | cmd_env]
+
+    form_hook opts do
+      main "mix deps.get \n mix compile", destination,
+        cmd_env: cmd_env
+
+      main "cd #{brunch_config} \n #{brunch} build --production", destination
+      main "mix phx.digest", destination, cmd_env: cmd_env
+
+      ensure "rm -rf deps", destination
+    end
+  end
+
+  # This function takes two keyword lists and merges them keeping the keys
+  # unique. If there are multiple values for a key, it takes the value from
+  # the first value of keyword1 corresponding to that key.
+  defp uniq_merge(keyword1, keyword2) do
+    keyword1
+    |> Keyword.merge(keyword2)
+    |> Keyword.new()
   end
 end
