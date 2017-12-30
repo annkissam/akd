@@ -1,7 +1,7 @@
 # Akd
 
 [![Circle CI](https://circleci.com/gh/annkissam/akd.svg?style=svg)](https://circleci.com/gh/annkissam/akd)
-[![Coverage Status](https://coveralls.io/repos/annkissam/akd/badge.svg?branch=master)](https://coveralls.io/r/annkissam/akd?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/annkissam/akd/badge.svg?branch=master)](https://coveralls.io/github/annkissam/akd?branch=master)
 [![Hex Version](http://img.shields.io/hexpm/v/akd.svg?style=flat)](https://hex.pm/packages/akd)
 [![hex.pm downloads](https://img.shields.io/hexpm/dt/akd.svg)](https://hex.pm/packages/akd)
 [![Hex docs](http://img.shields.io/badge/hex.pm-docs-green.svg?style=flat)](https://hexdocs.pm/akd)
