@@ -25,13 +25,14 @@ defmodule Akd.Fetch.Git do
 
   * `run_ensure`: `false`
   * `ignore_failure`: `false`
+  * `src`: "."
   * `branch`: `master`
 
   """
 
   use Akd.Hook
 
-  @default_opts [run_ensure: false, ignore_failure: false, branch: "master"]
+  @default_opts [run_ensure: false, ignore_failure: false, branch: "master", src: "."]
 
   @errmsg %{no_src: "No `src` given to `Akd.Fetch.Git`. Expected a git repo."}
 
@@ -50,7 +51,25 @@ defmodule Akd.Fetch.Git do
     ...> name: "name",
     ...> vsn: "0.1.1"}
     iex> Akd.Fetch.Git.get_hooks(deployment, [])
-    ** (RuntimeError) #{@errmsg[:no_src]}
+    [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm -rf ./*", cmd_envs: [],
+          destination: %Akd.Destination{host: :local, path: ".",
+           user: :current}},
+         %Akd.Operation{cmd: "rm -rf ./.*", cmd_envs: [],
+          destination: %Akd.Destination{host: :local, path: ".",
+         user: :current}}], ignore_failure: false,
+      main: [%Akd.Operation{cmd: "git clone . .", cmd_envs: [],
+       destination: %Akd.Destination{host: :local, path: ".",
+               user: :current}},
+      %Akd.Operation{cmd: "git fetch", cmd_envs: [],
+             destination: %Akd.Destination{host: :local, path: ".",
+                             user: :current}},
+      %Akd.Operation{cmd: "git checkout master", cmd_envs: [],
+             destination: %Akd.Destination{host: :local, path: ".",
+                             user: :current}},
+      %Akd.Operation{cmd: "git pull", cmd_envs: [],
+             destination: %Akd.Destination{host: :local, path: ".",
+                             user: :current}}], rollback: [], run_ensure: false}]
+
 
   When a `src` is given:
 
@@ -64,21 +83,20 @@ defmodule Akd.Fetch.Git do
           destination: %Akd.Destination{host: :local, path: ".",
            user: :current}},
        %Akd.Operation{cmd: "rm -rf ./.*", cmd_envs: [],
+            destination: %Akd.Destination{host: :local, path: ".",
+                            user: :current}}], ignore_failure: false,
+      main: [%Akd.Operation{cmd: "git clone . .", cmd_envs: [],
            destination: %Akd.Destination{host: :local, path: ".",
-                user: :current}}], ignore_failure: false,
-    main: [%Akd.Operation{cmd: "git clone url .", cmd_envs: [],
-        destination: %Akd.Destination{host: :local, path: ".",
-             user: :current}},
-       %Akd.Operation{cmd: "git fetch", cmd_envs: [],
-           destination: %Akd.Destination{host: :local, path: ".",
-                user: :current}},
-       %Akd.Operation{cmd: "git checkout master", cmd_envs: [],
-           destination: %Akd.Destination{host: :local, path: ".",
-                user: :current}},
-       %Akd.Operation{cmd: "git pull", cmd_envs: [],
-           destination: %Akd.Destination{host: :local, path: ".",
-                user: :current}}], rollback: [], run_ensure: false}]
-
+                           user: :current}},
+        %Akd.Operation{cmd: "git fetch", cmd_envs: [],
+             destination: %Akd.Destination{host: :local, path: ".",
+                             user: :current}},
+        %Akd.Operation{cmd: "git checkout master", cmd_envs: [],
+             destination: %Akd.Destination{host: :local, path: ".",
+                             user: :current}},
+        %Akd.Operation{cmd: "git pull", cmd_envs: [],
+             destination: %Akd.Destination{host: :local, path: ".",
+                   user: :current}}], rollback: [], run_ensure: false}]
 
   """
   @spec get_hooks(Akd.Deployment.t, Keyword.t) :: list(Akd.Hook.t)
