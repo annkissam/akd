@@ -1,0 +1,17 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/elixir:1.4
+
+      - image: circleci/postgres:9.4
+
+    working_directory: ~/akd
+
+    steps:
+      - checkout
+
+      - run: mix deps.get
+      - run: mix ecto.create
+      - run: mix test
+      - run: mix coveralls.circle
