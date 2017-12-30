@@ -36,5 +36,17 @@ defmodule Akd.Mix.Gen.TaskTest do
       {:ok, _} = mix("akd.gen.task", ["TestTask", "-f Akd.Fetcher.Git", "-w"])
       assert File.exists?(@test_task_path)
     end
+
+    test "with name creates the task file from the task module" do
+      refute File.exists?(@test_task_path)
+      Mix.Tasks.Akd.Gen.Task.run(["TestTask"])
+      assert File.exists?(@test_task_path)
+    end
+
+    test "with name creates the task file and other switches from the task module" do
+      refute File.exists?(@test_task_path)
+      Mix.Tasks.Akd.Gen.Task.run(["TestTask", "-f Akd.Fetcher.Git", "-w"])
+      assert File.exists?(@test_task_path)
+    end
   end
 end

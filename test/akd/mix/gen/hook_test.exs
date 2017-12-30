@@ -30,5 +30,11 @@ defmodule Akd.Mix.Gen.HookTest do
       {:ok, _} = mix("akd.gen.hook", ["TestHook"])
       assert File.exists?(@test_hook_path)
     end
+
+    test "with name creates the hook file if ran from module" do
+      refute File.exists?(@test_hook_path)
+      Mix.Tasks.Akd.Gen.Hook.run(["TestHook"])
+      assert File.exists?(@test_hook_path)
+    end
   end
 end
