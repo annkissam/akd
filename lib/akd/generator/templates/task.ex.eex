@@ -19,30 +19,21 @@ defmodule <%= @name %> do
              publish_to: "user@host:~/path/to/dir",
              vsn: Mix.Project.config[:version]]
 
-  pipeline :fetch do
-<%= if @fetch do %>
-    hook <%= @fetch %>
-<% end %>
+  pipeline :fetch do<%= if @fetch do %>
+    hook <%= @fetch %><% end %>
   end
 
-  pipeline :init do
-<%= if @init do %>
-    hook <%= @init %>
-<% end %>
+  pipeline :init do<%= if @init do %>
+    hook <%= @init %><% end %>
   end
 
-  pipeline :build do
-<%= if @build do %>
-    hook <%= @build %>
-<% end %>
+  pipeline :build do <%= if @build do %>
+    hook <%= @build %> <% end %>
   end
 
-  pipeline :publish do
-<%= if @start do %>
+  pipeline :publish do <%= if @start do %>
     hook <%= @start %>, ignore_failure: true
-<% end %>
-<%= if @publish do %>
-  <%= if @with_phx do %>
+<% end %><%= if @publish do %> <%= if @with_phx do %>
     hook Akd.Build.Phoenix.Npm,
       package: "path/to/package.json",
       cmd_env: [] # Add build time system variables
@@ -50,13 +41,9 @@ defmodule <%= @name %> do
     hook Akd.Build.Phoenix.Brunch,
       config: "path/to/brunch.config",
       brunch: "path/to/brunch/bin", # Usually node_modules/brunch/bin/brunch
-      cmd_env: [] # Add build time system variables
-  <% end %>
-    hook <%= @publish %>
-<% end %>
-<%= if @stop do %>
-    hook <%= @stop %>
-<% end %>
+      cmd_env: [] # Add build time system variables <% end %>
+    hook <%= @publish %><% end %><%= if @stop do %>
+    hook <%= @stop %><% end %>
   end
 
   pipeline :deploy do
