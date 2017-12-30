@@ -44,7 +44,7 @@ defmodule Akd.Destination do
   When `dest` is a local destination:
 
       iex> params = %{user: :current, host: :local, path: "/path/to/dir"}
-      iex> local_destination = struct!(params, Akd.Destination)
+      iex> local_destination = struct!(Akd.Destination, params)
       iex> Akd.Destination.to_string(local_destination)
       "/path/to/dir"
 
@@ -52,7 +52,7 @@ defmodule Akd.Destination do
   When `dest` remote destination:
 
       iex> params = %{user: "dragonborn", host: "skyrim", path: "whiterun"}
-      iex> local_destination = struct!(params, Akd.Destination)
+      iex> local_destination = struct!(Akd.Destination, params)
       iex> Akd.Destination.to_string(local_destination)
       "dragonborn@skyrim:whiterun"
 
@@ -77,11 +77,11 @@ defmodule Akd.Destination do
   When a string with the correct format is given:
 
       iex> Akd.Destination.parse("dragonborn@skyrim:whiterun")
-      %Akd.Desination{user: "dragonborn", host: "skyrim", path: "whiterun"}
+      %Akd.Destination{user: "dragonborn", host: "skyrim", path: "whiterun"}
 
   When a wrongly formatted string is given:
 
-      iex> Akd.Desination.parse("arrowtotheknee")
+      iex> Akd.Destination.parse("arrowtotheknee")
       ** (MatchError) no match of right hand side value: ["arrowtotheknee"]
 
   """
@@ -102,8 +102,8 @@ defmodule Akd.Destination do
   ## Examples
   When a path is given:
 
-      iex> Akd.Destination.parse("/fus/ro/dah")
-      %Akd.Desination{user: :current, host: :local, path: "fus/ro/dah"}
+      iex> Akd.Destination.local("/fus/ro/dah")
+      %Akd.Destination{host: :local, path: "/fus/ro/dah", user: :current}
 
   """
   @spec local(String.t) :: __MODULE__.t
