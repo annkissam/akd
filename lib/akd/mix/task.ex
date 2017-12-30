@@ -1,31 +1,47 @@
 defmodule Akd.Mix.Task do
   @moduledoc """
   This module defines a `__using__` macro which allows another module
-  to behave like an Akd.Task and define functions (like `add_hook/2`) which
+  to behave like an Akd.Mix.Task and define functions which
   allow us to define a series of operations on a `Deployment` struct and
   execute those operations in an organized manner.
+
+  This also comes with the access to `Akd.Pipeline` and `Akd.FormHook` DSLs.
+
+  If you would like to get started use `Akd.Mix.Gen.Task` to generate a quick
+  deploy task and you can start with that and edit it
 
   # Usage:
 
       defmodule Mix.Tasks.Deploy do
         use Akd.Mix.Task
 
-        def run(_args) do
-          opts()
-          |> init_deploy()
-          |> add_hook(:fetch)
-          |> add_build_hook()
-          |> add_publish_hook()
-          |> exec()
+        pipeline :fetch do
+          hook Akd.Fetcher.Scp
         end
 
-        defp opts() do
-          %{app_env: "prod",
-            dest: %Akd.Deployment.Destination{
-              sshuser: "dragonborn",
-              sshserver: "127.0.0.1",
-              path: "~/myapp"},
-            appname: :myapp}
+        pipeline :init do
+          hook Akd.Initer.Distillery
+        end
+
+        pipeline :build do
+          hook Akd.Builder.Distillery
+        end
+
+        pipeline :publish do
+          hook Akd.Start.Distillery
+          hook Akd.Publisher.Distillery
+          hook Akd.Stop.Distillery
+        end
+
+        pipeline :deploy do
+          pipe_through :fetch
+          pipe_through :init
+          pipe_through :build
+          pipe_through :publish
+        end
+
+        def run(_argv) do
+          execute :deploy, with: some_params
         end
       end
   """
