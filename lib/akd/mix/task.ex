@@ -46,6 +46,14 @@ defmodule Akd.Mix.Task do
       end
   """
 
+  @doc """
+  This macro allows another module to behave like `Akd.Mix.Task`.
+  This also allows a module to use `Akd.Dsl.FormHook` and `Akd.Dsl.Pipeline`
+  to write a task using `Akd.Hook`s in a readable and reusable way.
+
+  This task allows us to interact with complex features of `Akd.DeployHelper` in
+  a very simple way.
+  """
   defmacro __using__(_opts) do
     quote do
       use Mix.Task
