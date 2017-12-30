@@ -1,4 +1,6 @@
 defmodule Akd.Operation do
+  require Logger
+
   @moduledoc """
   This module represents an `Operation` struct which contains metadata about
   a command/operation that can be run on a destination.
@@ -49,8 +51,8 @@ defmodule Akd.Operation do
       iex> dest = %Akd.Destination{}
       iex> cmd = "echo $AKDNAME"
       iex> op = %Akd.Operation{cmd_envs: envs, cmd: cmd, destination: dest}
-      iex> run(op)
-      {:ok, "dragonborn"}
+      iex> Akd.Operation.run(op)
+      {:ok, %IO.Stream{device: :standard_io, line_or_bytes: :line, raw: false}}
 
   When the destination is remote
 
@@ -58,14 +60,14 @@ defmodule Akd.Operation do
       iex> dest = %Akd.Destination{user: "dovahkiin", host: "skyrim"}
       iex> cmd = "echo $AKDNAME"
       iex> op = %Akd.Operation{cmd_envs: envs, cmd: cmd, destination: dest}
-      iex> run(op)
-      {:ok, "dragonborn"}
+      iex> Akd.Operation.run(op)
+      {:error, %IO.Stream{device: :standard_io, line_or_bytes: :line, raw: false}}
 
   """
   @spec run(__MODULE__.t) :: {:ok, term} | {:error, term}
   def run(operation)
   def run(%__MODULE__{destination: %Destination{host: :local}} = operation) do
-    IO.inspect environmentalize_cmd(operation)
+    Logger.info environmentalize_cmd(operation)
     case System.cmd("sh", ["-c" , operation.cmd],
             env: operation.cmd_envs,
             cd: operation.destination.path,
@@ -90,14 +92,14 @@ defmodule Akd.Operation do
       iex> dest = %Akd.Destination{}
       iex> op = %Akd.Operation{cmd_envs: envs, cmd: "thuum", destination: dest}
       iex> Akd.Operation.environmentalize_cmd(op)
-      NAME=dragonborn NOK=dovahkiin thuum
+      "NAME=dragonborn NOK=dovahkiin thuum"
 
   When an empty list of environments are given:
 
       iex> dest = %Akd.Destination{}
       iex> op = %Akd.Operation{cmd_envs: [], cmd: "thuum", destination: dest}
       iex> Akd.Operation.environmentalize_cmd(op)
-      thuum
+      " thuum"
 
   """
   @spec environmentalize_cmd(__MODULE__.t) :: String.t
