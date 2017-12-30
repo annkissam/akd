@@ -37,26 +37,26 @@ defmodule Akd.Init.Distillery do
 
   ## Examples
 
-    iex> deployment = %Akd.Deployment{mix_env: "prod",
-    ...> build_at: Akd.Destination.local("."),
-    ...> publish_to: Akd.Destination.local("."),
-    ...> name: "name",
-    ...> vsn: "0.1.1"}
-    iex> Akd.Init.Distillery.get_hooks(deployment, [])
-    [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm -rf ./rel", cmd_envs: [],
-          destination: %Akd.Destination{host: :local, path: ".",
-           user: :current}},
-         %Akd.Operation{cmd: "rm -rf _build/prod", cmd_envs: [],
-          destination: %Akd.Destination{host: :local, path: ".",
-           user: :current}}], ignore_failure: false,
-        main: [%Akd.Operation{cmd: "mix deps.get \\n mix compile",
+      iex> deployment = %Akd.Deployment{mix_env: "prod",
+      ...> build_at: Akd.Destination.local("."),
+      ...> publish_to: Akd.Destination.local("."),
+      ...> name: "name",
+      ...> vsn: "0.1.1"}
+      iex> Akd.Init.Distillery.get_hooks(deployment, [])
+      [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm -rf ./rel", cmd_envs: [],
+            destination: %Akd.Destination{host: :local, path: ".",
+             user: :current}},
+           %Akd.Operation{cmd: "rm -rf _build/prod", cmd_envs: [],
+            destination: %Akd.Destination{host: :local, path: ".",
+             user: :current}}], ignore_failure: false,
+          main: [%Akd.Operation{cmd: "mix deps.get \\n mix compile",
+            cmd_envs: [{"MIX_ENV", "prod"}],
+            destination: %Akd.Destination{host: :local, path: ".",
+             user: :current}},
+           %Akd.Operation{cmd: "mix deps.get \\n mix compile \\n mix release.init --name name ",
           cmd_envs: [{"MIX_ENV", "prod"}],
           destination: %Akd.Destination{host: :local, path: ".",
-           user: :current}},
-         %Akd.Operation{cmd: "mix deps.get \\n mix compile \\n mix release.init --name name ",
-        cmd_envs: [{"MIX_ENV", "prod"}],
-        destination: %Akd.Destination{host: :local, path: ".",
-             user: :current}}], rollback: [], run_ensure: true}]
+               user: :current}}], rollback: [], run_ensure: true}]
 
   """
   @spec get_hooks(Akd.Deployment.t, Keyword.t) :: list(Akd.Hook.t)

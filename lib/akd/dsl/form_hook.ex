@@ -54,25 +54,25 @@ defmodule Akd.Dsl.FormHook do
       main "echo hello", Akd.Destination.local()
     end
 
-    iex> import Akd.Dsl.FormHook
-    iex> form_hook do
-    ...> main "echo hello", Akd.Destination.local()
-    ...> main "run this cmd", Akd.Destination.local()
-    ...> ensure "run this too", Akd.Destination.local()
-    ...> rollback "roll this back", Akd.Destination.local()
-    ...> end
-    %Akd.Hook{ensure: [%Akd.Operation{cmd: "run this too", cmd_envs: [],
-             destination: %Akd.Destination{host: :local, path: ".",
-              user: :current}}], ignore_failure: false,
-         main: [%Akd.Operation{cmd: "echo hello", cmd_envs: [],
-                       destination: %Akd.Destination{host: :local, path: ".",
-                                      user: :current}},
-                      %Akd.Operation{cmd: "run this cmd", cmd_envs: [],
-                destination: %Akd.Destination{host: :local, path: ".",
-                               user: :current}}],
-         rollback: [%Akd.Operation{cmd: "roll this back", cmd_envs: [],
-                       destination: %Akd.Destination{host: :local, path: ".",
-                                      user: :current}}], run_ensure: true}
+      iex> import Akd.Dsl.FormHook
+      iex> form_hook do
+      ...> main "echo hello", Akd.Destination.local()
+      ...> main "run this cmd", Akd.Destination.local()
+      ...> ensure "run this too", Akd.Destination.local()
+      ...> rollback "roll this back", Akd.Destination.local()
+      ...> end
+      %Akd.Hook{ensure: [%Akd.Operation{cmd: "run this too", cmd_envs: [],
+               destination: %Akd.Destination{host: :local, path: ".",
+                user: :current}}], ignore_failure: false,
+           main: [%Akd.Operation{cmd: "echo hello", cmd_envs: [],
+                         destination: %Akd.Destination{host: :local, path: ".",
+                                        user: :current}},
+                        %Akd.Operation{cmd: "run this cmd", cmd_envs: [],
+                  destination: %Akd.Destination{host: :local, path: ".",
+                                 user: :current}}],
+           rollback: [%Akd.Operation{cmd: "roll this back", cmd_envs: [],
+                         destination: %Akd.Destination{host: :local, path: ".",
+                                        user: :current}}], run_ensure: true}
   """
   defmacro form_hook(do: block) do
     quote do
@@ -100,25 +100,25 @@ defmodule Akd.Dsl.FormHook do
       main "echo hello", Akd.Destination.local()
     end
 
-    iex> import Akd.Dsl.FormHook
-    iex> form_hook ignore_failure: true, run_ensure: false do
-    ...> main "echo hello", Akd.Destination.local()
-    ...> main "run this cmd", Akd.Destination.local()
-    ...> ensure "run this too", Akd.Destination.local()
-    ...> rollback "roll this back", Akd.Destination.local()
-    ...> end
-    %Akd.Hook{ensure: [%Akd.Operation{cmd: "run this too", cmd_envs: [],
-         destination: %Akd.Destination{host: :local, path: ".",
-          user: :current}}], ignore_failure: true,
-       main: [%Akd.Operation{cmd: "echo hello", cmd_envs: [],
-         destination: %Akd.Destination{host: :local, path: ".",
-          user: :current}},
-        %Akd.Operation{cmd: "run this cmd", cmd_envs: [],
-         destination: %Akd.Destination{host: :local, path: ".",
-          user: :current}}],
-       rollback: [%Akd.Operation{cmd: "roll this back", cmd_envs: [],
-         destination: %Akd.Destination{host: :local, path: ".",
-          user: :current}}], run_ensure: false}
+      iex> import Akd.Dsl.FormHook
+      iex> form_hook ignore_failure: true, run_ensure: false do
+      ...> main "echo hello", Akd.Destination.local()
+      ...> main "run this cmd", Akd.Destination.local()
+      ...> ensure "run this too", Akd.Destination.local()
+      ...> rollback "roll this back", Akd.Destination.local()
+      ...> end
+      %Akd.Hook{ensure: [%Akd.Operation{cmd: "run this too", cmd_envs: [],
+           destination: %Akd.Destination{host: :local, path: ".",
+            user: :current}}], ignore_failure: true,
+         main: [%Akd.Operation{cmd: "echo hello", cmd_envs: [],
+           destination: %Akd.Destination{host: :local, path: ".",
+            user: :current}},
+          %Akd.Operation{cmd: "run this cmd", cmd_envs: [],
+           destination: %Akd.Destination{host: :local, path: ".",
+            user: :current}}],
+         rollback: [%Akd.Operation{cmd: "roll this back", cmd_envs: [],
+           destination: %Akd.Destination{host: :local, path: ".",
+            user: :current}}], run_ensure: false}
   """
   defmacro form_hook(opts, do: block) do
     quote do

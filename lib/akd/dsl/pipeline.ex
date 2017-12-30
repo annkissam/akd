@@ -55,28 +55,28 @@ defmodule Akd.Dsl.Pipeline do
 
   ## Examples:
 
-    iex> defmodule SomeMod do
-    ...>   import Akd.Dsl.Pipeline
-    ...>   pipeline :temporary do
-    ...>     hook "this hook"
-    ...>   end
-    ...> end
-    iex> SomeMod.temporary
-    [{"this hook", []}]
+      iex> defmodule SomeMod do
+      ...>   import Akd.Dsl.Pipeline
+      ...>   pipeline :temporary do
+      ...>     hook "this hook"
+      ...>   end
+      ...> end
+      iex> SomeMod.temporary
+      [{"this hook", []}]
 
 
-    iex> defmodule SomeOtherMod do
-    ...>   import Akd.Dsl.Pipeline
-    ...>   pipeline :temporary do
-    ...>     hook "this hook"
-    ...>   end
-    ...>   pipeline :permanent do
-    ...>    pipe_through :temporary
-    ...>    hook "another hook", some_option: "some option"
-    ...>   end
-    ...> end
-    iex> SomeOtherMod.permanent
-    [{"this hook", []}, {"another hook", [some_option: "some option"]}]
+      iex> defmodule SomeOtherMod do
+      ...>   import Akd.Dsl.Pipeline
+      ...>   pipeline :temporary do
+      ...>     hook "this hook"
+      ...>   end
+      ...>   pipeline :permanent do
+      ...>    pipe_through :temporary
+      ...>    hook "another hook", some_option: "some option"
+      ...>   end
+      ...> end
+      iex> SomeOtherMod.permanent
+      [{"this hook", []}, {"another hook", [some_option: "some option"]}]
   """
   defmacro pipeline(name, do: block) do
     quote do

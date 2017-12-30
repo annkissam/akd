@@ -3,13 +3,6 @@ defmodule Akd do
   A framework that makes elixir deployments a breeze. It's highly configurable,
   yet easy to set up.
 
-
-  ## Example Configuration (dev.exs)(Optional):
-
-
-  ## Example Configuration (test.exs)(Optional):
-
-
   """
 
   @doc """

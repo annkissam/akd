@@ -40,18 +40,18 @@ defmodule Akd.Fetch.Scp do
 
   ## Examples
 
-    iex> deployment = %Akd.Deployment{mix_env: "prod",
-    ...> build_at: Akd.Destination.local(),
-    ...> publish_to: Akd.Destination.local(),
-    ...> name: "name",
-    ...> vsn: "0.1.1"}
-    iex> Akd.Fetch.Scp.get_hooks(deployment, [exclude: []])
-    [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm -rf ./*", cmd_envs: [],
-          destination: %Akd.Destination{host: :local, path: ".",
-           user: :current}}], ignore_failure: false,
-        main: [%Akd.Operation{cmd: "rsync -krav -e ssh . .", cmd_envs: [],
-          destination: %Akd.Destination{host: :local, path: ".",
-           user: :current}}], rollback: [], run_ensure: true}]
+      iex> deployment = %Akd.Deployment{mix_env: "prod",
+      ...> build_at: Akd.Destination.local(),
+      ...> publish_to: Akd.Destination.local(),
+      ...> name: "name",
+      ...> vsn: "0.1.1"}
+      iex> Akd.Fetch.Scp.get_hooks(deployment, [exclude: []])
+      [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm -rf ./*", cmd_envs: [],
+            destination: %Akd.Destination{host: :local, path: ".",
+             user: :current}}], ignore_failure: false,
+          main: [%Akd.Operation{cmd: "rsync -krav -e ssh . .", cmd_envs: [],
+            destination: %Akd.Destination{host: :local, path: ".",
+             user: :current}}], rollback: [], run_ensure: true}]
 
   """
   @spec get_hooks(Akd.Deployment.t, Keyword.t) :: list(Akd.Hook.t)

@@ -24,14 +24,14 @@ defmodule Akd.HookResolver do
     ## Examples
     When `opts` is empty:
 
-      iex> deployment = %Akd.Deployment{mix_env: "prod",
-      ...> build_at: Akd.Destination.local("."),
-      ...> publish_to: Akd.Destination.local("."),
-      ...> name: "name",
-      ...> vsn: "0.1.1"}
-      iex> hooks = Akd.#{hook_type}.get_hooks(deployment, [])
-      iex> Akd.HookResolver.#{hook_type}(deployment, []) == hooks
-      true
+        iex> deployment = %Akd.Deployment{mix_env: "prod",
+        ...> build_at: Akd.Destination.local("."),
+        ...> publish_to: Akd.Destination.local("."),
+        ...> name: "name",
+        ...> vsn: "0.1.1"}
+        iex> hooks = Akd.#{hook_type}.get_hooks(deployment, [])
+        iex> Akd.HookResolver.#{hook_type}(deployment, []) == hooks
+        true
     """
     def unquote(hook_type)(deployment, []) do
       unquote(hook_type)

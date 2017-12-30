@@ -11,8 +11,8 @@ defmodule Akd.SecureConnection do
 
   ## Examples
 
-    iex> Akd.SecureConnection.securecmd(Akd.Destination.local(), "echo hi")
-    {:error, %IO.Stream{device: :standard_io, line_or_bytes: :line, raw: false}}
+      iex> Akd.SecureConnection.securecmd(Akd.Destination.local(), "echo hi")
+      {:error, %IO.Stream{device: :standard_io, line_or_bytes: :line, raw: false}}
   """
   def securecmd(dest, cmds) do
     cmds = "cd #{dest.path}\n" <> cmds
@@ -25,11 +25,11 @@ defmodule Akd.SecureConnection do
 
   ## Examples
 
-    iex> Akd.SecureConnection.ssh(:current, :local, "echo hi")
-    {:error, ""}
+      iex> Akd.SecureConnection.ssh(:current, :local, "echo hi")
+      {:error, ""}
 
-    iex> Akd.SecureConnection.ssh(:current, :local, "echo hi", true)
-    {:error, %IO.Stream{device: :standard_io, line_or_bytes: :line, raw: false}}
+      iex> Akd.SecureConnection.ssh(:current, :local, "echo hi", true)
+      {:error, %IO.Stream{device: :standard_io, line_or_bytes: :line, raw: false}}
   """
   def ssh(user, scoped_ip, operations, stdio \\ false) do
     Logger.info "ssh #{user}@#{scoped_ip}"
@@ -48,15 +48,15 @@ defmodule Akd.SecureConnection do
 
   ## Examples
 
-    iex> src = "user@host:~/path"
-    iex> dest = "user2@host2:~/path2"
-    iex> Akd.SecureConnection.scp(src, dest)
-    {:error, %IO.Stream{device: :standard_io, line_or_bytes: :line, raw: false}}
+      iex> src = "user@host:~/path"
+      iex> dest = "user2@host2:~/path2"
+      iex> Akd.SecureConnection.scp(src, dest)
+      {:error, %IO.Stream{device: :standard_io, line_or_bytes: :line, raw: false}}
 
-    iex> src = "user@host:~/path"
-    iex> dest = "user2@host2:~/path2"
-    iex> Akd.SecureConnection.scp(src, dest, ["-p a"])
-    {:error, %IO.Stream{device: :standard_io, line_or_bytes: :line, raw: false}}
+      iex> src = "user@host:~/path"
+      iex> dest = "user2@host2:~/path2"
+      iex> Akd.SecureConnection.scp(src, dest, ["-p a"])
+      {:error, %IO.Stream{device: :standard_io, line_or_bytes: :line, raw: false}}
   """
   def scp(src, dest, opts \\ []) do
     Logger.info "scp #{src} #{dest}"

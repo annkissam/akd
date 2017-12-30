@@ -18,16 +18,16 @@ defmodule Akd.DeployHelper do
 
   ## Examples
 
-    iex> defmodule TestAkdDeployHelperExecute do
-    ...>   import Akd.DeployHelper
-    ...>   def pip(), do: []
-    ...>   def run() do
-    ...>     execute :pip, with: %{name: "node", build_at: {:local, "."},
-    ...>       mix_env: "prod", publish_to: "user@host:~/path/to/dir", vsn: "0.1.0"}
-    ...>   end
-    ...> end
-    iex> TestAkdDeployHelperExecute.run()
-    nil
+      iex> defmodule TestAkdDeployHelperExecute do
+      ...>   import Akd.DeployHelper
+      ...>   def pip(), do: []
+      ...>   def run() do
+      ...>     execute :pip, with: %{name: "node", build_at: {:local, "."},
+      ...>       mix_env: "prod", publish_to: "user@host:~/path/to/dir", vsn: "0.1.0"}
+      ...>   end
+      ...> end
+      iex> TestAkdDeployHelperExecute.run()
+      nil
   """
   defmacro execute(pipeline, with: block) do
     quote do
@@ -50,13 +50,13 @@ defmodule Akd.DeployHelper do
 
   ## Examples
 
-    iex> deployment = %Akd.Deployment{mix_env: "prod",
-    ...> build_at: Akd.Destination.local("."),
-    ...> publish_to: Akd.Destination.local("."),
-    ...> name: "name",
-    ...> vsn: "0.1.1"}
-    iex> Akd.DeployHelper.exec(deployment)
-    nil
+      iex> deployment = %Akd.Deployment{mix_env: "prod",
+      ...> build_at: Akd.Destination.local("."),
+      ...> publish_to: Akd.Destination.local("."),
+      ...> name: "name",
+      ...> vsn: "0.1.1"}
+      iex> Akd.DeployHelper.exec(deployment)
+      nil
   """
   def exec(%Deployment{hooks: hooks}) do
     {failure, called_hooks} = Enum.reduce(hooks, {false, []}, &failure_and_hooks/2)
@@ -73,53 +73,53 @@ defmodule Akd.DeployHelper do
 
   When no hooks are given:
 
-    iex> params = %{mix_env: "prod",
-    ...> build_at: Akd.Destination.local("."),
-    ...> publish_to: Akd.Destination.local("."),
-    ...> name: "name",
-    ...> vsn: "0.1.1"}
-    iex> Akd.DeployHelper.init_deployment(params)
-    %Akd.Deployment{build_at: %Akd.Destination{host: :local, path: ".",
-        user: :current}, hooks: [], mix_env: "prod", name: "name",
-         publish_to: %Akd.Destination{host: :local, path: ".",
-                user: :current}, vsn: "0.1.1"}
+      iex> params = %{mix_env: "prod",
+      ...> build_at: Akd.Destination.local("."),
+      ...> publish_to: Akd.Destination.local("."),
+      ...> name: "name",
+      ...> vsn: "0.1.1"}
+      iex> Akd.DeployHelper.init_deployment(params)
+      %Akd.Deployment{build_at: %Akd.Destination{host: :local, path: ".",
+          user: :current}, hooks: [], mix_env: "prod", name: "name",
+           publish_to: %Akd.Destination{host: :local, path: ".",
+                  user: :current}, vsn: "0.1.1"}
 
   When hooks are given:
 
-    iex> params = %{mix_env: "prod",
-    ...> build_at: Akd.Destination.local("."),
-    ...> publish_to: Akd.Destination.local("."),
-    ...> name: "name",
-    ...> vsn: "0.1.1", hooks: [%Akd.Hook{}]}
-    iex> Akd.DeployHelper.init_deployment(params)
-    %Akd.Deployment{build_at: %Akd.Destination{host: :local, path: ".",
-      user: :current}, hooks: [%Akd.Hook{}], mix_env: "prod", name: "name",
-         publish_to: %Akd.Destination{host: :local, path: ".",
-                user: :current}, vsn: "0.1.1"}
+      iex> params = %{mix_env: "prod",
+      ...> build_at: Akd.Destination.local("."),
+      ...> publish_to: Akd.Destination.local("."),
+      ...> name: "name",
+      ...> vsn: "0.1.1", hooks: [%Akd.Hook{}]}
+      iex> Akd.DeployHelper.init_deployment(params)
+      %Akd.Deployment{build_at: %Akd.Destination{host: :local, path: ".",
+        user: :current}, hooks: [%Akd.Hook{}], mix_env: "prod", name: "name",
+           publish_to: %Akd.Destination{host: :local, path: ".",
+                  user: :current}, vsn: "0.1.1"}
 
   When `build_at` and `publish_to` are strings in the form: user@host:path
 
-    iex> params = %{mix_env: "prod",
-    ...> build_at: "root@host:~/path",
-    ...> publish_to: "root@host:~/path",
-    ...> name: "name",
-    ...> vsn: "0.1.1"}
-    iex> Akd.DeployHelper.init_deployment(params)
-    %Akd.Deployment{build_at: %Akd.Destination{host: "host",
-      path: "~/path", user: "root"}, hooks: [], mix_env: "prod",
-      name: "name",
-      publish_to: %Akd.Destination{host: "host", path: "~/path",
-      user: "root"}, vsn: "0.1.1"}
+      iex> params = %{mix_env: "prod",
+      ...> build_at: "root@host:~/path",
+      ...> publish_to: "root@host:~/path",
+      ...> name: "name",
+      ...> vsn: "0.1.1"}
+      iex> Akd.DeployHelper.init_deployment(params)
+      %Akd.Deployment{build_at: %Akd.Destination{host: "host",
+        path: "~/path", user: "root"}, hooks: [], mix_env: "prod",
+        name: "name",
+        publish_to: %Akd.Destination{host: "host", path: "~/path",
+        user: "root"}, vsn: "0.1.1"}
 
   When `build_at` and `publish_to` are strings, not in the form: user@host:path
 
-    iex> params = %{mix_env: "prod",
-    ...> build_at: "some-random-string",
-    ...> publish_to: "some-random-string",
-    ...> name: "name",
-    ...> vsn: "0.1.1"}
-    iex> Akd.DeployHelper.init_deployment(params)
-    ** (MatchError) no match of right hand side value: ["some-random-string"]
+      iex> params = %{mix_env: "prod",
+      ...> build_at: "some-random-string",
+      ...> publish_to: "some-random-string",
+      ...> name: "name",
+      ...> vsn: "0.1.1"}
+      iex> Akd.DeployHelper.init_deployment(params)
+      ** (MatchError) no match of right hand side value: ["some-random-string"]
 
   """
   def init_deployment(params) do
@@ -140,94 +140,94 @@ defmodule Akd.DeployHelper do
   ## Examples
   When a deployment and a `Hook.t` is given.
 
-    iex> deployment = %Akd.Deployment{mix_env: "prod",
-    ...> build_at: Akd.Destination.local("."),
-    ...> publish_to: Akd.Destination.local("."),
-    ...> name: "name",
-    ...> vsn: "0.1.1"}
-    iex> Akd.DeployHelper.add_hook(deployment, %Akd.Hook{})
-    %Akd.Deployment{build_at: %Akd.Destination{host: :local, path: ".",
+      iex> deployment = %Akd.Deployment{mix_env: "prod",
+      ...> build_at: Akd.Destination.local("."),
+      ...> publish_to: Akd.Destination.local("."),
+      ...> name: "name",
+      ...> vsn: "0.1.1"}
+      iex> Akd.DeployHelper.add_hook(deployment, %Akd.Hook{})
+      %Akd.Deployment{build_at: %Akd.Destination{host: :local, path: ".",
+            user: :current},
+           hooks: [%Akd.Hook{ensure: [], ignore_failure: false, main: [],
+           rollback: [], run_ensure: true}], mix_env: "prod", name: "name",
+           publish_to: %Akd.Destination{host: :local, path: ".",
+                        user: :current}, vsn: "0.1.1"}
+
+  When a deployment and a tuple is given, and the first element of tuple
+  is a `Hook.t`
+
+      iex> deployment = %Akd.Deployment{mix_env: "prod",
+      ...> build_at: Akd.Destination.local("."),
+      ...> publish_to: Akd.Destination.local("."),
+      ...> name: "name",
+      ...> vsn: "0.1.1"}
+      iex> Akd.DeployHelper.add_hook(deployment, {%Akd.Hook{}, []})
+      %Akd.Deployment{build_at: %Akd.Destination{host: :local, path: ".",
+            user: :current},
+           hooks: [%Akd.Hook{ensure: [], ignore_failure: false, main: [],
+           rollback: [], run_ensure: true}], mix_env: "prod", name: "name",
+           publish_to: %Akd.Destination{host: :local, path: ".",
+                        user: :current}, vsn: "0.1.1"}
+
+  When a deployment and a tuple is given, and the first element of tuple
+  is a type in #{Enum.join(@base_types)}
+
+      iex> deployment = %Akd.Deployment{mix_env: "prod",
+      ...> build_at: Akd.Destination.local("."),
+      ...> publish_to: Akd.Destination.local("."),
+      ...> name: "name",
+      ...> vsn: "0.1.1"}
+      iex> Akd.DeployHelper.add_hook(deployment, {:init, []})
+      %Akd.Deployment{build_at: %Akd.Destination{host: :local, path: ".",
           user: :current},
-         hooks: [%Akd.Hook{ensure: [], ignore_failure: false, main: [],
-         rollback: [], run_ensure: true}], mix_env: "prod", name: "name",
-         publish_to: %Akd.Destination{host: :local, path: ".",
-                      user: :current}, vsn: "0.1.1"}
+         hooks: [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm -rf ./rel",
+             cmd_envs: [],
+             destination: %Akd.Destination{host: :local, path: ".",
+              user: :current}},
+            %Akd.Operation{cmd: "rm -rf _build/prod", cmd_envs: [],
+             destination: %Akd.Destination{host: :local, path: ".",
+            user: :current}}], ignore_failure: false,
+            main: [%Akd.Operation{cmd: "mix deps.get \\n mix compile",
+            cmd_envs: [{"MIX_ENV", "prod"}],
+            destination: %Akd.Destination{host: :local, path: ".",
+                   user: :current}},
+             %Akd.Operation{cmd: "mix deps.get \\n mix compile \\n mix release.init --name name ",
+                   cmd_envs: [{"MIX_ENV", "prod"}],
+                   destination: %Akd.Destination{host: :local, path: ".",
+                    user: :current}}], rollback: [], run_ensure: true}],
+                            mix_env: "prod", name: "name",
+                            publish_to: %Akd.Destination{host: :local, path: ".",
+                                         user: :current}, vsn: "0.1.1"}
 
-    When a deployment and a tuple is given, and the first element of tuple
-    is a `Hook.t`
+  When a deployment and a tuple is given, and the first element of tuple
+  is a Hook Module
 
-    iex> deployment = %Akd.Deployment{mix_env: "prod",
-    ...> build_at: Akd.Destination.local("."),
-    ...> publish_to: Akd.Destination.local("."),
-    ...> name: "name",
-    ...> vsn: "0.1.1"}
-    iex> Akd.DeployHelper.add_hook(deployment, {%Akd.Hook{}, []})
-    %Akd.Deployment{build_at: %Akd.Destination{host: :local, path: ".",
+      iex> deployment = %Akd.Deployment{mix_env: "prod",
+      ...> build_at: Akd.Destination.local("."),
+      ...> publish_to: Akd.Destination.local("."),
+      ...> name: "name",
+      ...> vsn: "0.1.1"}
+      iex> Akd.DeployHelper.add_hook(deployment, {Akd.Init.Distillery, []})
+      %Akd.Deployment{build_at: %Akd.Destination{host: :local, path: ".",
           user: :current},
-         hooks: [%Akd.Hook{ensure: [], ignore_failure: false, main: [],
-         rollback: [], run_ensure: true}], mix_env: "prod", name: "name",
-         publish_to: %Akd.Destination{host: :local, path: ".",
-                      user: :current}, vsn: "0.1.1"}
-
-    When a deployment and a tuple is given, and the first element of tuple
-    is a type in #{Enum.join(@base_types)}
-
-    iex> deployment = %Akd.Deployment{mix_env: "prod",
-    ...> build_at: Akd.Destination.local("."),
-    ...> publish_to: Akd.Destination.local("."),
-    ...> name: "name",
-    ...> vsn: "0.1.1"}
-    iex> Akd.DeployHelper.add_hook(deployment, {:init, []})
-    %Akd.Deployment{build_at: %Akd.Destination{host: :local, path: ".",
-        user: :current},
-       hooks: [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm -rf ./rel",
-           cmd_envs: [],
-           destination: %Akd.Destination{host: :local, path: ".",
-            user: :current}},
-          %Akd.Operation{cmd: "rm -rf _build/prod", cmd_envs: [],
-           destination: %Akd.Destination{host: :local, path: ".",
-          user: :current}}], ignore_failure: false,
-          main: [%Akd.Operation{cmd: "mix deps.get \\n mix compile",
-          cmd_envs: [{"MIX_ENV", "prod"}],
-          destination: %Akd.Destination{host: :local, path: ".",
-                 user: :current}},
-           %Akd.Operation{cmd: "mix deps.get \\n mix compile \\n mix release.init --name name ",
-                 cmd_envs: [{"MIX_ENV", "prod"}],
-                 destination: %Akd.Destination{host: :local, path: ".",
-                  user: :current}}], rollback: [], run_ensure: true}],
-                          mix_env: "prod", name: "name",
-                          publish_to: %Akd.Destination{host: :local, path: ".",
-                                       user: :current}, vsn: "0.1.1"}
-
-    When a deployment and a tuple is given, and the first element of tuple
-    is a Hook Module
-
-    iex> deployment = %Akd.Deployment{mix_env: "prod",
-    ...> build_at: Akd.Destination.local("."),
-    ...> publish_to: Akd.Destination.local("."),
-    ...> name: "name",
-    ...> vsn: "0.1.1"}
-    iex> Akd.DeployHelper.add_hook(deployment, {Akd.Init.Distillery, []})
-    %Akd.Deployment{build_at: %Akd.Destination{host: :local, path: ".",
-        user: :current},
-       hooks: [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm -rf ./rel",
-           cmd_envs: [],
-           destination: %Akd.Destination{host: :local, path: ".",
-            user: :current}},
-          %Akd.Operation{cmd: "rm -rf _build/prod", cmd_envs: [],
-           destination: %Akd.Destination{host: :local, path: ".",
-          user: :current}}], ignore_failure: false,
-          main: [%Akd.Operation{cmd: "mix deps.get \\n mix compile",
-          cmd_envs: [{"MIX_ENV", "prod"}],
-          destination: %Akd.Destination{host: :local, path: ".",
-                 user: :current}},
-           %Akd.Operation{cmd: "mix deps.get \\n mix compile \\n mix release.init --name name ",
-                 cmd_envs: [{"MIX_ENV", "prod"}],
-                 destination: %Akd.Destination{host: :local, path: ".",
-                  user: :current}}], rollback: [], run_ensure: true}],
-                          mix_env: "prod", name: "name",
-                          publish_to: %Akd.Destination{host: :local, path: ".",
-                                       user: :current}, vsn: "0.1.1"}
+         hooks: [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm -rf ./rel",
+             cmd_envs: [],
+             destination: %Akd.Destination{host: :local, path: ".",
+              user: :current}},
+            %Akd.Operation{cmd: "rm -rf _build/prod", cmd_envs: [],
+             destination: %Akd.Destination{host: :local, path: ".",
+            user: :current}}], ignore_failure: false,
+            main: [%Akd.Operation{cmd: "mix deps.get \\n mix compile",
+            cmd_envs: [{"MIX_ENV", "prod"}],
+            destination: %Akd.Destination{host: :local, path: ".",
+                   user: :current}},
+             %Akd.Operation{cmd: "mix deps.get \\n mix compile \\n mix release.init --name name ",
+                   cmd_envs: [{"MIX_ENV", "prod"}],
+                   destination: %Akd.Destination{host: :local, path: ".",
+                    user: :current}}], rollback: [], run_ensure: true}],
+                            mix_env: "prod", name: "name",
+                            publish_to: %Akd.Destination{host: :local, path: ".",
+                                         user: :current}, vsn: "0.1.1"}
   """
   @spec add_hook(Deployment.t, Hook.t | tuple()) :: Deployment.t
   def add_hook(deployment, hook)

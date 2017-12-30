@@ -12,38 +12,38 @@ defmodule Akd.Mix.Task do
 
   # Usage:
 
-      defmodule Mix.Tasks.Deploy do
-        use Akd.Mix.Task
+        defmodule Mix.Tasks.Deploy do
+          use Akd.Mix.Task
 
-        pipeline :fetch do
-          hook Akd.Fetcher.Scp
-        end
+          pipeline :fetch do
+            hook Akd.Fetcher.Scp
+          end
 
-        pipeline :init do
-          hook Akd.Initer.Distillery
-        end
+          pipeline :init do
+            hook Akd.Initer.Distillery
+          end
 
-        pipeline :build do
-          hook Akd.Builder.Distillery
-        end
+          pipeline :build do
+            hook Akd.Builder.Distillery
+          end
 
-        pipeline :publish do
-          hook Akd.Start.Distillery
-          hook Akd.Publisher.Distillery
-          hook Akd.Stop.Distillery
-        end
+          pipeline :publish do
+            hook Akd.Start.Distillery
+            hook Akd.Publisher.Distillery
+            hook Akd.Stop.Distillery
+          end
 
-        pipeline :deploy do
-          pipe_through :fetch
-          pipe_through :init
-          pipe_through :build
-          pipe_through :publish
-        end
+          pipeline :deploy do
+            pipe_through :fetch
+            pipe_through :init
+            pipe_through :build
+            pipe_through :publish
+          end
 
-        def run(_argv) do
-          execute :deploy, with: some_params
+          def run(_argv) do
+            execute :deploy, with: some_params
+          end
         end
-      end
   """
 
   @doc """

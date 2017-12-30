@@ -38,25 +38,25 @@ defmodule Akd.Publish.Distillery do
 
   ## Examples
 
-    iex> deployment = %Akd.Deployment{mix_env: "prod",
-    ...> build_at: Akd.Destination.local("."),
-    ...> publish_to: Akd.Destination.local("."),
-    ...> name: "name",
-    ...> vsn: "0.1.1"}
-    iex> Akd.Publish.Distillery.get_hooks(deployment, [])
-    [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm  ./name.tar.gz",
-          cmd_envs: [],
+      iex> deployment = %Akd.Deployment{mix_env: "prod",
+      ...> build_at: Akd.Destination.local("."),
+      ...> publish_to: Akd.Destination.local("."),
+      ...> name: "name",
+      ...> vsn: "0.1.1"}
+      iex> Akd.Publish.Distillery.get_hooks(deployment, [])
+      [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm  ./name.tar.gz",
+            cmd_envs: [],
+            destination: %Akd.Destination{host: :local, path: ".",
+             user: :current}}], ignore_failure: false,
+          main: [%Akd.Operation{cmd: "cp ./_build/prod/rel/name/releases/0.1.1/name.tar.gz .\\n",
+            cmd_envs: [],
+            destination: %Akd.Destination{host: :local, path: ".",
+             user: :current}}], rollback: [], run_ensure: true},
+         %Akd.Hook{ensure: [], ignore_failure: false,
+          main: [%Akd.Operation{cmd: "cd .\\ntar xzf name.tar.gz\\n",
+            cmd_envs: [],
           destination: %Akd.Destination{host: :local, path: ".",
-           user: :current}}], ignore_failure: false,
-        main: [%Akd.Operation{cmd: "cp ./_build/prod/rel/name/releases/0.1.1/name.tar.gz .\\n",
-          cmd_envs: [],
-          destination: %Akd.Destination{host: :local, path: ".",
-           user: :current}}], rollback: [], run_ensure: true},
-       %Akd.Hook{ensure: [], ignore_failure: false,
-        main: [%Akd.Operation{cmd: "cd .\\ntar xzf name.tar.gz\\n",
-          cmd_envs: [],
-        destination: %Akd.Destination{host: :local, path: ".",
-             user: :current}}], rollback: [], run_ensure: true}]
+               user: :current}}], rollback: [], run_ensure: true}]
 
   """
   @spec get_hooks(Akd.Deployment.t, Keyword.t) :: list(Akd.Hook.t)
