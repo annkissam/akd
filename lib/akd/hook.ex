@@ -39,7 +39,25 @@ defmodule Akd.Hook do
   @callback get_hooks(Deployment.t, list) :: [__MODULE__.t]
 
   @doc """
-  TODO: Add more info about this macro
+  This macro allows another module to behave like `Akd.Hook`.
+  This also allows a module to use `Akd.Dsl.FormHook` to write
+  readable hooks.
+
+  ## Examples:
+
+      iex> defmodule CustomHook do
+      ...>   use Akd.Hook
+      ...>   def get_hooks(deployment, opts) do
+      ...>     [form_hook do
+      ...>        main "some command", Akd.Destination.local()
+      ...>      end]
+      ...>   end
+      ...> end
+      iex> CustomHook.get_hooks(nil, nil)
+      [%Akd.Hook{ensure: [], ignore_failure: false,
+            main: [%Akd.Operation{cmd: "some command", cmd_envs: [],
+            destination: %Akd.Destination{host: :local, path: ".",
+            user: :current}}], rollback: [], run_ensure: true}]
   """
   defmacro __using__(_) do
     quote do
@@ -63,7 +81,7 @@ defmodule Akd.Hook do
 
       iex> hook = %Akd.Hook{}
       iex> Akd.Hook.rollback(hook)
-      []
+      {:ok, []}
   """
   @spec rollback(__MODULE__.t) :: list()
   def rollback(%__MODULE__{} = hook) do
@@ -82,7 +100,7 @@ defmodule Akd.Hook do
 
       iex> hook = %Akd.Hook{}
       iex> Akd.Hook.main(hook)
-      []
+      {:ok, []}
   """
   @spec main(__MODULE__.t) :: list()
   def main(%__MODULE__{} = hook) do
@@ -103,15 +121,15 @@ defmodule Akd.Hook do
 
       iex> hook = %Akd.Hook{}
       iex> Akd.Hook.ensure(hook)
-      []
+      {:ok, []}
 
-      iex> ensure = [%Akd.Operation{dest: %Akd.Destination{}, cmd: "echo 1"}]
+      iex> ensure = [%Akd.Operation{destination: %Akd.Destination{}, cmd: "echo 1"}]
       iex> hook = %Akd.Hook{run_ensure: false, ensure: ensure}
       iex> Akd.Hook.ensure(hook)
-      []
+      {:ok, []}
   """
   @spec ensure(__MODULE__.t) :: list()
-  def ensure(%__MODULE__{run_ensure: false}), do: []
+  def ensure(%__MODULE__{run_ensure: false}), do: {:ok, []}
   def ensure(%__MODULE__{} = hook) do
     hook
     |> Map.get(:ensure)
