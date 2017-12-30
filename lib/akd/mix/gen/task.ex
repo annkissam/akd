@@ -1,5 +1,5 @@
 defmodule Mix.Tasks.Akd.Gen.Task do
-  @shortdoc ~w(Generates an Akd.Task which can be used to deploy an app)
+  @shortdoc ~w(Generates an Akd.Mix.Task which can be used to deploy an app)
 
   @tsk ~s(mix akd.gen.task)
 
@@ -41,8 +41,13 @@ defmodule Mix.Tasks.Akd.Gen.Task do
   """
 
   @moduledoc """
+  This task generates a mix task which can be used to deploy an app.
+
+  Please refer to `Akd.Mix.Task` for more details.
+
+  ## Info:
+
   #{@info}
-  TODO Improve Documentation
   """
 
   use Mix.Task
