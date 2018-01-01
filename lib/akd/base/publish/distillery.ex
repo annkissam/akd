@@ -1,5 +1,5 @@
 defmodule Akd.Publish.Distillery do
-  @moduledoc"""
+  @moduledoc """
   A native Hook module that comes shipped with Akd.
 
   This module uses `Akd.Hook`.
