@@ -35,7 +35,8 @@ defmodule Akd.Build.Docker do
 
   use Akd.Hook
 
-  @default_opts [run_ensure: false, ignore_failure: false, file: "Dockerfile", path: "."]
+  @default_opts [run_ensure: false, ignore_failure: false, file: "Dockerfile",
+                 path: "."]
 
   @doc """
   Callback implementation for `get_hooks/2`.
@@ -72,9 +73,10 @@ defmodule Akd.Build.Docker do
     destination = Akd.DestinationResolver.resolve(:build, deployment)
     path = Keyword.get(opts, :path)
     file = Keyword.get(opts, :file)
+    tag = Keyword.get(opts, :tag, deployment.name <> ":" <> deployment.vsn)
 
     form_hook opts do
-      main "docker build -f #{file} #{path}", destination
+      main "docker build -f #{file} -t #{tag} #{path}", destination
 
       ensure "docker rm $(docker ps -a -q)", destination
     end
@@ -84,8 +86,8 @@ defmodule Akd.Build.Docker do
   # unique. If there are multiple values for a key, it takes the value from
   # the first value of keyword1 corresponding to that key.
   defp uniq_merge(keyword1, keyword2) do
-    keyword1
-    |> Keyword.merge(keyword2)
+    keyword2
+    |> Keyword.merge(keyword1)
     |> Keyword.new()
   end
 end

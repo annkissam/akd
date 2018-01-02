@@ -110,8 +110,8 @@ defmodule Akd.Init.Distillery do
   # unique. If there are multiple values for a key, it takes the value from
   # the first value of keyword1 corresponding to that key.
   defp uniq_merge(keyword1, keyword2) do
-    keyword1
-    |> Keyword.merge(keyword2)
+    keyword2
+    |> Keyword.merge(keyword1)
     |> Keyword.new()
   end
 end
