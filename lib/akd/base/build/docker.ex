@@ -53,13 +53,13 @@ defmodule Akd.Build.Docker do
       ...> vsn: "0.1.1"}
       iex> Akd.Build.Docker.get_hooks(deployment, [])
       [%Akd.Hook{ensure: [%Akd.Operation{cmd: "docker rm $(docker ps -a -q)",
-                  cmd_envs: [],
-                  destination: %Akd.Destination{host: :local, path: ".",
-                 user: :current}}], ignore_failure: false,
-              main: [%Akd.Operation{cmd: "docker build -f Dockerfile .",
-                   cmd_envs: [],
-                   destination: %Akd.Destination{host: :local, path: ".",
-               user: :current}}], rollback: [], run_ensure: false}]
+        cmd_envs: [],
+        destination: %Akd.Destination{host: :local, path: ".",
+         user: :current}}], ignore_failure: false,
+      main: [%Akd.Operation{cmd: "docker build -f Dockerfile -t name:0.1.1 .",
+        cmd_envs: [],
+        destination: %Akd.Destination{host: :local, path: ".",
+         user: :current}}], rollback: [], run_ensure: false}]
 
   """
   @spec get_hooks(Akd.Deployment.t, Keyword.t) :: list(Akd.Hook.t)
