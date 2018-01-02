@@ -57,12 +57,23 @@ defmodule Akd.Generator.Dockerfile do
   # and formats the options making it ready for the template to read from.
   defp validate_and_format_opts(name, opts) do
     opts = Keyword.put_new(opts, :path, @path)
+
+    opts = opts
+      |> Keyword.get_values(:envs)
+      |> Enum.map(&String.split(&1, "="))
+      |> Enum.map(&List.to_tuple/1)
+      |> (&Keyword.put(opts, :envs, &1)).()
+
+    opts = opts
+      |> Keyword.get_values(:phxapps)
+      |> (&Keyword.put(opts, :phxapps, &1)).()
+
     [{:name, name} | opts]
   end
 
   # This function gives the location for the template which will be used
   # by the generator
-  defp template(type \\ "base", os \\ "centos") do
+  defp template(type, os) do
     "#{__DIR__}/templates/docker/#{type}/#{os}/Dockerfile.eex"
   end
 
@@ -70,12 +81,12 @@ defmodule Akd.Generator.Dockerfile do
   # First element of the tuple is the path to file and second element is
   # the evaluated file string.
   defp text_from_template(opts) do
-    {Keyword.get(opts, :path), EEx.eval_file(template(), assigns: opts)}
+    {Keyword.get(opts, :path), EEx.eval_file(template(opts[:type], opts[:os]), assigns: opts)}
   end
 
   # This function writes contents to a file at a specific path
   defp write_to_file({path, code}, name) do
-    path = path <> name <> ".ex"
+    path = path <> name
 
     case File.exists?(path) do
       true -> {:error, "File #{path} already exists."}

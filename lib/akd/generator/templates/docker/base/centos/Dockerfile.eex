@@ -1,4 +1,4 @@
-FROM centos:centos<%= @centos_version %>
+FROM centos:centos<%= @osversion %>
 
 WORKDIR ~
 
@@ -17,7 +17,7 @@ RUN yum -y install wget
 RUN yum -y install git
 
 # Fetch and install asdf
-RUN git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v<%= @asdf_version %>
+RUN git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v<%= @asdf %>
 RUN echo -e '\n. ~/.asdf/asdf.sh' >> ~/.bashrc
 RUN echo -e '\n. ~/.asdf/completions/asdf.bash' >> ~/.bashrc
 ENV PATH ~/.asdf/bin:$PATH
@@ -38,20 +38,20 @@ ENV LC_ALL en_US.UTF-8
 RUN yum -y install wxGTK-devel
 RUN yum -y install wxBase
 
-# Install OTP <%= @erlang_version %>
-RUN asdf install erlang <%= @erlang_version %>
+# Install OTP <%= @erlang %>
+RUN asdf install erlang <%= @erlang %>
 
 # Install Unzip for asdf-elixir
 RUN yum -y install unzip
 
-# Install Elixir <%= @elixir_version %>
-RUN asdf install elixir <%= @elixir_version %>
+# Install Elixir <%= @elixir %>
+RUN asdf install elixir <%= @elixir %>
 
 ENV PATH ~/.asdf/bin:~/.asdf/shims:$PATH
 
 # Set versions for Elixir and Erlang
-RUN asdf global elixir <%= @elixir_version %>
-RUN asdf global erlang <%= @erlang_version %>
+RUN asdf global elixir <%= @elixir %>
+RUN asdf global erlang <%= @erlang %>
 
 RUN compgen -c
 
@@ -72,10 +72,9 @@ RUN mix local.hex --force
 
 # Install Rebar
 RUN mix local.rebar --force
-
-<%= if @with_nodejs do %>
+<%= if @nodejs do %>
 # Install Node.js
-RUN wget http://nodejs.org/dist/v<%= @nodejs_version %>/node-v<%= @nodejs_version %>-linux-x64.tar.gz
+RUN wget http://nodejs.org/dist/v<%= @nodejs %>/node-v<%= @nodejs %>-linux-x64.tar.gz
 RUN tar --strip-components 1 -xzvf node-v* -C /usr/local
 RUN node --version
 <% end %>
