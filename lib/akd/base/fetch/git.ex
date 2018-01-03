@@ -25,14 +25,13 @@ defmodule Akd.Fetch.Git do
 
   * `run_ensure`: `false`
   * `ignore_failure`: `false`
-  * `src`: "."
   * `branch`: `master`
 
   """
 
   use Akd.Hook
 
-  @default_opts [run_ensure: false, ignore_failure: false, branch: "master", src: "."]
+  @default_opts [run_ensure: false, ignore_failure: false, branch: "master"]
 
   @errmsg %{no_src: "No `src` given to `Akd.Fetch.Git`. Expected a git repo."}
 
