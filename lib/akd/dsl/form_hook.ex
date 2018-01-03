@@ -15,8 +15,8 @@ defmodule Akd.Dsl.FormHook do
   specific options. Once the block ends, it resolves all those operations into
   a `Akd.Hook.t` struct and returns that.
 
-  Once this hook is defined it can be used in a pipeline or a `Akd.Hook` module
-  that returns a hook
+  Once this hook is defined it can be used in a pipeline or an `Akd.Hook` module
+  that returns a hook.
 
   ## For Example:
 

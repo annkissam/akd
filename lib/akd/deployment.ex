@@ -8,7 +8,7 @@ defmodule Akd.Deployment do
   * build_at - `Akd.Destination.t` where the app/node will be built/released.
   * mix_env - Mix environment to build the app, represented by a `String.t`.
   * name - Name with which the app/node will be published.
-  * publish_to - `Akd.Destination.t` where to app/node will be published.
+  * publish_to - `Akd.Destination.t` where the app/node will be published.
   * vsn - Version of app that is being released, represented by a `String.t`.
   * hooks - A list of `Akd.Hook.t` that will be run in order when a deployment
             is executed.
