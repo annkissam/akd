@@ -29,23 +29,14 @@ defmodule Akd.HookResolver do
         ...> publish_to: Akd.Destination.local("."),
         ...> name: "name",
         ...> vsn: "0.1.1"}
-        iex> hooks = Akd.#{hook_type}.get_hooks(deployment, [])
-        iex> Akd.HookResolver.#{hook_type}(deployment, []) == hooks
+        iex> hooks = Akd.#{hook_type}.get_hooks(deployment, [src: "."])
+        iex> Akd.HookResolver.#{hook_type}(deployment, [src: "."]) == hooks
         true
     """
-    def unquote(hook_type)(deployment, []) do
+    def unquote(hook_type)(deployment, opts \\ []) do
       unquote(hook_type)
       |> (&apply(Akd, &1, [])).()
-      |> apply(:get_hooks, [deployment, []])
-    end
-
-    def unquote(hook_type)(deployment, opts) do
-      mod = opts[:type]
-        |> to_string()
-        |> Macro.camelize()
-        |> (&Module.concat(unquote(binding), &1)).()
-
-      apply(mod, :get_hooks, [deployment, opts])
+      |> apply(:get_hooks, [deployment, opts])
     end
   end
 end
