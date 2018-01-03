@@ -44,6 +44,8 @@ defmodule Akd.Operation do
   If the destination is local, it just runs it on the local machine.
   If the destination is remote, it runs it through SSH.
 
+  NOTE: It will automatically create the folder when run locally
+
   ## Exmaples:
   When the destination is local
 
@@ -68,6 +70,9 @@ defmodule Akd.Operation do
   def run(operation)
   def run(%__MODULE__{destination: %Destination{host: :local}} = operation) do
     Logger.info environmentalize_cmd(operation)
+
+    File.mkdir_p!(operation.destination.path)
+
     case System.cmd("sh", ["-c" , operation.cmd],
             env: operation.cmd_envs,
             cd: operation.destination.path,

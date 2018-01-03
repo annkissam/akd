@@ -25,14 +25,13 @@ defmodule Akd.Fetch.Git do
 
   * `run_ensure`: `false`
   * `ignore_failure`: `false`
-  * `src`: "."
   * `branch`: `master`
 
   """
 
   use Akd.Hook
 
-  @default_opts [run_ensure: false, ignore_failure: false, branch: "master", src: "."]
+  @default_opts [run_ensure: false, ignore_failure: false, branch: "master"]
 
   @errmsg %{no_src: "No `src` given to `Akd.Fetch.Git`. Expected a git repo."}
 
@@ -51,25 +50,7 @@ defmodule Akd.Fetch.Git do
       ...> name: "name",
       ...> vsn: "0.1.1"}
       iex> Akd.Fetch.Git.get_hooks(deployment, [])
-      [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm -rf ./*", cmd_envs: [],
-            destination: %Akd.Destination{host: :local, path: ".",
-             user: :current}},
-           %Akd.Operation{cmd: "rm -rf ./.*", cmd_envs: [],
-            destination: %Akd.Destination{host: :local, path: ".",
-           user: :current}}], ignore_failure: false,
-        main: [%Akd.Operation{cmd: "git clone . .", cmd_envs: [],
-         destination: %Akd.Destination{host: :local, path: ".",
-                 user: :current}},
-        %Akd.Operation{cmd: "git fetch", cmd_envs: [],
-               destination: %Akd.Destination{host: :local, path: ".",
-                               user: :current}},
-        %Akd.Operation{cmd: "git checkout master", cmd_envs: [],
-               destination: %Akd.Destination{host: :local, path: ".",
-                               user: :current}},
-        %Akd.Operation{cmd: "git pull", cmd_envs: [],
-               destination: %Akd.Destination{host: :local, path: ".",
-                               user: :current}}], rollback: [], run_ensure: false}]
-
+      ** (RuntimeError) No `src` given to `Akd.Fetch.Git`. Expected a git repo.
 
   When a `src` is given:
 
