@@ -1,7 +1,7 @@
 defmodule Akd.Mix.Task do
   @moduledoc """
   This module defines a `__using__` macro which allows another module
-  to behave like an Akd.Mix.Task and define functions which
+  to behave like an `Akd.Mix.Task` and define functions which
   allow us to define a series of operations on a `Deployment` struct and
   execute those operations in an organized manner.
 
