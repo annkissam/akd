@@ -1,0 +1,38 @@
+FROM <%= @base %>
+
+# This assumes that you have not fetched the source code of the app.
+# Feel free to change this according to your convenience.
+RUN mkdir /app
+WORKDIR /app
+COPY . /app/
+<%= for phxapp <- @phxapps do %>
+WORKDIR /app/<%= phxapp %>/assets/
+RUN npm install <% end %>
+
+WORKDIR /app
+
+ENV MIX_ENV=<%= @mixenv %>
+
+RUN mix deps.get
+RUN mix deps.compile
+<%= for phxapp <- @phxapps do %>
+WORKDIR /app/<%= phxapp %>/assets
+RUN node_modules/brunch/bin/brunch build --production <% end %>
+<%= for env <- @envs do %>
+ENV <%= elem(env, 0) %> <%= elem(env, 1) %> <% end %>
+
+WORKDIR /app
+RUN mix phx.digest
+RUN mix release --env=<%= @mixenv %>
+
+# Read version from mix.exs and store it in .version
+RUN echo $(cat mix.exs| grep version: | head -n1 | awk -F: '{print $2}' | sed 's/[\",]//g' | tr -d '[[:space:]]') > .version
+
+RUN tar xzf /app/_build/prod/rel/<%= @nodename %>/releases/$(cat .version)/<%= @nodename %>.tar.gz -C /rel
+RUN cp .version /rel/
+WORKDIR /rel/
+<%= if @cleanup do %>
+RUN rm -rf /app <% end %>
+<%= if @publishable do %>
+ENTRYPOINT ["/rel/bin/<%= @nodename %>"]
+CMD ["<%= @cmd %>"] <% end %>
