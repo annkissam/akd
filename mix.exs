@@ -1,7 +1,7 @@
 defmodule Akd.Mixfile do
   use Mix.Project
 
-  @version "0.2.0-rc.0"
+  @version "0.2.0-rc.1"
   @url "https://github.com/annkissam/akd"
 
   def project do
@@ -62,7 +62,11 @@ defmodule Akd.Mixfile do
   def docs do
     [
       main: "Akd",
-      extras: [],
+      extras: ["docs/GetStarted.md",
+               "docs/Nomenclature.md",
+               "docs/Walkthroughmd",
+               "docs/CustomHooks.md",
+               "docs/Generators.md"],
       source_url: @url,
       source_ref: "v#{@version}"
     ]

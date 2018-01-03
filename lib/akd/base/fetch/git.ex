@@ -79,23 +79,23 @@ defmodule Akd.Fetch.Git do
       ...> vsn: "0.1.1"}
       iex> Akd.Fetch.Git.get_hooks(deployment, [src: "url"])
       [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm -rf ./*", cmd_envs: [],
+        destination: %Akd.Destination{host: :local, path: ".",
+         user: :current}},
+        %Akd.Operation{cmd: "rm -rf ./.*", cmd_envs: [],
             destination: %Akd.Destination{host: :local, path: ".",
+        user: :current}}], ignore_failure: false,
+              main: [%Akd.Operation{cmd: "git clone url .", cmd_envs: [],
+         destination: %Akd.Destination{host: :local, path: ".",
              user: :current}},
-         %Akd.Operation{cmd: "rm -rf ./.*", cmd_envs: [],
-              destination: %Akd.Destination{host: :local, path: ".",
-                              user: :current}}], ignore_failure: false,
-        main: [%Akd.Operation{cmd: "git clone . .", cmd_envs: [],
+        %Akd.Operation{cmd: "git fetch", cmd_envs: [],
              destination: %Akd.Destination{host: :local, path: ".",
-                             user: :current}},
-          %Akd.Operation{cmd: "git fetch", cmd_envs: [],
-               destination: %Akd.Destination{host: :local, path: ".",
-                               user: :current}},
-          %Akd.Operation{cmd: "git checkout master", cmd_envs: [],
-               destination: %Akd.Destination{host: :local, path: ".",
-                               user: :current}},
-          %Akd.Operation{cmd: "git pull", cmd_envs: [],
-               destination: %Akd.Destination{host: :local, path: ".",
-                     user: :current}}], rollback: [], run_ensure: false}]
+              user: :current}},
+        %Akd.Operation{cmd: "git checkout master", cmd_envs: [],
+             destination: %Akd.Destination{host: :local, path: ".",
+             user: :current}},
+        %Akd.Operation{cmd: "git pull", cmd_envs: [],
+             destination: %Akd.Destination{host: :local, path: ".",
+             user: :current}}], rollback: [], run_ensure: false}]
 
   """
   @spec get_hooks(Akd.Deployment.t, Keyword.t) :: list(Akd.Hook.t)
@@ -127,8 +127,8 @@ defmodule Akd.Fetch.Git do
   # unique. If there are multiple values for a key, it takes the value from
   # the first value of keyword1 corresponding to that key.
   defp uniq_merge(keyword1, keyword2) do
-    keyword1
-    |> Keyword.merge(keyword2)
+    keyword2
+    |> Keyword.merge(keyword1)
     |> Keyword.new()
   end
 end

@@ -11,7 +11,7 @@
 /doc
 
 # Inch CI
-/docs
+/docs/all.json
 
 # Ignore .fetch files in case you like to edit your project deps locally.
 /.fetch
