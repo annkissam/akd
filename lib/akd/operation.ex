@@ -68,6 +68,9 @@ defmodule Akd.Operation do
   def run(operation)
   def run(%__MODULE__{destination: %Destination{host: :local}} = operation) do
     Logger.info environmentalize_cmd(operation)
+
+    File.mkdir_p!(operation.destination.path)
+
     case System.cmd("sh", ["-c" , operation.cmd],
             env: operation.cmd_envs,
             cd: operation.destination.path,
