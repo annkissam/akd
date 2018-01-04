@@ -90,7 +90,7 @@ defmodule Akd.Build.Phoenix.Brunch do
       main "cd #{brunch_config} \n #{brunch} build --production", destination
       main "mix phx.digest", destination, cmd_env: cmd_env
 
-      ensure "rm -rf deps", destination
+      # ensure "rm -rf deps", destination
     end
   end
 

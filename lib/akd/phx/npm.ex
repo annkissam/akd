@@ -70,7 +70,7 @@ defmodule Akd.Build.Phoenix.Npm do
     form_hook opts do
       main "cd #{package_path} \n npm install", destination, cmd_env: cmd_env
 
-      ensure "cd #{package_path} \n rm -rf node_modules", destination
+      # ensure "cd #{package_path} \n rm -rf node_modules", destination
     end
   end
 
