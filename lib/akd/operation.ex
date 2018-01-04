@@ -72,7 +72,7 @@ defmodule Akd.Operation do
     Logger.info environmentalize_cmd(operation)
 
     path = operation.destination.path
-    |> Path.expand("/foo/bar/../bar")
+    |> Path.expand()
 
     File.mkdir_p!(path)
 
