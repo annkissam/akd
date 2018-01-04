@@ -53,7 +53,7 @@ defmodule Akd.Init.Distillery do
             cmd_envs: [{"MIX_ENV", "prod"}],
             destination: %Akd.Destination{host: :local, path: ".",
              user: :current}},
-           %Akd.Operation{cmd: "mix deps.get \\n mix compile \\n mix release.init --name name ",
+           %Akd.Operation{cmd: "mix release.init --name name ",
           cmd_envs: [{"MIX_ENV", "prod"}],
           destination: %Akd.Destination{host: :local, path: ".",
                user: :current}}], rollback: [], run_ensure: true}]

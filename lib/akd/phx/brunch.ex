@@ -49,9 +49,7 @@ defmodule Akd.Build.Phoenix.Brunch do
       ...> name: "name",
       ...> vsn: "0.1.1"}
       iex> Akd.Build.Phoenix.Brunch.get_hooks(deployment, [])
-      [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm -rf deps", cmd_envs: [],
-            destination: %Akd.Destination{host: :local, path: ".",
-             user: :current}}], ignore_failure: false,
+      [%Akd.Hook{ensure: [], ignore_failure: false,
         main: [%Akd.Operation{cmd: "mix deps.get \\n mix compile",
             cmd_envs: [{"MIX_ENV", "prod"}],
             destination: %Akd.Destination{host: :local, path: ".",
