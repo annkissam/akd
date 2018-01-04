@@ -95,7 +95,7 @@ defmodule Akd.Fetch.Git do
   defp fetch_hook(nil, _, _, _), do: raise @errmsg[:no_src]
   defp fetch_hook(src, branch, destination, opts) do
     form_hook opts do
-      main "git clone #{src} .", destination
+      main "git status; if [[ $? != 0 ]]; then git clone #{src} .; fi", destination
       main "git fetch", destination
       main "git checkout #{branch}", destination
       main "git pull", destination
