@@ -71,11 +71,14 @@ defmodule Akd.Operation do
   def run(%__MODULE__{destination: %Destination{host: :local}} = operation) do
     Logger.info environmentalize_cmd(operation)
 
-    File.mkdir_p!(operation.destination.path)
+    path = operation.destination.path
+    |> Path.expand("/foo/bar/../bar")
+
+    File.mkdir_p!(path)
 
     case System.cmd("sh", ["-c" , operation.cmd],
             env: operation.cmd_envs,
-            cd: operation.destination.path,
+            cd: path,
             into: IO.stream(:stdio, :line)) do
       {error, 1} -> {:error, error}
       {output, _} -> {:ok, output}
