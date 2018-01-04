@@ -45,10 +45,7 @@ defmodule Akd.Build.Phoenix.Npm do
       ...> name: "name",
       ...> vsn: "0.1.1"}
       iex> Akd.Build.Phoenix.Npm.get_hooks(deployment, [])
-      [%Akd.Hook{ensure: [%Akd.Operation{cmd: "cd  \\n rm -rf node_modules",
-            cmd_envs: [],
-            destination: %Akd.Destination{host: :local, path: ".",
-             user: :current}}], ignore_failure: false,
+      [%Akd.Hook{ensure: [], ignore_failure: false,
           main: [%Akd.Operation{cmd: "cd  \\n npm install", cmd_envs: [],
             destination: %Akd.Destination{host: :local, path: ".",
              user: :current}}], rollback: [], run_ensure: true}]
@@ -70,7 +67,7 @@ defmodule Akd.Build.Phoenix.Npm do
     form_hook opts do
       main "cd #{package_path} \n npm install", destination, cmd_env: cmd_env
 
-      ensure "cd #{package_path} \n rm -rf node_modules", destination
+      # ensure "cd #{package_path} \n rm -rf node_modules", destination
     end
   end
 

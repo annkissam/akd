@@ -53,7 +53,7 @@ defmodule Akd.Init.Distillery do
             cmd_envs: [{"MIX_ENV", "prod"}],
             destination: %Akd.Destination{host: :local, path: ".",
              user: :current}},
-           %Akd.Operation{cmd: "mix deps.get \\n mix compile \\n mix release.init --name name ",
+           %Akd.Operation{cmd: "mix release.init --name name ",
           cmd_envs: [{"MIX_ENV", "prod"}],
           destination: %Akd.Destination{host: :local, path: ".",
                user: :current}}], rollback: [], run_ensure: true}]
@@ -91,7 +91,7 @@ defmodule Akd.Init.Distillery do
   # and forms a new command.
   # This currently supports only template
   defp rel_init(switches) when is_list(switches) do
-    Enum.reduce(switches, "#{setup()} \n mix release.init",
+    Enum.reduce(switches, "mix release.init",
       fn(cmd, acc) -> acc <> " " <> cmd end)
   end
 
