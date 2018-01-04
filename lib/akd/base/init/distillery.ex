@@ -91,7 +91,7 @@ defmodule Akd.Init.Distillery do
   # and forms a new command.
   # This currently supports only template
   defp rel_init(switches) when is_list(switches) do
-    Enum.reduce(switches, "#{setup()} \n mix release.init",
+    Enum.reduce(switches, "mix release.init",
       fn(cmd, acc) -> acc <> " " <> cmd end)
   end
 
