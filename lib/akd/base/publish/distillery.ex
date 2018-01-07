@@ -12,15 +12,23 @@ defmodule Akd.Publish.Distillery do
 
   Doesn't have any Rollback operations.
 
+  When using SCP to transfer between two remote nodes you must ensure they can
+  communicate. This can be done by setting up authorized keys and known hosts on
+  the destination server, or using your local credentials (see: scp_options).
+  You will still require known hosts. Alternatively, you can use your local
+  computer as an intermediate destination (no examples provided yet).
+
   # Options:
 
   * run_ensure: boolean. Specifies whether to a run a command or not.
   * ignore_failure: boolean. Specifies whether to continue if this hook fails.
+  * scp_options: string. options to pass to the SCP command, example: "-o \"ForwardAgent yes\""
 
   # Defaults:
 
   * `run_ensure`: `true`
   * `ignore_failure`: `false`
+  * `scp_options`: `""`
 
   """
 
@@ -28,7 +36,7 @@ defmodule Akd.Publish.Distillery do
 
   alias Akd.{Deployment, Destination, DestinationResolver}
 
-  @default_opts [run_ensure: true, ignore_failure: false]
+  @default_opts [run_ensure: true, ignore_failure: false, scp_options: ""]
 
   @doc """
   Callback implementation for `get_hooks/2`.
@@ -62,7 +70,10 @@ defmodule Akd.Publish.Distillery do
   @spec get_hooks(Akd.Deployment.t, Keyword.t) :: list(Akd.Hook.t)
   def get_hooks(deployment, opts \\ []) do
     opts = uniq_merge(opts, @default_opts)
-    [copy_release_hook(deployment, opts), publish_hook(deployment, opts)]
+    [
+      copy_release_hook(deployment, opts),
+      publish_hook(deployment, opts),
+    ]
   end
 
   # This function takes a deployment and options and returns an Akd.Hook.t
@@ -70,11 +81,19 @@ defmodule Akd.Publish.Distillery do
   defp copy_release_hook(deployment, opts) do
     build = DestinationResolver.resolve(:build, deployment)
     publish = DestinationResolver.resolve(:publish, deployment)
+    scp_options = Keyword.get(opts, :scp_options, false)
+
+    # Transfer between two remote servers by running the SCP command locally
+    scp_destination = if build.host != publish.host do
+      Akd.Destination.local()
+    else
+      build
+    end
 
     form_hook opts do
-      main copy_rel(deployment), build
+      main copy_rel(deployment, scp_options), scp_destination
 
-      ensure "rm  #{publish.path}/#{deployment.name}.tar.gz",
+      ensure "rm #{publish.path}/#{deployment.name}.tar.gz",
         publish
     end
   end
@@ -92,15 +111,15 @@ defmodule Akd.Publish.Distillery do
   # This function returns the command to be used to copy the release from
   # build to production.
   # This assumes that you're running this command from the same server
-  defp copy_rel(%Deployment{build_at: %Destination{host: s}, publish_to: %Destination{host: s}} = deployment) do
+  defp copy_rel(%Deployment{build_at: %Destination{host: s}, publish_to: %Destination{host: s}} = deployment, _scp_options) do
     """
     cp #{path_to_release(deployment.build_at.path, deployment)} #{deployment.publish_to.path}
     """
   end
   # This assumes that the publish server has ssh credentials to build server
-  defp copy_rel(%Deployment{build_at: src, publish_to: dest} = deployment) do
+  defp copy_rel(%Deployment{build_at: src, publish_to: dest} = deployment, scp_options) do
     """
-    scp #{src |> Destination.to_string() |> path_to_release(deployment)} #{Destination.to_string(dest)}
+    scp #{scp_options} #{src |> Destination.to_string() |> path_to_release(deployment)} #{Destination.to_string(dest)}
     """
   end
 
