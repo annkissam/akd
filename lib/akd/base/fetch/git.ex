@@ -66,7 +66,7 @@ defmodule Akd.Fetch.Git do
         %Akd.Operation{cmd: "rm -rf ./.*", cmd_envs: [],
             destination: %Akd.Destination{host: :local, path: ".",
         user: :current}}], ignore_failure: false,
-              main: [%Akd.Operation{cmd: "git clone url .", cmd_envs: [],
+              main: [%Akd.Operation{cmd: "git status; if [[ $? != 0 ]]; then git clone url .; fi", cmd_envs: [],
          destination: %Akd.Destination{host: :local, path: ".",
              user: :current}},
         %Akd.Operation{cmd: "git fetch", cmd_envs: [],

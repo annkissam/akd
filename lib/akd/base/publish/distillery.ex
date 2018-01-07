@@ -52,7 +52,7 @@ defmodule Akd.Publish.Distillery do
       ...> name: "name",
       ...> vsn: "0.1.1"}
       iex> Akd.Publish.Distillery.get_hooks(deployment, [])
-      [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm  ./name.tar.gz",
+      [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm ./name.tar.gz",
             cmd_envs: [],
             destination: %Akd.Destination{host: :local, path: ".",
              user: :current}}], ignore_failure: false,
