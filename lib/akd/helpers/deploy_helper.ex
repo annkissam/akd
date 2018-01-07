@@ -4,10 +4,7 @@ defmodule Akd.DeployHelper do
   and add hooks to a deployment, and execute it.
   """
 
-  alias Akd.{Destination, Deployment, Hook, HookResolver}
-
-  # Types of hooks that are supported natively
-  @base_types ~w(fetch init build stop publish start)a
+  alias Akd.{Destination, Deployment, Hook}
 
   @doc """
   This macro executes a pipeline (set of operations) defined in the current
@@ -170,36 +167,6 @@ defmodule Akd.DeployHelper do
                         user: :current}, vsn: "0.1.1"}
 
   When a deployment and a tuple is given, and the first element of tuple
-  is a type in #{Enum.join(@base_types)}
-
-      iex> deployment = %Akd.Deployment{mix_env: "prod",
-      ...> build_at: Akd.Destination.local("."),
-      ...> publish_to: Akd.Destination.local("."),
-      ...> name: "name",
-      ...> vsn: "0.1.1"}
-      iex> Akd.DeployHelper.add_hook(deployment, {:init, []})
-      %Akd.Deployment{build_at: %Akd.Destination{host: :local, path: ".",
-          user: :current},
-         hooks: [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm -rf ./rel",
-             cmd_envs: [],
-             destination: %Akd.Destination{host: :local, path: ".",
-              user: :current}},
-            %Akd.Operation{cmd: "rm -rf _build/prod", cmd_envs: [],
-             destination: %Akd.Destination{host: :local, path: ".",
-            user: :current}}], ignore_failure: false,
-            main: [%Akd.Operation{cmd: "mix deps.get \\n mix compile",
-            cmd_envs: [{"MIX_ENV", "prod"}],
-            destination: %Akd.Destination{host: :local, path: ".",
-                   user: :current}},
-             %Akd.Operation{cmd: "mix release.init --name name ",
-                   cmd_envs: [{"MIX_ENV", "prod"}],
-                   destination: %Akd.Destination{host: :local, path: ".",
-                    user: :current}}], rollback: [], run_ensure: true}],
-                            mix_env: "prod", name: "name",
-                            publish_to: %Akd.Destination{host: :local, path: ".",
-                                         user: :current}, vsn: "0.1.1"}
-
-  When a deployment and a tuple is given, and the first element of tuple
   is a Hook Module
 
       iex> deployment = %Akd.Deployment{mix_env: "prod",
@@ -237,11 +204,6 @@ defmodule Akd.DeployHelper do
   def add_hook(%Deployment{hooks: hooks} = deployment, {%Hook{} = hook, _}) do
     %Deployment{deployment | hooks: hooks ++ [hook]}
   end
-  def add_hook(deployment, {type, opts}) when type in @base_types do
-    deployment
-    |> get_hooks(type, opts)
-    |> Enum.reduce(deployment, &add_hook(&2, &1))
-  end
   def add_hook(deployment, {mod, opts}) when is_atom(mod) do
     deployment
     |> get_hooks(mod, opts)
@@ -263,10 +225,7 @@ defmodule Akd.DeployHelper do
     end
   end
 
-  # Get hooks associated with a Module or a type
-  defp get_hooks(d, type, opts) when type in @base_types do
-    apply(HookResolver, type, [d, opts])
-  end
+  # Get hooks associated with a Module
   defp get_hooks(d, mod, opts), do: apply(mod, :get_hooks, [d, opts])
 
   # Sanitizes Deployment's build_at and publish_to destinations
