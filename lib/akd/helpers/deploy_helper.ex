@@ -61,6 +61,8 @@ defmodule Akd.DeployHelper do
     Enum.each(called_hooks, &Hook.ensure/1)
 
     if failure, do: Enum.each(called_hooks, &Hook.rollback/1)
+
+    !failure
   end
 
   @doc """
