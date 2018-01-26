@@ -70,7 +70,7 @@ defmodule Akd.Build.Distillery do
     cmd_env = [{"MIX_ENV", mix_env} | cmd_env]
 
     form_hook opts do
-      main "mix deps.get \n mix compile \n mix release --env=#{distillery_env}",
+      main "mix local.hex --force \n mix deps.get \n mix compile \n mix release --env=#{distillery_env}",
         destination, cmd_env: cmd_env
 
       ensure "rm -rf ./_build/prod/rel", destination
