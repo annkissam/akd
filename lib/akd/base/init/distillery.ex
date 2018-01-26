@@ -96,7 +96,7 @@ defmodule Akd.Init.Distillery do
   end
 
   # These commands are to be ran before calling release init
-  defp setup(), do: "mix local.hex --force \n mix deps.get \n mix compile"
+  defp setup(), do: "mix deps.get \n mix compile"
 
   # This function returns sub-command associated with template switch
   defp template_cmd(nil), do: ""
