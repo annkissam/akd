@@ -82,7 +82,7 @@ defmodule Akd.Build.Phoenix.Brunch do
     cmd_env = [{"MIX_ENV", mix_env} | cmd_env]
 
     form_hook opts do
-      main "mix deps.get \n mix compile", destination,
+      main "mix local.hex --force \n mix deps.get \n mix compile", destination,
         cmd_env: cmd_env
 
       main "cd #{brunch_config} \n #{brunch} build --production", destination
