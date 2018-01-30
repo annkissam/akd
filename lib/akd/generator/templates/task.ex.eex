@@ -32,7 +32,7 @@ defmodule <%= @name %> do
   end
 
   pipeline :publish do <%= if @start do %>
-    hook <%= @stop %><% end %>
+    hook <%= @stop %>, ignore_failure: true
 <% end %><%= if @publish do %> <%= if @with_phx do %>
     hook Akd.Build.Phoenix.Npm,
       package: "path/to/package.json",
@@ -43,7 +43,7 @@ defmodule <%= @name %> do
       brunch: "path/to/brunch/bin", # Usually node_modules/brunch/bin/brunch
       cmd_env: [] # Add build time system variables <% end %>
     hook <%= @publish %><% end %><%= if @stop do %>
-    hook <%= @start %>, ignore_failure: true
+    hook <%= @start %><%end%>
   end
 
   pipeline :deploy do
