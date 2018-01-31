@@ -9,9 +9,9 @@ defmodule Akd.Operation do
 
   The meta data involves:
 
-  * cmd - Commands that are ran when an `Akd.Operation.t` struct is run.
+  * cmd - Commands that run when an `Akd.Operation.t` struct is run.
   * cmd_envs - ENV variables that the command is run with. Represented by a list
-              of two element (strings) tuples.
+              of two-element (strings) tuples.
               Example: [{"SOME_ENV", "1"}, {"OTHER_ENV", "2"}]
   * destination - `Akd.Destination.t` where an operation's commands are executed.
 
@@ -46,7 +46,7 @@ defmodule Akd.Operation do
 
   NOTE: It will automatically create the folder when run locally
 
-  ## Exmaples:
+  ## Examples:
   When the destination is local
 
       iex> envs = [{"AKDNAME", "dragonborn"}]
@@ -90,7 +90,7 @@ defmodule Akd.Operation do
 
 
   @doc """
-  Takes an Operation and returns a string of commands with `cmd_envs` preprended
+  Takes an `Operation` and returns a string of commands with `cmd_envs` preprended
   to the `cmd` script.
 
   ## Examples:
