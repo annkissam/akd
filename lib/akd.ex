@@ -10,7 +10,7 @@ defmodule Akd do
   in the `config.exs` file
 
   ## Examples
-  when no `fetch` config is set, if returns `Akd.Fetch.Git`
+  when no `fetch` config is set, it returns `Akd.Fetch.Git`
       iex> Akd.fetch
       Akd.Fetch.Git
   """
@@ -24,7 +24,7 @@ defmodule Akd do
   in the `config.exs` file
 
   ## Examples
-  when no `init` config is set, if returns `Akd.Init.Distillery`
+  when no `init` config is set, it returns `Akd.Init.Distillery`
       iex> Akd.init
       Akd.Init.Distillery
   """
@@ -38,7 +38,7 @@ defmodule Akd do
   in the `config.exs` file
 
   ## Examples
-  when no `build` config is set, if returns `Akd.Build.Distillery`
+  when no `build` config is set, it returns `Akd.Build.Distillery`
       iex> Akd.build
       Akd.Build.Distillery
   """
@@ -51,7 +51,7 @@ defmodule Akd do
   in the `config.exs` file
 
   ## Examples
-  when no `publish` config is set, if returns `Akd.Publish.Distillery`
+  when no `publish` config is set, it returns `Akd.Publish.Distillery`
       iex> Akd.publish
       Akd.Publish.Distillery
   """
@@ -64,7 +64,7 @@ defmodule Akd do
   in the `config.exs` file
 
   ## Examples
-  when no `start` config is set, if returns `Akd.Start.Distillery`
+  when no `start` config is set, it returns `Akd.Start.Distillery`
       iex> Akd.start
       Akd.Start.Distillery
   """
@@ -77,7 +77,7 @@ defmodule Akd do
   in the `config.exs` file
 
   ## Examples
-  when no `stop` config is set, if returns `Akd.Stop.Distillery`
+  when no `stop` config is set, it returns `Akd.Stop.Distillery`
       iex> Akd.stop
       Akd.Stop.Distillery
   """
@@ -90,7 +90,7 @@ defmodule Akd do
   Gets configuration assocaited with the `akd` app.
 
   ## Examples
-  when no config is set, if returns []
+  when no config is set, it returns []
       iex> Akd.config
       []
   """
@@ -103,7 +103,7 @@ defmodule Akd do
   Gets configuration set for a `key`, assocaited with the `akd` app.
 
   ## Examples
-  when no config is set for `key`, if returns `default`
+  when no config is set for `key`, it returns `default`
       iex> Akd.config(:random, "default")
       "default"
   """
@@ -128,7 +128,7 @@ defmodule Akd do
   def resolve_config({:system, var_name}, default) do
     IO.warn """
     {:system, var_name} is deprecated. If you need to use a System variable in
-    the run-time, I would be explicit about what Hooks to use in the main call
+    the run-time, you should be explicit about what Hooks to use in the main call
     instead of configuring it.
 
     Read this article for more details: http://michal.muskala.eu/2017/07/30/configuring-elixir-libraries.html
