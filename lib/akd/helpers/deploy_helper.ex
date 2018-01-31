@@ -1,7 +1,7 @@
 defmodule Akd.DeployHelper do
   @moduledoc """
-  This module defines helper functions used to initialize a deployment
-  and add hooks to a deployment, and execute it.
+  This module defines helper functions used to initialize, add hooks to, and 
+  execute a deployment.
   """
 
   alias Akd.{Destination, Deployment, Hook}
