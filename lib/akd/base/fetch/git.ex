@@ -5,10 +5,10 @@ defmodule Akd.Fetch.Git do
   This module uses `Akd.Hook`.
 
   Provides a set of operations that fetch source code using `git` to a destination,
-  check out a given branch (defaults to `master`) and pull the latest version
+  checks out a given branch (defaults to `master`) and pulls the latest version
   of the branch on the destination.
 
-  Ensures to cleanup and empty the desination directory. (Doesn't run this by
+  Ensures to clean up and empty the desination directory. (Doesn't run this by
   default)
 
   Doesn't have any Rollback operations.
