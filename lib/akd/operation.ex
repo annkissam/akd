@@ -51,10 +51,22 @@ defmodule Akd.Operation do
 
       iex> envs = [{"AKDNAME", "dragonborn"}]
       iex> dest = %Akd.Destination{}
-      iex> cmd = "echo $AKDNAME"
+      iex> cmd = "echo $AKDNAME; exit 0"
       iex> op = %Akd.Operation{cmd_envs: envs, cmd: cmd, destination: dest}
       iex> Akd.Operation.run(op)
       {:ok, %IO.Stream{device: :standard_io, line_or_bytes: :line, raw: false}}
+
+      iex> dest = %Akd.Destination{}
+      iex> cmd = "exit 1"
+      iex> op = %Akd.Operation{cmd: cmd, destination: dest}
+      iex> Akd.Operation.run(op)
+      {:error, %IO.Stream{device: :standard_io, line_or_bytes: :line, raw: false}}
+
+      iex> dest = %Akd.Destination{}
+      iex> cmd = "exit 2"
+      iex> op = %Akd.Operation{cmd: cmd, destination: dest}
+      iex> Akd.Operation.run(op)
+      {:error, %IO.Stream{device: :standard_io, line_or_bytes: :line, raw: false}}
 
   When the destination is remote
 
@@ -80,8 +92,8 @@ defmodule Akd.Operation do
             env: operation.cmd_envs,
             cd: path,
             into: IO.stream(:stdio, :line)) do
-      {error, 1} -> {:error, error}
-      {output, _} -> {:ok, output}
+      {output, 0} -> {:ok, output}
+      {error, _} -> {:error, error}
     end
   end
   def run(op) do
