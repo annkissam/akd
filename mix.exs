@@ -73,7 +73,12 @@ defmodule Akd.Mixfile do
   end
 
   defp aliases do
-    []
+    ["publish": ["hex.publish", &git_tag/1]]
+  end
+
+  defp git_tag(_args) do
+    System.cmd "git", ["tag", "v" <> Mix.Project.config[:version]]
+    System.cmd "git", ["push", "--tags"]
   end
 
   defp elixirc_paths(:test), do: ["lib", "priv", "test/support"]
