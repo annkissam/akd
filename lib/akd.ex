@@ -39,7 +39,7 @@ defmodule Akd do
   in the `config.exs` file
 
   ## Examples
-  when no `fetch` config is set, if returns `Akd.Fetch.Git`
+  when no `fetch` config is set, it returns `Akd.Fetch.Git`
       iex> Akd.fetch
       Akd.Fetch.Git
   """
@@ -52,7 +52,7 @@ defmodule Akd do
   in the `config.exs` file
 
   ## Examples
-  when no `init` config is set, if returns `Akd.Init.Distillery`
+  when no `init` config is set, it returns `Akd.Init.Distillery`
       iex> Akd.init
       Akd.Init.Distillery
   """
@@ -65,7 +65,7 @@ defmodule Akd do
   in the `config.exs` file
 
   ## Examples
-  when no `build` config is set, if returns `Akd.Build.Distillery`
+  when no `build` config is set, it returns `Akd.Build.Distillery`
       iex> Akd.build
       Akd.Build.Distillery
   """
@@ -78,7 +78,7 @@ defmodule Akd do
   in the `config.exs` file
 
   ## Examples
-  when no `publish` config is set, if returns `Akd.Publish.Distillery`
+  when no `publish` config is set, it returns `Akd.Publish.Distillery`
       iex> Akd.publish
       Akd.Publish.Distillery
   """
@@ -91,7 +91,7 @@ defmodule Akd do
   in the `config.exs` file
 
   ## Examples
-  when no `start` config is set, if returns `Akd.Start.Distillery`
+  when no `start` config is set, it returns `Akd.Start.Distillery`
       iex> Akd.start
       Akd.Start.Distillery
   """
@@ -104,7 +104,7 @@ defmodule Akd do
   in the `config.exs` file
 
   ## Examples
-  when no `stop` config is set, if returns `Akd.Stop.Distillery`
+  when no `stop` config is set, it returns `Akd.Stop.Distillery`
       iex> Akd.stop
       Akd.Stop.Distillery
   """
@@ -116,7 +116,7 @@ defmodule Akd do
   Gets configuration assocaited with the `akd` app.
 
   ## Examples
-  when no config is set, if returns []
+  when no config is set, it returns []
       iex> Akd.config
       []
   """
@@ -129,7 +129,7 @@ defmodule Akd do
   Gets configuration set for a `key`, assocaited with the `akd` app.
 
   ## Examples
-  when no config is set for `key`, if returns `default`
+  when no config is set for `key`, it returns `default`
       iex> Akd.config(:random, "default")
       "default"
   """

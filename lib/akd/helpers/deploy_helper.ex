@@ -1,7 +1,7 @@
 defmodule Akd.DeployHelper do
   @moduledoc """
-  This module defines helper functions used to initialize a deployment
-  and add hooks to a deployment, and execute it.
+  This module defines helper functions used to initialize, add hooks to, and
+  execute a deployment.
   """
 
   alias Akd.{Destination, Deployment, Hook}
@@ -11,7 +11,7 @@ defmodule Akd.DeployHelper do
   module with a set of params that can be used to initialize a `Deployment`
   struct.
 
-  Returns whether the pipeline of hooks successfully executed or not
+  Returns true if the deployment initialized was executed successfully; otherwise, it returns false.
 
   ## Examples
 
@@ -43,7 +43,7 @@ defmodule Akd.DeployHelper do
 
   Executes `ensure/1` for all the `called_hooks`
 
-  Returns whether the deployment was a success or not
+  Returns true if the deployment was executed successfully; otherwise, it returns false.
 
   ## Examples
 

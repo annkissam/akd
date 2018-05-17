@@ -9,9 +9,9 @@ defmodule Akd.Operation do
 
   The meta data involves:
 
-  * cmd - Commands that are ran when an `Akd.Operation.t` struct is run.
+  * cmd - Commands that run when an `Akd.Operation.t` struct is run.
   * cmd_envs - ENV variables that the command is run with. Represented by a list
-              of two element (strings) tuples.
+              of two-element (strings) tuples.
               Example: [{"SOME_ENV", "1"}, {"OTHER_ENV", "2"}]
   * destination - `Akd.Destination.t` where an operation's commands are executed.
 
@@ -46,15 +46,27 @@ defmodule Akd.Operation do
 
   NOTE: It will automatically create the folder when run locally
 
-  ## Exmaples:
+  ## Examples:
   When the destination is local
 
       iex> envs = [{"AKDNAME", "dragonborn"}]
       iex> dest = %Akd.Destination{}
-      iex> cmd = "echo $AKDNAME"
+      iex> cmd = "echo $AKDNAME; exit 0"
       iex> op = %Akd.Operation{cmd_envs: envs, cmd: cmd, destination: dest}
       iex> Akd.Operation.run(op)
       {:ok, %IO.Stream{device: :standard_io, line_or_bytes: :line, raw: false}}
+
+      iex> dest = %Akd.Destination{}
+      iex> cmd = "exit 1"
+      iex> op = %Akd.Operation{cmd: cmd, destination: dest}
+      iex> Akd.Operation.run(op)
+      {:error, %IO.Stream{device: :standard_io, line_or_bytes: :line, raw: false}}
+
+      iex> dest = %Akd.Destination{}
+      iex> cmd = "exit 2"
+      iex> op = %Akd.Operation{cmd: cmd, destination: dest}
+      iex> Akd.Operation.run(op)
+      {:error, %IO.Stream{device: :standard_io, line_or_bytes: :line, raw: false}}
 
   When the destination is remote
 
@@ -80,8 +92,8 @@ defmodule Akd.Operation do
             env: operation.cmd_envs,
             cd: path,
             into: IO.stream(:stdio, :line)) do
-      {error, 1} -> {:error, error}
-      {output, _} -> {:ok, output}
+      {output, 0} -> {:ok, output}
+      {error, _} -> {:error, error}
     end
   end
   def run(op) do
@@ -90,7 +102,7 @@ defmodule Akd.Operation do
 
 
   @doc """
-  Takes an Operation and returns a string of commands with `cmd_envs` preprended
+  Takes an `Operation` and returns a string of commands with `cmd_envs` preprended
   to the `cmd` script.
 
   ## Examples:

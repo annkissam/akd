@@ -63,7 +63,7 @@ defmodule Akd.Hook do
     quote do
       import Akd.Dsl.FormHook
 
-      @behviour unquote(__MODULE__)
+      @behaviour unquote(__MODULE__)
 
       @spec get_hooks(Akd.Deployment.t, list) :: unquote(__MODULE__).t
       def get_hooks(_, _), do: raise "`get_hooks/2` not defined for #{__MODULE__}"

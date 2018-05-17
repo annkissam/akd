@@ -2,7 +2,7 @@ defmodule Akd.Dsl.FormHook do
   @moduledoc """
   Defines a Hook.
 
-  This modules provides a DSL to define hooks `Akd.Hook.t` structs in a
+  This modules provides a DSL to define hooks (`Akd.Hook.t` structs) in a
   readable and organized manner.
 
   This module provides a set of macros for generating hooks using operations
@@ -10,10 +10,10 @@ defmodule Akd.Dsl.FormHook do
 
   ## Form Hook and Operations
 
-  Once form_hook is called, it is goes through all the operations defined inside
-  the `do - end` block, using `main`, `ensure` and `rollback` macros, with their
+  Once form_hook is called, it is goes through all the operations defined within
+  the `do - end` block, using the `main`, `ensure`, and `rollback` macros, with their
   specific options. Once the block ends, it resolves all those operations into
-  a `Akd.Hook.t` struct and returns that.
+  an `Akd.Hook.t` struct, which it then returns.
 
   Once this hook is defined it can be used in a pipeline or an `Akd.Hook` module
   that returns a hook.
