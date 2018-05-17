@@ -14,24 +14,38 @@ application and how akd makes it easy to adopt either of those strategies.
 
 ### Remote Distillery build + Deliver to production
 
-This is the recommended way to deploy an elixir application.
+This is the recommended way to deploy an elixir application. Distillery is a
+widely adopted elixir deployment tool. It produces a "distilled form of your
+raw application's components; a single package which can be deployed anywhere."
+, which is why Akd is built in support for distillery.
+
+#### Pros
+
+- Do not have to put your code on the production server.
+- Deployments are reproducible.
+- Less vulnerable to security attacks.
+- Distillery takes advantage of erlang's `script` and `appup` files which utlize
+OTP's features of no-downtime upgrades and how to stratup an application.
+- Distillery is widely used, so a good amount of support is available.
+
+#### Cons
+
+- Build server has access to your code.
+- Build server should have access to all the dependencies. (For `mix deps.get`)
+- Build server's state should be close (or identical) to production's state,
+which means if production gets a major upgrade, so should the build server.
+
+#### Setps to setup this workflow
 
 - Install `asdf` on a trusted build server which has similar configurations
 as the production server (same OS, similar packages etc)
 - Use `distillery` to build the code on the build server.
 - Copy the `distillery` release to the production server.
 
-#### Pros
+#### Using Akd with Distillery
 
-- Do not have to put your code on the production server.
-- Distillery is widely used, so a good amount of help is available.
 
-#### Cons
 
-- Build server has access to your code.
-- Build server should have access to all the dependencies. (For `mix deps.get`)
-- Build server should be close to production, which means if production gets
-a major upgrade, so should the build server.
 
 ### Asdf on production
 
@@ -51,7 +65,7 @@ elixir application without needing to configure or initialize another package.
 production server.
 - Production server and the final build has access to your code.
 - Deployments are not reproducible.
-- Vulnerable to security attacks.
+- More Vulnerable to security attacks.
 - Doesn't utilize OTP's abilities.
 
 #### Steps to adopt this strategy
