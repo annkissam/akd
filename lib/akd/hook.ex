@@ -72,7 +72,6 @@ defmodule Akd.Hook do
     end
   end
 
-
   @doc """
   Takes a `Akd.Hook.t` struct and calls the list of `Akd.Operation.t`
   corresponding to `rollback` type.
