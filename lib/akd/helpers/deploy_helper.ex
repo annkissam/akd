@@ -11,7 +11,7 @@ defmodule Akd.DeployHelper do
   module with a set of params that can be used to initialize a `Deployment`
   struct.
 
-  Returns `nil`
+  Returns whether the pipeline of hooks successfully executed or not
 
   ## Examples
 
@@ -24,7 +24,7 @@ defmodule Akd.DeployHelper do
       ...>   end
       ...> end
       iex> TestAkdDeployHelperExecute.run()
-      nil
+      true
   """
   defmacro execute(pipeline, with: block) do
     quote do
@@ -43,7 +43,7 @@ defmodule Akd.DeployHelper do
 
   Executes `ensure/1` for all the `called_hooks`
 
-  Returns `nil`
+  Returns whether the deployment was a success or not
 
   ## Examples
 
@@ -53,7 +53,7 @@ defmodule Akd.DeployHelper do
       ...> name: "name",
       ...> vsn: "0.1.1"}
       iex> Akd.DeployHelper.exec(deployment)
-      nil
+      true
   """
   def exec(%Deployment{hooks: hooks}) do
     {failure, called_hooks} = Enum.reduce(hooks, {false, []}, &failure_and_hooks/2)
