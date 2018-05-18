@@ -36,7 +36,7 @@ defmodule Mix.Tasks.Akd.Gen.Task do
                           Native Fetchers include:
                           `Akd.Publisher.Distillery` and `Akd.Publisher.Docker`
 
-  --with_phx      -w     Generates phoenix hooks alongside base books
+  --with-phx      -w     Generates phoenix hooks alongside base books
 
   """
 
