@@ -149,6 +149,8 @@ defmodule Akd do
   Returns value corresponding to a system variable config or returns the `default` value:
       iex> Akd.resolve_config({:system, "SOME_RANDOM_CONFIG"}, "default")
       "default"
+      iex> Akd.resolve_config("value", "default")
+      "value"
   """
   @deprecated """
   `{:system, var_name}` is deprecated. If you need to use a System variable in
