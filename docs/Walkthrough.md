@@ -95,7 +95,7 @@ own base hook definitions are built upon Akd's DSL, which should allow for
 developers to more easily read/modify/duplicate them in ways that best suit
 their needs.
 
-## Example Phoenix App
+## Taking Akd for a Spin: an example Phoenix App
 
 For this walkthrough, we will use a simple phoenix application, `akd_example`.
 The app runs on Elixir 1.6.4 and erlang 20.3.4. It uses phoenix 1.3.2, with
