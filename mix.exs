@@ -62,12 +62,11 @@ defmodule Akd.Mixfile do
   def docs do
     [
       main: "Akd",
-      extras: ["docs/GetStarted.md",
-               "docs/Nomenclature.md",
+      extras: ["docs/Nomenclature.md",
                "docs/DeploymentStrategies.md",
                "docs/Walkthrough.md",
                "docs/CustomHooks.md",
-               "docs/Generators.md"],
+               "docs/UsingGenerators.md"],
       source_url: @url,
       source_ref: "v#{@version}"
     ]
