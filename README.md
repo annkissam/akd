@@ -13,17 +13,27 @@ _Akd is Configurable, but easy to set up_
 Akd is a framework that allows Elixir developers to easily write automated
 deployment tasks. Akd is purely written in elixir.
 
-The purpose of Akd is to encapsulate the entire deployment process into a
-simple task.
+Akd, in its purest form, is a way of executing a list of operations on a remote
+(or local) machine. Akd provides an intuitive DSL that allows developers to easily
+define a pipeline consisting of a set of these operations along with corresponding,
+remedial operations, in the event that one or more of the primary pipeline
+operations fails. If you have experience with the Ruby gem `capistrano`, Akd
+should feel familiar.
 
-A Deployment lifecycle in Akd is divided into various `Operations`. Each
-`Operation` is encapsulated into an abstraction called `Hook`. A deployment is
+Akd's primary goal is twofold:
+- to provide developers with the ability to easily compose a series of deloyment
+operations using the Elixir programming language, and
+- to standardize the way in which Elixir application deployments (using tools
+like `distillery` or `docker`) are performed.
+
+A Deployment lifecycle in Akd is divided into various `Operations`.
+`Operation`s is grouped into an abstraction called `Hook`. A deployment is
 a pipeline of `Hook`s which call individual `Operation`s.
 
 Akd integrates seamlessly with packages like `Distillery` and `SimpleDocker` to
 make the whole deployment process a cakewalk.
 
-__MORE DOCS TO COME SOON__
+For details on how to setup a new project with `akd` checkout the `Walkthrough`.
 
 ## Installation
 
@@ -32,7 +42,7 @@ by adding `akd` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:akd, "~> 0.2.0-rc.0"}]
+  [{:akd, "~> 0.2.0"}]
 end
 ```
 
