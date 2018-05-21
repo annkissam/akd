@@ -97,14 +97,14 @@ their needs.
 
 ## Taking Akd for a Spin: an example Phoenix App
 
-For this walkthrough, we will use a simple phoenix application, `akd_example`.
-The app runs on Elixir 1.6.4 and erlang 20.3.4. It uses phoenix 1.3.2, with
+For this walkthrough, we will use a simple Phoenix application, `akd_example`.
+The app runs on Elixir 1.6.4 and erlang 20.3.4. It uses Phoenix 1.3.2, with
 ecto and postgrex.
-This phoenix app consists of one table/schema `products`. The app uses `brunch`
-and `npm`, just like a regular phoenix app. We will be deploying this app to
+This Phoenix app consists of one table/schema `products`. The app uses `brunch`
+and `npm`, just like a regular Phoenix app. We will be deploying this app to
 a server with ip, 192.168.xx.xx.
 
-The simplest way to run a phoenix app is to get all the dependencies using
+The simplest way to run a Phoenix app is to get all the dependencies using
 `mix deps.get` and run it using `mix phx.server`. This is a great for
 development mode, but the recommended way to use it in production is through a
 built release and the preferred way to release an Elixir application is by
@@ -112,7 +112,7 @@ using `distillery`. Distillery allows us to release an Elixir application as
 a built binary, hence we don't have to put the source code of the application
 on the server we're deploying to.
 
-So, we will be using `distillery` and `akd` to deploy our phoenix app.
+So, we will be using `distillery` and `akd` to deploy our Phoenix app.
 
 
 ## Setting up the project with Akd and Distillery
@@ -147,8 +147,8 @@ of the task. For simplicity, let's use all the default hooks and run the task
 as `$ mix akd.gen.task Deploy --with-phx`. This will generate a mix task by
 creating a file `akd_example_deployer/lib/mix/tasks/akd/deploy.ex`. Giving the
 `akd.gen.task` `--with-phx` flag comminucates to akd generators that the task
-being generated is to deploy a phoenix app. Therefore, it will generate hooks
-for phoenix app too. The generated file should look like the following:
+being generated is to deploy a Phoenix app. Therefore, it will generate hooks
+for Phoenix app too. The generated file should look like the following:
 
 ```elixir
 # akd_example_deployer/lib/akd_example_deployer/mix/tasks/akd/deploy.ex
@@ -303,7 +303,7 @@ that you have ssh credentials to the server (192.168.xx.xx).
 ## Running Migrations
 
 Distillery provides various ways in which a set of migrations can be run on
-a phoenix app in [this
+a Phoenix app in [this
 document](https://hexdocs.pm/distillery/1.5.2/running-migrations.html#content).
 
 For this walkthrough, we will be creating a migration module which ensures
