@@ -99,21 +99,22 @@ their needs.
 
 For this walkthrough, we will use a simple Phoenix application, `akd_example`.
 The app runs on Elixir 1.6.4 and erlang 20.3.4. It uses Phoenix 1.3.2, with
-ecto and postgrex.
-This Phoenix app consists of one table/schema `products`. The app uses `brunch`
-and `npm`, just like a regular Phoenix app. We will be deploying this app to
-a server with ip, 192.168.xx.xx.
+Ecto and Postgrex. Additionally, as any ordinary Phoenix app, it is configured
+to use `brunch` and `npm`, by default.
+
+This Phoenix app consists of one table/schema: `products`.  We will be deploying
+this app to a server with ip, 192.168.xx.xx.
 
 The simplest way to run a Phoenix app is to get all the dependencies using
 `mix deps.get` and run it using `mix phx.server`. This is a great for
 development mode, but the recommended way to use it in production is through a
-built release and the preferred way to release an Elixir application is by
-using `distillery`. Distillery allows us to release an Elixir application as
-a built binary, hence we don't have to put the source code of the application
-on the server we're deploying to.
+built release; the preferred way to release an Elixir application is by using
+`distillery`. Distillery allows us to build and release an Elixir application as
+an executable binary, and as such, it isn't necessary for the source code of the
+application to exist on the server being deployed to.
 
-So, we will be using `distillery` and `akd` to deploy our Phoenix app.
-
+With that said, the following deployment example we will centered around setting
+up `akd` and `distillery` to work together to deploy our Phoenix app.
 
 ## Setting up the project with Akd and Distillery
 
