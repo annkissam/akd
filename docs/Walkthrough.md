@@ -116,7 +116,7 @@ application to exist on the server being deployed to.
 With that said, the following deployment example we will centered around setting
 up `akd` and `distillery` to work together to deploy our Phoenix app.
 
-## Setting up the project with Akd and Distillery
+### Setting up the project with Akd and Distillery
 
 One thing to point out here is that `akd` generates a mix task which allows us
 to deploy an application, but that mix task has to be part of an application.
@@ -301,7 +301,7 @@ Now, the app is ready to be deployed! Just run `mix akd.deploy` and make sure
 that you have ssh credentials to the server (192.168.xx.xx).
 
 
-## Running Migrations
+### Running Migrations
 
 Distillery provides various ways in which a set of migrations can be run on
 a Phoenix app in [this
