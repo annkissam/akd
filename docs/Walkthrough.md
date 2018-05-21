@@ -3,23 +3,30 @@
 ## Prelude
 
 Elixir has been one of the fastest growing programming languages for past three
-years. Although there are a lot resources/tools that help you develop in elixir,
-there aren't many that do elixir deployments or even talk about it. There
-are packages which help us with elixir deployments, but they take too long to
-set up (even for a simple app).
+years. Although there exist many resources and tools that can help with Elixir
+development, there aren't many geared toward performing Elixir application
+deployments. Furthermore, (at the time of writing) the handful of packages that
+do exist to assist with Elixir deployments are fairly procedurally involved--
+even for the most simple of applications--and leave something to be desired for
+those eager to make the most efficient use of their time.
 
-In this walkthrough we will be covering the basics of elixir deployments and
+In this walkthrough we will be covering the basics of Elixir deployments and
 how we can make them easier with Annkissam's deployment package: `akd`.
 
-Akd, in its purest form, is a way of executing a list of Operations on a remote
-(or local) machine. It comes with DSLs which makes it easier to define a
-pipeline of those operations and what to do then any of those operations fail.
-If you have used the ruby gem `capistrano`, this will look familier.
+Akd, in its purest form, is a way of executing a list of operations on a remote
+(or local) machine. Akd provides an intuitive DSL that allows developers to easily
+define a pipeline consisting of a set of these operations along with corresponding,
+remedial operations, in the event that one or more of the primary pipeline
+operations fails. If you have experience with the Ruby gem `capistrano`, Akd
+should feel familiar.
 
-Akd's responsibility is to give developers the ability to write those operations
-using the elixir interface and provide a standard way to do deployments using
-tools like `distillery` or `docker`. We will talk more about akd as we go
-further in this walkthrough.
+Akd's primary goal is twofold:
+- to provide developers with the ability to easily compose a series of deloyment
+operations using the Elixir programming language, and
+- to standardize the way in which Elixir application deployments (using tools
+like `distillery` or `docker`) are performed.
+
+We will talk more about Akd as we proceed through this walkthrough.
 
 ## How does Akd work?
 
@@ -44,7 +51,7 @@ phases (pipeline of hooks):
   `svn` or just `scp`.
 
 - `init`: In this phase `akd` initializes and configures the libraries
-  required for the rest of the deployment process. For an elixir app, it can
+  required for the rest of the deployment process. For an Elixir app, it can
   be configuring `distillery` or `docker`.
 
 - `build`: In this phase `akd` produces a deployable entity. It can be a
@@ -75,7 +82,7 @@ the docs.
 ## Example Phoenix App
 
 For this walkthrough, we will use a simple phoenix application, `akd_example`.
-The app runs on elixir 1.6.4 and erlang 20.3.4. It uses phoenix 1.3.2, with
+The app runs on Elixir 1.6.4 and erlang 20.3.4. It uses phoenix 1.3.2, with
 ecto and postgrex.
 This phoenix app consists of one table/schema `products`. The app uses `brunch`
 and `npm`, just like a regular phoenix app. We will be deploying this app to
@@ -84,8 +91,8 @@ a server with ip, 192.168.xx.xx.
 The simplest way to run a phoenix app is to get all the dependencies using
 `mix deps.get` and run it using `mix phx.server`. This is a great for
 development mode, but the recommended way to use it in production is through a
-built release and the preferred way to release an elixir application is by
-using `distillery`. Distillery allows us to release an elixir application as
+built release and the preferred way to release an Elixir application is by
+using `distillery`. Distillery allows us to release an Elixir application as
 a built binary, hence we don't have to put the source code of the application
 on the server we're deploying to.
 
@@ -444,7 +451,7 @@ the publish server.
 ## Conclusion
 
 This was a basic example usage of `akd`. Using it's generators and pipeline DSL,
-akd supports deploying elixir applications not just as distillery releases,
+akd supports deploying Elixir applications not just as distillery releases,
 but as mix projects or even docker containers. Akd can also be extended to
-deploying non-elixir applications or just as a tool to run tasks on a remote
+deploying non-Elixir applications or just as a tool to run tasks on a remote
 server.
