@@ -11,8 +11,8 @@ defmodule Akd.Stop.Distillery do
 
   # Options:
 
-  * run_ensure: boolean. Specifies whether to a run a command or not.
-  * ignore_failure: boolean. Specifies whether to continue if this hook fails.
+  * `run_ensure`: `boolean`. Specifies whether to a run a command or not.
+  * `ignore_failure`: `boolean`. Specifies whether to continue if this hook fails.
 
   # Defaults:
 

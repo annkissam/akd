@@ -15,11 +15,11 @@ defmodule Akd.Fetch.Git do
 
   # Options:
 
-  * run_ensure: boolean. Specifies whether to a run a command or not.
-  * ignore_failure: boolean. Specifies whether to continue if this hook fails.
-  * src: string. Source/Repo from where to clone the project. This is a required
+  * `run_ensure`: `boolean`. Specifies whether to a run a command or not.
+  * `ignore_failure`: `boolean`. Specifies whether to continue if this hook fails.
+  * `src`: `string`. Source/Repo from where to clone the project. This is a required
       option while using this hook.
-  * branch: string. Branch of the git repo that is being deployed.
+  * `branch`: `string`. Branch of the git repo that is being deployed.
 
   # Defaults:
 

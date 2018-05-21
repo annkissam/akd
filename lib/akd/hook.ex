@@ -7,15 +7,15 @@ defmodule Akd.Hook do
 
   The meta data involves:
 
-  * ensure - A list of `Akd.Operation.t` structs that run after a deployment,
+  * `ensure` - A list of `Akd.Operation.t` structs that run after a deployment,
             if the hook was successfully executed (independent of whether the
             deployment itself was successful or not), and `run_ensure` is `true`.
-  * ignore_failure - If `true`, the deployment continues to happen even if this
+  * `ignore_failure` - If `true`, the deployment continues to happen even if this
                     hook fails. Defaults to `false`.
-  * main - A list of `Akd.Operation.t` that run when the hook is executed.
-  * rollback - A list of `Akd.Operation.t` that run when a deployment is a
+  * `main` - A list of `Akd.Operation.t` that run when the hook is executed.
+  * `rollback` - A list of `Akd.Operation.t` that run when a deployment is a
               failure, but the hook was called.
-  * run_ensure - If `true`, `ensure` commands run independent of whether
+  * `run_ensure` - If `true`, `ensure` commands run independent of whether
                 deployment was successful or not. Defaults to `true`.
 
   This struct is mainly used by native hooks in `Akd`, but it can be leveraged

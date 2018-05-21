@@ -9,11 +9,11 @@ defmodule Akd.Operation do
 
   The meta data involves:
 
-  * cmd - Commands that run when an `Akd.Operation.t` struct is run.
-  * cmd_envs - ENV variables that the command is run with. Represented by a list
+  * `cmd` - Commands that run when an `Akd.Operation.t` struct is run.
+  * `cmd_envs` - ENV variables that the command is run with. Represented by a list
               of two-element (strings) tuples.
               Example: [{"SOME_ENV", "1"}, {"OTHER_ENV", "2"}]
-  * destination - `Akd.Destination.t` where an operation's commands are executed.
+  * `destination` - `Akd.Destination.t` where an operation's commands are executed.
 
   This struct is mainly used by native hooks in `Akd`, but it can be leveraged
   to write custom hooks.

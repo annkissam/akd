@@ -5,11 +5,11 @@ defmodule Akd.Destination do
 
   The meta data involves:
 
-  * user - Represents the user who will be accessing a host/server.
+  * `user` - Represents the user who will be accessing a host/server.
            Expects a string, defaults to `:current`.
-  * host - Represents the host/server being accessed.
+  * `host` - Represents the host/server being accessed.
            Expects a string, defaults to `:local`.
-  * path - Represents the path on the server being accessed.
+  * `path` - Represents the path on the server being accessed.
            Expects a string, defaults to `.` (current directory).
 
   Example:

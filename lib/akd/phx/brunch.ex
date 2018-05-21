@@ -15,11 +15,11 @@ defmodule Akd.Build.Phoenix.Brunch do
 
   # Options:
 
-  * run_ensure: boolean. Specifies whether to a run a command or not.
-  * ignore_failure: boolean. Specifies whether to continue if this hook fails.
-  * brunch: string. Path to brunch executable from project's root.
-  * brunch_config: string. Path to brunch config from project's root.
-  * cmd_env: list of tuples. Specifies the environments to provide while
+  * `run_ensure`: `boolean`. Specifies whether to a run a command or not.
+  * `ignore_failure`: `boolean`. Specifies whether to continue if this hook fails.
+  * `brunch`: `string`. Path to brunch executable from project's root.
+  * `brunch_config`: `string`. Path to brunch config from project's root.
+  * `cmd_env`: `list` of `tuples`. Specifies the environments to provide while
         building the distillery release.
 
   # Defaults:

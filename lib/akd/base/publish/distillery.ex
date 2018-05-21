@@ -20,9 +20,9 @@ defmodule Akd.Publish.Distillery do
 
   # Options:
 
-  * run_ensure: boolean. Specifies whether to a run a command or not.
-  * ignore_failure: boolean. Specifies whether to continue if this hook fails.
-  * scp_options: string. options to pass to the SCP command, example: "-o \"ForwardAgent yes\""
+  * `run_ensure`: `boolean`. Specifies whether to a run a command or not.
+  * `ignore_failure`: `boolean`. Specifies whether to continue if this hook fails.
+  * `scp_options`: `string`. options to pass to the SCP command, example: "-o \"ForwardAgent yes\""
 
   # Defaults:
 

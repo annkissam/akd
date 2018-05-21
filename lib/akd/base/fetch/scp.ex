@@ -14,10 +14,10 @@ defmodule Akd.Fetch.Scp do
 
   # Options:
 
-  * run_ensure: boolean. Specifies whether to a run a command or not.
-  * ignore_failure: boolean. Specifies whether to continue if this hook fails.
-  * src: string. Source of the code from where to scp the data.
-  * exclude: list. Scp all folders except the ones given in exclude.
+  * `run_ensure`: `boolean`. Specifies whether to a run a command or not.
+  * `ignore_failure`: `boolean`. Specifies whether to continue if this hook fails.
+  * `src`: `string`. Source of the code from where to scp the data.
+  * `exclude`: `list`. Scp all folders except the ones given in exclude.
 
   # Defaults:
 
