@@ -92,8 +92,8 @@ applications that require more (or less) robust deployment protocols. As such,
 it is very easy to define your own phases using Akd's pipeline DSL (which
 Annkissam intends to cover in more detail, in future walkthroughs). Even Akd's
 own base hook definitions are built upon Akd's DSL, which should allow for
-developers to more easily read/modify/duplicate them in ways best suit their
-needs.
+developers to more easily read/modify/duplicate them in ways that best suit
+their needs.
 
 ## Example Phoenix App
 
