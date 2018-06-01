@@ -32,12 +32,12 @@ defmodule Mix.Tasks.Akd.Deploy do
 
     hook Akd.Build.Phoenix.Npm,
       package: "path/to/assets_folder", # web_app/assets
-      cmd_env: [] # Add build time system variables
+      cmd_envs: [] # Add build time system variables
 
     hook Akd.Build.Phoenix.Brunch,
       config: "path/to/assets_folder", # web_app/assets
       brunch: "./node_modules/brunch/bin/brunch", # Path to brunch from assets folder
-      cmd_env: [] # Add build time system variables
+      cmd_envs: [] # Add build time system variables
   end
 
   pipeline :publish do

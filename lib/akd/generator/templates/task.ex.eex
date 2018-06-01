@@ -32,12 +32,12 @@ defmodule <%= @name %> do
     <%= if @with_phx do %>
     hook Akd.Build.Phoenix.Npm,
       package: "path/to/assets_folder", # web_app/assets
-      cmd_env: [] # Add build time system variables
+      cmd_envs: [] # Add build time system variables
 
     hook Akd.Build.Phoenix.Brunch,
       config: "path/to/assets_folder", # web_app/assets
       brunch: "./node_modules/brunch/bin/brunch", # Path to brunch from assets folder
-      cmd_env: [] # Add build time system variables <% end %>
+      cmd_envs: [] # Add build time system variables <% end %>
   end
 
   pipeline :publish do <%= if @start do %>

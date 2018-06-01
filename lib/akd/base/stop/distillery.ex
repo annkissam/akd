@@ -57,14 +57,14 @@ defmodule Akd.Stop.Distillery do
   # struct using FormHook DSL
   defp stop_hook(deployment, opts) do
     destination = Akd.DestinationResolver.resolve(:publish, deployment)
-    cmd_env = Keyword.get(opts, :cmd_env, [])
+    cmd_envs = Keyword.get(opts, :cmd_envs, [])
 
     form_hook opts do
       main "bin/#{deployment.name} stop", destination,
-        cmd_env: cmd_env
+        cmd_envs: cmd_envs
 
       rollback "bin/#{deployment.name} start", destination,
-        cmd_env: cmd_env
+        cmd_envs: cmd_envs
     end
   end
 

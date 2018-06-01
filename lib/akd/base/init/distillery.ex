@@ -16,7 +16,7 @@ defmodule Akd.Init.Distillery do
 
   * `run_ensure`: `boolean`. Specifies whether to a run a command or not.
   * `ignore_failure`: `boolean`. Specifies whether to continue if this hook fails.
-  * `cmd_env`: `list` of `tuples`. Specifies the environments to provide while
+  * `cmd_envs`: `list` of `tuples`. Specifies the environments to provide while
         initializing the distillery release.
 
   # Defaults:
@@ -75,12 +75,12 @@ defmodule Akd.Init.Distillery do
   # This function takes a destination, a mix_env, switches and options
   # and returns an Akd.Hook.t struct using form_hook DSL.
   defp init_hook(destination, mix_env, switches, opts) do
-    cmd_env = Keyword.get(opts, :cmd_env, [])
-    cmd_env = [{"MIX_ENV", mix_env} | cmd_env]
+    cmd_envs = Keyword.get(opts, :cmd_envs, [])
+    cmd_envs = [{"MIX_ENV", mix_env} | cmd_envs]
 
     form_hook opts do
-      main setup(), destination, cmd_env: cmd_env
-      main rel_init(switches), destination, cmd_env: cmd_env
+      main setup(), destination, cmd_envs: cmd_envs
+      main rel_init(switches), destination, cmd_envs: cmd_envs
 
       ensure "rm -rf ./rel", destination
       ensure "rm -rf _build/prod", destination

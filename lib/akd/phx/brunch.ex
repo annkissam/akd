@@ -19,7 +19,7 @@ defmodule Akd.Build.Phoenix.Brunch do
   * `ignore_failure`: `boolean`. Specifies whether to continue if this hook fails.
   * `brunch`: `string`. Path to brunch executable from project's root.
   * `brunch_config`: `string`. Path to brunch config from project's root.
-  * `cmd_env`: `list` of `tuples`. Specifies the environments to provide while
+  * `cmd_envs`: `list` of `tuples`. Specifies the environments to provide while
         building the distillery release.
 
   # Defaults:
@@ -78,15 +78,15 @@ defmodule Akd.Build.Phoenix.Brunch do
   defp build_hook(deployment, brunch, brunch_config, opts) do
     destination = Akd.DestinationResolver.resolve(:build, deployment)
     mix_env = deployment.mix_env
-    cmd_env = Keyword.get(opts, :cmd_env, [])
-    cmd_env = [{"MIX_ENV", mix_env} | cmd_env]
+    cmd_envs = Keyword.get(opts, :cmd_envs, [])
+    cmd_envs = [{"MIX_ENV", mix_env} | cmd_envs]
 
     form_hook opts do
       main "mix deps.get \n mix compile", destination,
-        cmd_env: cmd_env
+        cmd_envs: cmd_envs
 
       main "cd #{brunch_config} \n #{brunch} build --production", destination
-      main "mix phx.digest", destination, cmd_env: cmd_env
+      main "mix phx.digest", destination, cmd_envs: cmd_envs
 
       # ensure "rm -rf deps", destination
     end

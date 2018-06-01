@@ -23,7 +23,7 @@ defmodule Akd.Build.Docker do
 
   * `run_ensure`: `boolean`. Specifies whether to a run a command or not.
   * `ignore_failure`: `boolean`. Specifies whether to continue if this hook fails.
-  * `cmd_env`: `list` of `tuples`. Specifies the environments to provide while
+  * `cmd_envs`: `list` of `tuples`. Specifies the environments to provide while
         building the distillery release.
 
   # Defaults:

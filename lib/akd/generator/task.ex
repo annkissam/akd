@@ -39,7 +39,9 @@ defmodule Akd.Generator.Task do
 
   ## Examples:
 
+    ```elixir
     Akd.Generator.Hook.gen(["task.ex"], [path: "some/path"])
+    ```
 
   """
   @spec gen(list, Keyword.t) :: :ok | {:error, String.t}

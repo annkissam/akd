@@ -13,10 +13,13 @@ defmodule <%= @name %> do
     opts = uniq_merge(opts, @default_opts)
     # Replace this with some destination
     destination = Akd.Destination.local(".")
+    [my_hook(destination)]
+  end
 
+  defp my_hook(destination, opts \\ []) do
     # For more information check out Akd.Dsl.FormHook
     form_hook opts do
-      main "main command", destination, cmd_env: [{"SOME_ENV", "some_values"}]
+      main "main command", destination, cmd_envs: [{"SOME_ENV", "some_values"}]
 
       ensure "ensure command", destination
 
