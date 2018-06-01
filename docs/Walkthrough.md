@@ -428,7 +428,7 @@ defmodule MyHooks.RunMigrations do
     destination = Akd.DestinationResolver.resolve(:publish, deployment)
 
     # For more information check out Akd.Dsl.FormHook
-    [my_hook(destination)]
+    [migrate_hook(destination)]
   end
 
   defp migrate_hook(destination, opts \\ []) do
