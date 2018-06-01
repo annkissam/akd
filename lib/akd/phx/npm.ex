@@ -8,7 +8,7 @@ defmodule Akd.Build.Phoenix.Npm do
   at a deployment's `build_at` destination. This hook assumes that a package.json
   is present.
 
-  Ensures to cleanup and remove node_modules folder created by this build.
+  Ensures to cleanup and remove `node_modules` folder created by this build.
 
   Doesn't have any Rollback operations.
 
@@ -16,7 +16,7 @@ defmodule Akd.Build.Phoenix.Npm do
 
   * `run_ensure`: `boolean`. Specifies whether to a run a command or not.
   * `ignore_failure`: `boolean`. Specifies whether to continue if this hook fails.
-  * `cmd_env`: `list` of `tuples`. Specifies the environments to provide while
+  * `cmd_envs`: `list` of `tuples`. Specifies the environments to provide while
         building the distillery release.
   * `package_path`: `string`. Path to package.json
 
@@ -24,7 +24,7 @@ defmodule Akd.Build.Phoenix.Npm do
 
   * `run_ensure`: `true`
   * `ignore_failure`: `false`
-  * `package_path`: "."
+  * `package_path`: `"."`
   """
 
   use Akd.Hook
@@ -62,10 +62,10 @@ defmodule Akd.Build.Phoenix.Npm do
   # struct using FormHook DSL
   defp build_hook(deployment, opts, package_path) do
     destination = Akd.DestinationResolver.resolve(:build, deployment)
-    cmd_env = Keyword.get(opts, :cmd_env, [])
+    cmd_envs = Keyword.get(opts, :cmd_envs, [])
 
     form_hook opts do
-      main "cd #{package_path} \n npm install", destination, cmd_env: cmd_env
+      main "cd #{package_path} \n npm install", destination, cmd_envs: cmd_envs
 
       # ensure "cd #{package_path} \n rm -rf node_modules", destination
     end

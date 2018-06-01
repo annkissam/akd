@@ -96,11 +96,13 @@ defmodule Akd.Dsl.Pipeline do
   This can be called only inside a pipeline call.
 
   ## Examples:
+    ```elixir
     pipeline :pipe do
       hook Akd.Init.Distillery, run_ensure: false
       hook Akd.Build.Distillery
       hook Akd.Publish.Distillery
     end
+    ```
   """
   defmacro hook(hook, opts \\ []) do
     quote do
@@ -117,15 +119,18 @@ defmodule Akd.Dsl.Pipeline do
   This can be called only inside a pipeline call.
 
   ## Examples:
+    ```elixir
     pipeline :pipe do
       hook Akd.Init.Distillery, run_ensure: false
       hook Akd.Build.Distillery
       hook Akd.Publish.Distillery
     end
 
+    ```elixir
     pipeline :final do
       pipe_through :pipe # This adds all the above three hooks to :final
     end
+    ```
   """
   defmacro pipe_through(pipeline) do
     quote do

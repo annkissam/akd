@@ -30,11 +30,11 @@ defmodule Akd.Operation do
   @type cmd :: String.t | :exit
 
   @typedoc ~s(Type representind a command specific environment)
-  @type cmd_env :: {String.t, String.t}
+  @type cmd_envs :: {String.t, String.t}
 
   @typedoc ~s(Generic type for an Operation struct)
   @type t :: %__MODULE__{
-    cmd_envs: [cmd_env],
+    cmd_envs: [cmd_envs],
     cmd: cmd,
     destination: Destination.t
   }

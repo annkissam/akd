@@ -169,12 +169,12 @@ defmodule Mix.Tasks.Akd.Deploy do
     hook Akd.Build.Distillery
     hook Akd.Build.Phoenix.Npm,
       package: "path/to/assets_folder", # web_app/assets
-      cmd_env: [] # Add build time system variables
+      cmd_envs: [] # Add build time system variables
 
     hook Akd.Build.Phoenix.Brunch,
       config: "path/to/assets_folder", # web_app/assets
       brunch: "./node_modules/brunch/bin/brunch", # Path to brunch binary from assets folder
-      cmd_env: [] # Add build time system variables
+      cmd_envs: [] # Add build time system variables
   end
 
   pipeline :publish do
@@ -388,7 +388,7 @@ defmodule MyHooks.RunMigrations do
 
   defp my_hook(destination, opts \\ []) do
     form_hook opts do
-      main "main command", destination, cmd_env: [{"SOME_ENV", "some_values"}]
+      main "main command", destination, cmd_envs: [{"SOME_ENV", "some_values"}]
 
       ensure "ensure command", destination
 
