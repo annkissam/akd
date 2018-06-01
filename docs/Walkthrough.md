@@ -122,7 +122,7 @@ dependency in the `mix.exs`:
 # akd_example_deployer/mix.exs
 
 defp deps do
-  [{:akd, "~> 0.2", only: :dev, runtime: false}]
+  [{:akd, "~> 0.2.1", only: :dev, runtime: false}]
 end
 ```
 

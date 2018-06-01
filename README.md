@@ -42,7 +42,7 @@ by adding `akd` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:akd, "~> 0.2.0"}]
+  [{:akd, "~> 0.2.1"}]
 end
 ```
 
