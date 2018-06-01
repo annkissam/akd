@@ -17,7 +17,7 @@ defmodule Akd.Build.Distillery do
 
   * `run_ensure`: `boolean`. Specifies whether to a run a command or not.
   * `ignore_failure`: `boolean`. Specifies whether to continue if this hook fails.
-  * `cmd_env`: `list` of `tuples`. Specifies the environments to provide while
+  * `cmd_envs`: `list` of `tuples`. Specifies the environments to provide while
         building the distillery release.
 
   # Defaults:
@@ -66,12 +66,12 @@ defmodule Akd.Build.Distillery do
     destination = Akd.DestinationResolver.resolve(:build, deployment)
     mix_env = deployment.mix_env
     distillery_env = Keyword.get(opts, :distillery_env, mix_env)
-    cmd_env = Keyword.get(opts, :cmd_env, [])
-    cmd_env = [{"MIX_ENV", mix_env} | cmd_env]
+    cmd_envs = Keyword.get(opts, :cmd_envs, [])
+    cmd_envs = [{"MIX_ENV", mix_env} | cmd_envs]
 
     form_hook opts do
       main "mix deps.get \n mix compile \n mix release --env=#{distillery_env}",
-        destination, cmd_env: cmd_env
+        destination, cmd_envs: cmd_envs
 
       ensure "rm -rf ./_build/prod/rel", destination
     end

@@ -41,7 +41,9 @@ defmodule Akd.Generator.Dockerfile do
 
   ## Examples:
 
+    ```elixir
     Akd.Generator.Dockerfile.gen(["Dockerfile"], [path: "some/path"])
+    ```
 
   """
   @spec gen(list, Keyword.t) :: :ok | {:error, String.t}

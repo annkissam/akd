@@ -37,7 +37,9 @@ defmodule Akd.Generator.Hook do
 
   ## Examples:
 
+    ```elixir
     Akd.Generator.Hook.gen(["hook.ex"], [path: "some/path"])
+    ```
 
   """
   @spec gen(list, Keyword.t) :: :ok | {:error, String.t}

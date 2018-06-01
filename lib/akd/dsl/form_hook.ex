@@ -25,7 +25,7 @@ defmodule Akd.Dsl.FormHook do
   defmodule DeployApp.CustomHook.Hook do
     use Akd.Hook
 
-    def get_hooks(deployment, opts // []) do
+    def get_hooks(deployment, opts \\ []) do
       my_hook = form_hook opts do
         main "run this", deployment.build_at
         main "run this too", deployment.publish_to
@@ -50,9 +50,11 @@ defmodule Akd.Dsl.FormHook do
   Same as `form_hook/2` but without `opts`
 
   ## Examples
+    ```elixir
     form_hook do
       main "echo hello", Akd.Destination.local()
     end
+    ```
 
       iex> import Akd.Dsl.FormHook
       iex> form_hook do
@@ -96,9 +98,11 @@ defmodule Akd.Dsl.FormHook do
   This is the entry point to this DSL.
 
   ## Examples
+    ```elixir
     form_hook opts, do
       main "echo hello", Akd.Destination.local()
     end
+    ```
 
       iex> import Akd.Dsl.FormHook
       iex> form_hook ignore_failure: true, run_ensure: false do
@@ -143,10 +147,12 @@ defmodule Akd.Dsl.FormHook do
   These commands are the main commands that are ran when a hook is first
   executed.
 
-  Same as `main/2` but without `cmd_env`
+  Same as `main/2` but without `cmd_envs`
 
   ## Examples
+    ```elixir
     main "echo hello", Akd.Destination.local()
+    ```
   """
   defmacro main(cmd, dest) do
     quote do
@@ -161,17 +167,19 @@ defmodule Akd.Dsl.FormHook do
   These commands are the main commands that are ran when a hook is first
   executed.
 
-  Takes a set of `cmd_env`, which is a list of tuples
+  Takes a set of `cmd_envs`, which is a list of tuples
   which represent the environment (system) variables
   that will be given before the operation is executed.
 
   ## Examples
-    main "echo $GREET", Akd.Destination.local(), cmd_env: [{"GREET", "hello"}]
+    ```elixir
+    main "echo $GREET", Akd.Destination.local(), cmd_envs: [{"GREET", "hello"}]
+    ```
   """
-  defmacro main(cmd, dest, cmd_env: cmd_env) do
+  defmacro main(cmd, dest, cmd_envs: cmd_envs) do
     quote do
       put_ops_acc(var!(ops, unquote(__MODULE__)),
-        {:main, {unquote(cmd), unquote(dest), unquote(cmd_env)}})
+        {:main, {unquote(cmd), unquote(dest), unquote(cmd_envs)}})
     end
   end
 
@@ -181,10 +189,12 @@ defmodule Akd.Dsl.FormHook do
   These commands are the commands that are ran after all the hooks are
   executed. Think of these commands as cleanup commands
 
-  Same as `ensure/2` but without `cmd_env`
+  Same as `ensure/2` but without `cmd_envs`
 
   ## Examples
+    ```elixir
     ensure "echo $GREET", Akd.Destination.local()
+    ```
   """
   defmacro ensure(cmd, dest) do
     quote do
@@ -199,17 +209,19 @@ defmodule Akd.Dsl.FormHook do
   These commands are the commands that are ran after all the hooks are
   executed. Think of these commands as cleanup commands
 
-  Takes a set of `cmd_env`, which is a list of tuples
+  Takes a set of `cmd_envs`, which is a list of tuples
   which represent the environment (system) variables
   that will be given before the operation is executed.
 
   ## Examples
-    ensure "echo $GREET", Akd.Destination.local(), cmd_env: [{"GREET", "hello"}]
+    ```elixir
+    ensure "echo $GREET", Akd.Destination.local(), cmd_envs: [{"GREET", "hello"}]
+    ```
   """
-  defmacro ensure(cmd, dest, cmd_env: cmd_env) do
+  defmacro ensure(cmd, dest, cmd_envs: cmd_envs) do
     quote do
       put_ops_acc(var!(ops, unquote(__MODULE__)),
-        {:ensure, {unquote(cmd), unquote(dest), unquote(cmd_env)}})
+        {:ensure, {unquote(cmd), unquote(dest), unquote(cmd_envs)}})
     end
   end
 
@@ -219,10 +231,12 @@ defmodule Akd.Dsl.FormHook do
   These commands are the commands that are ran after all the hooks are
   executed and if there is a failure.
 
-  Same as `rollback/2` but without `cmd_env`
+  Same as `rollback/2` but without `cmd_envs`
 
   ## Examples
+    ```elixir
     rollback "echo $GREET", Akd.Destination.local()
+    ```
   """
   defmacro rollback(cmd, dest) do
     quote do
@@ -237,17 +251,19 @@ defmodule Akd.Dsl.FormHook do
   These commands are the commands that are ran after all the hooks are
   executed and if there is a failure.
 
-  Takes a set of `cmd_env`, which is a list of tuples
+  Takes a set of `cmd_envs`, which is a list of tuples
   which represent the environment (system) variables
   that will be given before the operation is executed.
 
   ## Examples
-    rollback "echo $GREET", Akd.Destination.local(), cmd_env: [{"GREET", "hello"}]
+    ```elixir
+    rollback "echo $GREET", Akd.Destination.local(), cmd_envs: [{"GREET", "hello"}]
+    ```
   """
-  defmacro rollback(cmd, dest, cmd_env: cmd_env) do
+  defmacro rollback(cmd, dest, cmd_envs: cmd_envs) do
     quote do
       put_ops_acc(var!(ops, unquote(__MODULE__)),
-        {:rollback, {unquote(cmd), unquote(dest), unquote(cmd_env)}})
+        {:rollback, {unquote(cmd), unquote(dest), unquote(cmd_envs)}})
     end
   end
 

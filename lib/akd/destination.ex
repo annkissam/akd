@@ -13,10 +13,10 @@ defmodule Akd.Destination do
            Expects a string, defaults to `.` (current directory).
 
   Example:
-    Accessing `root@x.x.x.x:/path/to/dir" would have
-    user: `"root"`
-    host: `"x.x.x.x"`
-    path: `"/path/to/dir/"`
+  - Accessing `root@x.x.x.x:/path/to/dir"` would have:
+      * `user`: `"root"`
+      * `host`: `"x.x.x.x"`
+      * `path`: `"/path/to/dir/"`
 
   This struct is mainly used by native hooks in `Akd`, but it can be leveraged
   to produce custom hooks.
