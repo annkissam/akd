@@ -21,19 +21,19 @@ operations fails. If you have experience with the Ruby gem `capistrano`, Akd
 should feel familiar.
 
 Akd's primary goal is twofold:
-- to provide developers with the ability to easily compose a series of deloyment
+- to provide developers with the ability to easily compose a series of deployment
 operations using the Elixir programming language, and
 - to standardize the way in which Elixir application deployments (using tools
 like `distillery` or `docker`) are performed.
 
-A Deployment lifecycle in Akd is divided into various `Operations`.
-`Operation`s is grouped into an abstraction called `Hook`. A deployment is
+A Deployment lifecycle in Akd is divided into various `Operation`s.
+`Operation`s are grouped into an abstraction called a `Hook`. A deployment is
 a pipeline of `Hook`s which call individual `Operation`s.
 
 Akd integrates seamlessly with packages like `Distillery` and `SimpleDocker` to
 make the whole deployment process a cakewalk.
 
-For details on how to setup a new project with `akd` checkout the `Walkthrough`.
+For details on how to setup a new project with `akd` checkout the [walkthrough](https://www.annkissam.com/technology/elixir).
 
 ## Installation
 
