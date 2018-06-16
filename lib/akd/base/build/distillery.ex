@@ -15,10 +15,16 @@ defmodule Akd.Build.Distillery do
 
   # Options:
 
-  * `run_ensure`: `boolean`. Specifies whether to a run a command or not.
+  * `run_ensure`: `boolean`. Specifies whether to a run the ensure commands of a hook
+        or not. This is useful when specifying whether or not to clean up after
+        and operation.  Defaults to `true`.
   * `ignore_failure`: `boolean`. Specifies whether to continue if this hook fails.
+        This is useful when a hook's failure is to be ignored, and a deployed can
+        be continued without halting the pipeline.
   * `cmd_envs`: `list` of `tuples`. Specifies the environments to provide while
         building the distillery release.
+  * `distillery_env`: `string`. This is the env that `distillery` should use
+        to build a release. This defaults to the `mix_env` of a `deployment`.
 
   # Defaults:
 
