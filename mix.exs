@@ -67,8 +67,8 @@ defmodule Akd.Mixfile do
         "docs/CustomHooks.md",
         "docs/DeploymentStrategies.md",
         "docs/Nomenclature.md",
-        "docs/UsingGenerators.md"
-        "docs/Walkthrough.md",
+        "docs/UsingGenerators.md",
+        "docs/Walkthrough.md"
       ],
       source_url: @url,
       source_ref: "v#{@version}"
