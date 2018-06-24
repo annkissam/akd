@@ -55,7 +55,7 @@ defmodule Akd.Mixfile do
 
   defp description do
     """
-    An configurable (but easy to set up) Elixir Deployment Automation library.
+    A configurable (but easy to set up) Elixir Deployment Automation library.
     """
   end
 
