@@ -42,8 +42,12 @@ as the production server (same OS, similar packages etc)
 
 ### Using Akd with Distillery
 
+- __TODO__
+
 
 ## Local Distillery build w/ ERTS + Deliver to production
+
+- __TODO__
 
 
 ## Asdf on production
@@ -75,6 +79,4 @@ production server.
 
 ### How akd does it
 
-
-
-
+- __TODO__
