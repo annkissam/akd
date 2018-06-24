@@ -2,7 +2,7 @@
 
 Deploying Elixir applications can be hard to figure out, with multiple strategies
 involving tools like `distillery`, `docker`, `edeliver` or `mix` to choose from.
-At Annkissam, we have adopted a simple approach to deploying elixir applications,
+At Annkissam, we have adopted a simple workflow to deploying elixir applications,
 which we would like to share with the community.
 
 This post digs deeper into `Akd` while explaining how we at Annkissam use `akd`
@@ -15,9 +15,9 @@ mostly on CentOS servers. We typically have a build server (also CentOS) on whic
 we run the `Distillery` release task and copy the built release to a final
 destination on which the app is started.
 
-There are several pain points which we have recognized which deploying
+There are several pain-points which we have recognized which deploying
 elixir applications as releases. In this post, we will talk about one of those
-pain points and how `Akd` provides a solution for it.
+pain-points and how `Akd` provides a solution for it.
 
 ## Build-time vs Run-time Environment variables
 
@@ -29,11 +29,11 @@ While building releases, we have access to the `Mix.Config` of the project. This
 allows us to access the environment variables during compile (build) time using
 `System.get_env/1`. However, once built the value of `System.get_env` cannot be
 changed in the configuration. There are several ways of overcoming this.
-`Distillery` provides `REPLACE_OS_VARS` config which loads from run-time,
-`load_from_system_env` approach in `Phoenix` works to load environments lazily
-at Runtime or a tool like [`conform`](https://github.com/bitwalker/conform).
-`Akd` provides a simple approach to this problem which works for most of our
-applications.
+`Distillery` provides `REPLACE_OS_VARS` config which loads from environments
+from the destination server, `load_from_system_env` approach in `Phoenix` loads
+environments lazily at runtime or a tool like
+[`conform`](https://github.com/bitwalker/conform).  `Akd` provides it's own
+simplified solution to this problem which works for most of our applications.
 
 ### Providing environments before builds
 
@@ -275,5 +275,5 @@ at deploy-time.
   the command: This is a more complex approach, but it loads the runtime
   environments at publish time without having to provide them at deploy-time.
 
-This was just an example of how `akd` provides solutions to some pain points with
-Elixir deployments at Annkissam.
+This was just an example of how `akd` provides solutions to some of the problems
+we had with Elixir deployments at Annkissam.
