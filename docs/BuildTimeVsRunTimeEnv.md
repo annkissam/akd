@@ -55,7 +55,7 @@ the [Walkthrough](https://www.annkissam.com/technology/Elixir)_
 pipeline :build do
   hook Akd.Build.Distillery,
     run_ensure: false,
-    cmd_env: [{"SOME_ENV", "some_value"}]
+    cmd_envs: [{"SOME_ENV", "some_value"}]
 end
 
 ```
@@ -75,7 +75,7 @@ pipeline :publish do
   hook Akd.Publish.Distillery, scp_options: "-o \"ForwardAgent yes\""
 
   hook Akd.Start.Distillery,
-    cmd_env: [{"ECTO_DB_URL", "ecto://user:password@127.0.0.1/database"}]
+    cmd_envs: [{"ECTO_DB_URL", "ecto://user:password@127.0.0.1/database"}]
 end
 ```
 
@@ -227,11 +227,11 @@ defmodule Deployer.Hooks.EnvStart do
   # struct using FormHook DSL
   defp start_hook(deployment, opts) do
     destination = Akd.DestinationResolver.resolve(:publish, deployment)
-    cmd_env = Keyword.get(opts, :cmd_env, [])
+    cmd_envs = Keyword.get(opts, :cmd_envs, [])
 
     form_hook opts do
       main "bin/#{deployment.name} env start", destination,
-        cmd_env: cmd_env
+        cmd_envs: cmd_envs
     end
   end
 
