@@ -279,4 +279,5 @@ at deploy-time.
   environments at publish time without having to provide them at deploy-time.
 
 This was just an example of how `akd` provides solutions to some of the problems
-we had with Elixir deployments at Annkissam.
+we had with Elixir deployments at Annkissam. We look forward to sharing more
+walkthroughs on `akd` and how it has streamlined our deployment workflow.
