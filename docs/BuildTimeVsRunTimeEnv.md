@@ -1,4 +1,4 @@
-# Using Akd to solve Build-time vs Run-time Environment problem
+# Using Akd to Solve Build-time vs Run-time Environment problem
 
 Deploying Elixir applications can be hard to figure out, with multiple strategies
 involving tools like `distillery`, `docker`, `edeliver` or `mix` to choose from.
