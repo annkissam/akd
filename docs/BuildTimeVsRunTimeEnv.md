@@ -12,7 +12,7 @@ to simplify one of the most prevalent Elixir deployment problems.
 
 At Annkissam, we use `akd` with `distillery` to deploy OTP releases. We run them
 mostly on CentOS servers. We typically have a build server (also CentOS) on which
-we run the `Distillery` release task and copy the built release to a final
+we run the `distillery` release task and copy the built release to a final
 destination on which the app is started.
 
 There are several pain-points which we have recognized when deploying
@@ -21,14 +21,14 @@ pain-points and how `akd` provides a solution for it.
 
 ## Build-time vs Run-time Environment variables
 
-There aren't many differneces between the run-time and build-time environment when
-running a Mix project in dev environment. However, while using releases, they are
+There aren't many differences between the run-time and build-time environment when
+running a Mix project in dev environment. However, when using releases, they are
 often the biggest hurdles that we encounter.
 
 While building releases, we have access to the `Mix.Config` of the project. This
-allows us to access the environment variables during compile (build) time using
-`System.get_env/1`. However, once built the value of `System.get_env` cannot be
-changed in the configuration. There are several ways of overcoming this.
+allows us to access the environment variables during compile-time (build-time)
+using `System.get_env/1`. However, once built the value of `System.get_env/1`
+cannot be changed in the configuration. There are several ways to overcome this:
 `distillery` provides `REPLACE_OS_VARS` config which loads from environments
 from the destination server, `load_from_system_env` approach in `phoenix` loads
 environments lazily at run-time, or a tool like
@@ -199,7 +199,7 @@ released application.
 To generate a custom hook run: `$ mix akd.gen.hook Deployer.Hooks.EnvStart`.
 
 _To learn more about custom hook generator, check out
-[this page](https://hexdocs.pm/akd/Mix.Tasks.Akd.Gen.Hook.html#content)_
+[this page](https://hexdocs.pm/akd/Mix.Tasks.Akd.Gen.Hook.html#content)._
 
 We can replace the generated file's contents with the following:
 
