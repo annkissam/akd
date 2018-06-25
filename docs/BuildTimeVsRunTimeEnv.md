@@ -1,12 +1,12 @@
-# Using Akd to solve Build-time vs Runtime Environment Problem
+# Using Akd to solve Build-time vs Run-time Environment problem
 
 Deploying Elixir applications can be hard to figure out, with multiple strategies
 involving tools like `distillery`, `docker`, `edeliver` or `mix` to choose from.
-At Annkissam, we have adopted a simple workflow to deploying elixir applications,
+At Annkissam, we have adopted a simple workflow for deploying Elixir applications,
 which we would like to share with the community.
 
-This post digs deeper into `Akd` while explaining how we at Annkissam use `akd`
-to simplify one of the popular elixir deployment problems.
+This post digs deeper into `akd` while explaining how we at Annkissam use `akd`
+to simplify one of the most prevalent Elixir deployment problems.
 
 ## Prelude
 
@@ -15,30 +15,31 @@ mostly on CentOS servers. We typically have a build server (also CentOS) on whic
 we run the `Distillery` release task and copy the built release to a final
 destination on which the app is started.
 
-There are several pain-points which we have recognized which deploying
-elixir applications as releases. In this post, we will talk about one of those
-pain-points and how `Akd` provides a solution for it.
+There are several pain-points which we have recognized when deploying
+Elixir applications as releases. In this post, we will talk about one of those
+pain-points and how `akd` provides a solution for it.
 
 ## Build-time vs Run-time Environment variables
 
-There isn't much difference between the run-time and build-time environment when
+There aren't many differneces between the run-time and build-time environment when
 running a Mix project in dev environment. However, while using releases, they are
-often one of the biggest hurdles we have to face.
+often the biggest hurdles that we encounter.
 
 While building releases, we have access to the `Mix.Config` of the project. This
 allows us to access the environment variables during compile (build) time using
 `System.get_env/1`. However, once built the value of `System.get_env` cannot be
 changed in the configuration. There are several ways of overcoming this.
-`Distillery` provides `REPLACE_OS_VARS` config which loads from environments
-from the destination server, `load_from_system_env` approach in `Phoenix` loads
-environments lazily at runtime or a tool like
-[`conform`](https://github.com/bitwalker/conform).  `Akd` provides it's own
-simplified solution to this problem which works for most of our applications.
+`distillery` provides `REPLACE_OS_VARS` config which loads from environments
+from the destination server, `load_from_system_env` approach in `phoenix` loads
+environments lazily at run-time, or a tool like
+[`conform`](https://github.com/bitwalker/conform) that allows for an app to
+adapt to its environment. `Akd` provides it's own simple solution to this
+problem, which works for most of our applications.
 
-### Providing environments before builds
+### Providing Environments Before Builds
 
 `Akd` allows us to specify environment variables to `Hook` calls. At Annkissam,
-we use this feature to provide `build` time environment variables which can be
+we use this feature to provide build-time environment variables which can be
 used to build a release.
 
 Once, you have generated an `akd` task, we can configure it to add environment
@@ -46,7 +47,7 @@ variables. `Akd.Build.Distillery` accepts `cmd_envs` as a list of `Tuple`s:
 
 _For more information on how to generate an akd task, check
 [the documentation](https://hexdocs.pm/akd/Mix.Tasks.Akd.Gen.Task.html) or
-the [Walkthrough](https://www.annkissam.com/technology/elixir)_
+the [Walkthrough](https://www.annkissam.com/technology/Elixir)_
 
 ```elixir
 # in the deploy task
@@ -79,22 +80,23 @@ end
 ```
 
 This approach is particularly useful as it doesn't export environment variables,
-but just calls the command with those environment. This means our deploys are
-not changing the environment of the `publish` server. This allows us to deploy
-and run multiple instances of the same app on the same server or apps that
-happen to share the same environment variable names, without interfering with
-one another.
+but just calls the command within the context of a given specification of
+environment variable values. This means our deploys are not changing the
+environment of the `publish` server. This allows us to deploy and run multiple
+instances of the same app on the same server or apps that happen to share the
+same environment variable names, without those apps interfering with one
+another.
 
 However, there's a small problem with this approach: We need to know the
-runtime environments at deploy time (while calling `$ mix akd.deploy`).
+run-time environments at deploy time (while calling `$ mix akd.deploy`).
 
-For apps where we don't have access to the runtime environments at deploy-time,
-we use a different approach.
+In situations where we don't have access to the run-time environments at
+deploy-time, we use a different approach.
 
 ### The Env Command
 
-Another way to pass runtime environments is to put them in a file inside a
-unique folder in the destination server (We use
+Another way to pass run-time environments is to put them in a file inside a
+unique folder in the destination server (e.g.
 `<path-to-the-release>/support/environment`). This file contains all the
 environment variables needed to run a built release.
 
@@ -110,7 +112,7 @@ ECTO_DB_URL="ecto://user:password@127.0.0.1/database"
 Now, we just have to `cat` the contents of this file and prepend them whenever
 we want to run the `start` command of a `distillery` release.
 
-A way to automate that is by writing a Custom Distillery Command, `env`.
+A way to automate that is by writing a custom `distillery` command, `env`.
 
 `Akd.Init.Distillery` hook call accepts a `template` option, which takes a path
 to a distillery config's template file. This allows us to customize the use
@@ -129,7 +131,6 @@ We can write a custom template, which specifies a custom command `env`:
 use Mix.Releases.Config,
     default_release: :default,
     default_environment: Mix.env()
-<% end %>
 
 environment :dev do
   set dev_mode: true
@@ -154,7 +155,7 @@ end
 release :<%= Keyword.get(release, :release_name) %> do
   set version: Mix.Project.config[:version]
   set applications: [
-    :runtime_tools,
+    :run-time_tools,
 <%= Enum.map(Keyword.get(release, :release_applications), fn {app, start_type} ->
     "    #{app}: :#{start_type}"
     end) |> Enum.join(",\n") %>
@@ -166,13 +167,13 @@ end<% else %>
 release :<%= Keyword.get(release, :release_name) %> do
   set version: current_version(:<%= Keyword.get(release, :release_name)%>)
   set applications: [
-    :runtime_tools
+    :run-time_tools
   ]
 end<% end %>
 <% end %>
 ```
 
-Currently, as of `distillery 1.5`, this is the only way of specifying a custom
+Currently (as of `distillery 1.5`) this is the only way of specifying a custom
 command before `init`. For more information on custom command, check out
 [this post](https://hexdocs.pm/distillery/custom-commands.html#content).
 
@@ -184,11 +185,13 @@ Now we can create a file `commands/env.sh` which has the following content:
 env $(cat ./support/environment | xargs) bin/release_name $1
 ```
 
-This allows us to call `bin/release_name env <command>`. All this command does
-is get environments from `support/environment` file and call it with the
-original command `<command>`.
+This allows us to call `bin/release_name env <command>`. In essence, this
+command fetches environment variable values from the `support/environment` file
+and (within the context of these values) invokes `<command>`.
 
-Once published, it can be used as: `$ bin/release_name env start`
+Once published, `env` can be used as follows:
+
+`$ bin/release_name env start`
 
 Now, we can generate a custom hook that use the `env` command to start the
 released application.
@@ -244,7 +247,7 @@ end
 ```
 
 This hook allows us to call the `start` command of a `distillery` release with
-loaded runtime environments.
+loaded run-time environments.
 
 Now we can replace `Akd.Start.Distillery` with `Deployer.Hooks.EnvStart` in
 out `:publish` pipeline of the `akd` task:
@@ -261,18 +264,18 @@ pipeline :publish do
 end
 ```
 
-Now, our deployments can use runtime variables without us having to specify them
+Now, our deployments can use run-time variables without us having to specify them
 at deploy-time.
 
 ## Conclusion
 
 `Akd` provides two ways of providing run-time configuration to a release:
 
-* By adding `cmd_envs` to the start hook: This is a simpler approach, but needs
-  us to specify runtime environments at deploy-time.
+* By adding `cmd_envs` to the start hook: This is a simpler approach, but
+  requires us to specify run-time environments at deploy-time.
 
 * By creating a custom `distillery` command, and a custom `akd` hook which calls
-  the command: This is a more complex approach, but it loads the runtime
+  the command: This is a more complex approach, but it loads the run-time
   environments at publish time without having to provide them at deploy-time.
 
 This was just an example of how `akd` provides solutions to some of the problems
