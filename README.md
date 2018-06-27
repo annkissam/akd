@@ -8,7 +8,7 @@
 [![docs](https://inch-ci.org/github/annkissam/akd.svg)](http://inch-ci.org/github/annkissam/akd)
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/annkissam/akd/master/LICENSE)
 
-![Akd](akd.png)
+<img src="sprites/akd.png" alt="https://hexdocs.pm/akd/Akd.html" width="150" height="150">
 
 _Akd is Configurable, but easy to set up_
 
