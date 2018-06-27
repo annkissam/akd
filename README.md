@@ -8,6 +8,8 @@
 [![docs](https://inch-ci.org/github/annkissam/akd.svg)](http://inch-ci.org/github/annkissam/akd)
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/annkissam/akd/master/LICENSE)
 
+![Akd](akd.png)
+
 _Akd is Configurable, but easy to set up_
 
 Akd is a framework that allows Elixir developers to easily write automated
