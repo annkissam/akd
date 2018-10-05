@@ -39,7 +39,7 @@ For details on how to setup a new project with `akd` checkout the [walkthrough](
 
 ## Installation
 
-Akd is [available in Hex](https://hex.pm/docs/publish) and can be installed
+Akd is [available in Hex](https://hex.pm/packages/akd) and can be installed
 by adding `akd` to your list of dependencies in `mix.exs`:
 
 ```elixir
