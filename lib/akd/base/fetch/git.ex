@@ -31,7 +31,7 @@ defmodule Akd.Fetch.Git do
 
   use Akd.Hook
 
-  @default_opts [run_ensure: false, ignore_failure: false, branch: "master"]
+  @default_opts [run_ensure: false, ignore_failure: false]
 
   @errmsg %{no_src: "No `src` given to `Akd.Fetch.Git`. Expected a git repo."}
 
@@ -79,12 +79,97 @@ defmodule Akd.Fetch.Git do
              destination: %Akd.Destination{host: :local, path: ".",
              user: :current}}], rollback: [], run_ensure: false}]
 
+  When a `git_src` is part of deployment data:
+
+      iex> deployment = %Akd.Deployment{mix_env: "prod",
+      ...> build_at: Akd.Destination.local("."),
+      ...> publish_to: Akd.Destination.local("."),
+      ...> name: "name",
+      ...> vsn: "0.1.1",
+      ...> data: %{git_src: "url"}}
+      iex> Akd.Fetch.Git.get_hooks(deployment)
+      [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm -rf ./*", cmd_envs: [],
+        destination: %Akd.Destination{host: :local, path: ".",
+         user: :current}},
+        %Akd.Operation{cmd: "rm -rf ./.*", cmd_envs: [],
+            destination: %Akd.Destination{host: :local, path: ".",
+        user: :current}}], ignore_failure: false,
+              main: [%Akd.Operation{cmd: "git status; if [[ $? != 0 ]]; then git clone url .; fi", cmd_envs: [],
+         destination: %Akd.Destination{host: :local, path: ".",
+             user: :current}},
+        %Akd.Operation{cmd: "git fetch", cmd_envs: [],
+             destination: %Akd.Destination{host: :local, path: ".",
+              user: :current}},
+        %Akd.Operation{cmd: "git checkout master", cmd_envs: [],
+             destination: %Akd.Destination{host: :local, path: ".",
+             user: :current}},
+        %Akd.Operation{cmd: "git pull", cmd_envs: [],
+             destination: %Akd.Destination{host: :local, path: ".",
+             user: :current}}], rollback: [], run_ensure: false}]
+
+  When a `git_branch` is part of deployment data:
+
+      iex> deployment = %Akd.Deployment{mix_env: "prod",
+      ...> build_at: Akd.Destination.local("."),
+      ...> publish_to: Akd.Destination.local("."),
+      ...> name: "name",
+      ...> vsn: "0.1.1",
+      ...> data: %{git_src: "url", git_branch: "branch"}}
+      iex> Akd.Fetch.Git.get_hooks(deployment)
+      [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm -rf ./*", cmd_envs: [],
+        destination: %Akd.Destination{host: :local, path: ".",
+         user: :current}},
+        %Akd.Operation{cmd: "rm -rf ./.*", cmd_envs: [],
+            destination: %Akd.Destination{host: :local, path: ".",
+        user: :current}}], ignore_failure: false,
+              main: [%Akd.Operation{cmd: "git status; if [[ $? != 0 ]]; then git clone url .; fi", cmd_envs: [],
+         destination: %Akd.Destination{host: :local, path: ".",
+             user: :current}},
+        %Akd.Operation{cmd: "git fetch", cmd_envs: [],
+             destination: %Akd.Destination{host: :local, path: ".",
+              user: :current}},
+        %Akd.Operation{cmd: "git checkout branch", cmd_envs: [],
+             destination: %Akd.Destination{host: :local, path: ".",
+             user: :current}},
+        %Akd.Operation{cmd: "git pull", cmd_envs: [],
+             destination: %Akd.Destination{host: :local, path: ".",
+             user: :current}}], rollback: [], run_ensure: false}]
+
+  When a `branch` is part of options:
+
+      iex> deployment = %Akd.Deployment{mix_env: "prod",
+      ...> build_at: Akd.Destination.local("."),
+      ...> publish_to: Akd.Destination.local("."),
+      ...> name: "name",
+      ...> vsn: "0.1.1",
+      ...> data: %{git_src: "url"}}
+      iex> Akd.Fetch.Git.get_hooks(deployment, branch: "branch")
+      [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm -rf ./*", cmd_envs: [],
+        destination: %Akd.Destination{host: :local, path: ".",
+         user: :current}},
+        %Akd.Operation{cmd: "rm -rf ./.*", cmd_envs: [],
+            destination: %Akd.Destination{host: :local, path: ".",
+        user: :current}}], ignore_failure: false,
+              main: [%Akd.Operation{cmd: "git status; if [[ $? != 0 ]]; then git clone url .; fi", cmd_envs: [],
+         destination: %Akd.Destination{host: :local, path: ".",
+             user: :current}},
+        %Akd.Operation{cmd: "git fetch", cmd_envs: [],
+             destination: %Akd.Destination{host: :local, path: ".",
+              user: :current}},
+        %Akd.Operation{cmd: "git checkout branch", cmd_envs: [],
+             destination: %Akd.Destination{host: :local, path: ".",
+             user: :current}},
+        %Akd.Operation{cmd: "git pull", cmd_envs: [],
+             destination: %Akd.Destination{host: :local, path: ".",
+             user: :current}}], rollback: [], run_ensure: false}]
   """
   @spec get_hooks(Akd.Deployment.t, Keyword.t) :: list(Akd.Hook.t)
   def get_hooks(deployment, opts \\ []) do
     opts = uniq_merge(opts, @default_opts)
-    branch = Keyword.get(opts, :branch)
-    src = Keyword.get(opts, :src)
+    src = Keyword.get(opts, :src) || Map.get(deployment.data, :git_src)
+    branch = Keyword.get(opts, :branch) ||
+      Map.get(deployment.data, :git_branch) || "master"
+
     destination = Akd.DestinationResolver.resolve(:build, deployment)
 
     [fetch_hook(src, branch, destination, opts)]

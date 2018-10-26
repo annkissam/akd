@@ -20,7 +20,7 @@ defmodule Akd.Deployment do
   alias Akd.{Destination, Hook}
 
   @enforce_keys ~w(mix_env build_at publish_to name vsn)a
-  @optional_keys [hooks: []]
+  @optional_keys [hooks: [], data: %{}]
 
   defstruct @enforce_keys ++ @optional_keys
 
@@ -32,5 +32,6 @@ defmodule Akd.Deployment do
     name: String.t,
     vsn: String.t,
     hooks: [Hook.t],
+    data: Map.t
   }
 end
