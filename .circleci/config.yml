@@ -1,7 +1,15 @@
 version: 2
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test-1.4
+      - test-1.5
+      - test-1.6
+
 jobs:
-  build:
-    parallelism: 4
+  test-1.4: &test-template
+    parallelism: 5
     docker:
       - image: circleci/elixir:1.4
 
@@ -16,3 +24,13 @@ jobs:
       - run: mix test
       - run: MIX_ENV=test mix coveralls.post -t OmijPrTsGlfifPeOpKoNf763HFptPgDgf -b $(git rev-parse --abbrev-ref HEAD)
       - run: MIX_ENV=docs mix inch.report
+
+  test-1.5:
+    <<: *test-template
+    docker:
+      - image: circleci/elixir:1.5
+
+  test-1.6:
+    <<: *test-template
+    docker:
+      - image: circleci/elixir:1.6
