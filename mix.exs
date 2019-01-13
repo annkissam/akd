@@ -46,9 +46,9 @@ defmodule Akd.Mixfile do
     [
       {:credo, "~> 0.5", only: [:dev, :test]},
       {:distillery, "~> 1.5", runtime: false, optional: true},
-      {:ex_doc, "~> 0.14", only: :dev, runtime: false},
+      {:ex_doc, "~> 0.19", only: :dev, runtime: false},
       {:excoveralls, "~> 0.8", only: [:dev, :test]},
-      {:inch_ex, "~> 0.5", only: [:dev, :test, :docs]},
+      {:inch_ex, "~> 1.0", only: [:dev, :test, :docs]},
       {:simple_docker, "~> 0.1.0", runtime: false, optional: true},
     ]
   end
