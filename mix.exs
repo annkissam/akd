@@ -8,7 +8,7 @@ defmodule Akd.Mixfile do
     [
       app: :akd,
       version: @version,
-      elixir: "~> 1.4",
+      elixir: "~> 1.7",
       deps: deps(),
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
