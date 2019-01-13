@@ -204,7 +204,7 @@ defmodule Akd.DeployHelper do
     %Deployment{deployment | hooks: hooks ++ [hook]}
   end
   def add_hook(%Deployment{hooks: hooks} = deployment, {%Hook{} = hook, _}) do
-    %Deployment{deployment | hooks: hooks ++ [hook]}
+    add_hook(deployment, hook)
   end
   def add_hook(deployment, {mod, opts}) when is_atom(mod) do
     deployment
