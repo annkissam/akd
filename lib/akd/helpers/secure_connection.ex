@@ -14,9 +14,9 @@ defmodule Akd.SecureConnection do
       iex> Akd.SecureConnection.securecmd(Akd.Destination.local(), "echo hi")
       {:error, %IO.Stream{device: :standard_io, line_or_bytes: :line, raw: false}}
   """
-  def securecmd(dest, cmds) do
+  def securecmd(dest, cmds, stdio \\ true) do
     cmds = "cd #{dest.path}\n" <> cmds
-    ssh(dest.user, dest.host, cmds, true)
+    ssh(dest.user, dest.host, cmds, stdio)
   end
 
   @doc """

@@ -79,8 +79,8 @@ defmodule Akd.Operation do
 
   """
   @spec run(__MODULE__.t) :: {:ok, term} | {:error, term}
-  def run(operation)
-  def run(%__MODULE__{destination: %Destination{host: :local}} = operation) do
+  def run(operation, stdio \\ true)
+  def run(%__MODULE__{destination: %Destination{host: :local}} = operation, stdio) do
     Logger.info environmentalize_cmd(operation)
 
     path = operation.destination.path
@@ -88,16 +88,16 @@ defmodule Akd.Operation do
 
     File.mkdir_p!(path)
 
+    opts = stdio && [into: IO.stream(:stdio, :line)] || []
+
     case System.cmd("sh", ["-c" , operation.cmd],
-            env: operation.cmd_envs,
-            cd: path,
-            into: IO.stream(:stdio, :line)) do
+            [env: operation.cmd_envs, cd: path] ++ opts) do
       {output, 0} -> {:ok, output}
       {error, _} -> {:error, error}
     end
   end
-  def run(op) do
-    Akd.SecureConnection.securecmd(op.destination, environmentalize_cmd(op))
+  def run(op, stdio) do
+    Akd.SecureConnection.securecmd(op.destination, environmentalize_cmd(op), stdio)
   end
 
 
