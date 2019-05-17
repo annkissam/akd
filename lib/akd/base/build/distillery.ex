@@ -60,6 +60,37 @@ defmodule Akd.Build.Distillery do
             destination: %Akd.Destination{host: :local, path: ".",
              user: :current}}], rollback: [], run_ensure: true}]
 
+      iex> deployment = %Akd.Deployment{mix_env: "prod",
+      ...> build_at: Akd.Destination.local("."),
+      ...> publish_to: Akd.Destination.local("."),
+      ...> name: "name",
+      ...> vsn: "0.1.1"}
+      iex> Akd.Build.Distillery.get_hooks(deployment, [release_name: "name"])
+      [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm -rf ./_build/prod/rel",
+           cmd_envs: [],
+           destination: %Akd.Destination{host: :local, path: ".",
+            user: :current}}], ignore_failure: false,
+         main: [%Akd.Operation{cmd: "mix deps.get \\n mix compile \\n mix release --name=name --env=prod",
+           cmd_envs: [{"MIX_ENV", "prod"}],
+           destination: %Akd.Destination{host: :local, path: ".",
+            user: :current}}], rollback: [], run_ensure: true}]
+
+      iex> deployment = %Akd.Deployment{mix_env: "prod",
+      ...> build_at: Akd.Destination.local("."),
+      ...> publish_to: Akd.Destination.local("."),
+      ...> name: "name",
+      ...> vsn: "0.1.1",
+      ...> data: %{release_name: "name"}}
+      iex> Akd.Build.Distillery.get_hooks(deployment, [])
+      [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm -rf ./_build/prod/rel",
+           cmd_envs: [],
+           destination: %Akd.Destination{host: :local, path: ".",
+            user: :current}}], ignore_failure: false,
+         main: [%Akd.Operation{cmd: "mix deps.get \\n mix compile \\n mix release --name=name --env=prod",
+           cmd_envs: [{"MIX_ENV", "prod"}],
+           destination: %Akd.Destination{host: :local, path: ".",
+            user: :current}}], rollback: [], run_ensure: true}]
+
   """
   @spec get_hooks(Akd.Deployment.t, Keyword.t) :: list(Akd.Hook.t)
   def get_hooks(deployment, opts) do
@@ -72,12 +103,18 @@ defmodule Akd.Build.Distillery do
     destination = Akd.DestinationResolver.resolve(:build, deployment)
     mix_env = deployment.mix_env
     distillery_env = Keyword.get(opts, :distillery_env, mix_env)
+    release_name = Keyword.get(opts, :release_name) || Map.get(deployment.data, :release_name)
     cmd_envs = Keyword.get(opts, :cmd_envs, [])
     cmd_envs = [{"MIX_ENV", mix_env} | cmd_envs]
 
     form_hook opts do
-      main "mix deps.get \n mix compile \n mix release --env=#{distillery_env}",
-        destination, cmd_envs: cmd_envs
+      if release_name do
+        main "mix deps.get \n mix compile \n mix release --name=#{release_name} --env=#{distillery_env}",
+          destination, cmd_envs: cmd_envs
+      else
+        main "mix deps.get \n mix compile \n mix release --env=#{distillery_env}",
+          destination, cmd_envs: cmd_envs
+      end
 
       ensure "rm -rf ./_build/prod/rel", destination
     end
