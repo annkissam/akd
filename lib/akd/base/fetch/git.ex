@@ -72,6 +72,12 @@ defmodule Akd.Fetch.Git do
         %Akd.Operation{cmd: "git fetch", cmd_envs: [],
              destination: %Akd.Destination{host: :local, path: ".",
               user: :current}},
+        %Akd.Operation{cmd: "git reset --hard", cmd_envs: [],
+             destination: %Akd.Destination{host: :local, path: ".",
+             user: :current}},
+        %Akd.Operation{cmd: "git clean -fd", cmd_envs: [],
+             destination: %Akd.Destination{host: :local, path: ".",
+             user: :current}},
         %Akd.Operation{cmd: "git checkout master", cmd_envs: [],
              destination: %Akd.Destination{host: :local, path: ".",
              user: :current}},
@@ -100,6 +106,12 @@ defmodule Akd.Fetch.Git do
         %Akd.Operation{cmd: "git fetch", cmd_envs: [],
              destination: %Akd.Destination{host: :local, path: ".",
               user: :current}},
+        %Akd.Operation{cmd: "git reset --hard", cmd_envs: [],
+             destination: %Akd.Destination{host: :local, path: ".",
+             user: :current}},
+        %Akd.Operation{cmd: "git clean -fd", cmd_envs: [],
+             destination: %Akd.Destination{host: :local, path: ".",
+             user: :current}},
         %Akd.Operation{cmd: "git checkout master", cmd_envs: [],
              destination: %Akd.Destination{host: :local, path: ".",
              user: :current}},
@@ -128,6 +140,12 @@ defmodule Akd.Fetch.Git do
         %Akd.Operation{cmd: "git fetch", cmd_envs: [],
              destination: %Akd.Destination{host: :local, path: ".",
               user: :current}},
+        %Akd.Operation{cmd: "git reset --hard", cmd_envs: [],
+             destination: %Akd.Destination{host: :local, path: ".",
+             user: :current}},
+        %Akd.Operation{cmd: "git clean -fd", cmd_envs: [],
+             destination: %Akd.Destination{host: :local, path: ".",
+             user: :current}},
         %Akd.Operation{cmd: "git checkout branch", cmd_envs: [],
              destination: %Akd.Destination{host: :local, path: ".",
              user: :current}},
@@ -156,6 +174,12 @@ defmodule Akd.Fetch.Git do
         %Akd.Operation{cmd: "git fetch", cmd_envs: [],
              destination: %Akd.Destination{host: :local, path: ".",
               user: :current}},
+        %Akd.Operation{cmd: "git reset --hard", cmd_envs: [],
+             destination: %Akd.Destination{host: :local, path: ".",
+             user: :current}},
+        %Akd.Operation{cmd: "git clean -fd", cmd_envs: [],
+             destination: %Akd.Destination{host: :local, path: ".",
+             user: :current}},
         %Akd.Operation{cmd: "git checkout branch", cmd_envs: [],
              destination: %Akd.Destination{host: :local, path: ".",
              user: :current}},
@@ -182,6 +206,8 @@ defmodule Akd.Fetch.Git do
     form_hook opts do
       main "git status; if [[ $? != 0 ]]; then git clone #{src} .; fi", destination
       main "git fetch", destination
+      main "git reset --hard", destination
+      main "git clean -fd", destination
       main "git checkout #{branch}", destination
       main "git pull", destination
 
