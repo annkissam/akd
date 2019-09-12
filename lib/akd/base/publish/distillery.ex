@@ -116,6 +116,15 @@ defmodule Akd.Publish.Distillery do
     cp #{path_to_release(deployment.build_at.path, deployment)} #{deployment.publish_to.path}
     """
   end
+
+  defp copy_rel(%Deployment{build_at: src, publish_to: dest} = deployment, %{local_intermediate: true} = scp_options) do
+    """
+    scp #{src |> Destination.to_string() |> path_to_release(deployment)} #{Akd.Destination.local() |> Destination.to_string()}
+    scp #{Akd.Destination.local() |> Destination.to_string() |> path_to_local_release(deployment)} #{dest |> Destination.to_string()}
+    """
+    # rm "#{Path.join(Akd.Destination.local() |> Destination.to_string() |> path_to_local_release(deployment)}
+  end
+
   # This assumes that the publish server has ssh credentials to build server
   defp copy_rel(%Deployment{build_at: src, publish_to: dest} = deployment, scp_options) do
     """
@@ -136,6 +145,10 @@ defmodule Akd.Publish.Distillery do
   # and mix environment.
   defp path_to_release(base, deployment) do
     "#{base}/_build/#{deployment.mix_env}/rel/#{deployment.name}/releases/#{deployment.vsn}/#{deployment.name}.tar.gz"
+  end
+
+  defp path_to_local_release(base, deployment) do
+    "#{base}/#{deployment.name}.tar.gz"
   end
 
   # This function takes two keyword lists and merges them keeping the keys
