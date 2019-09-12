@@ -121,8 +121,8 @@ defmodule Akd.Publish.Distillery do
     """
     scp #{src |> Destination.to_string() |> path_to_release(deployment)} #{Akd.Destination.local() |> Destination.to_string()}
     scp #{Akd.Destination.local() |> Destination.to_string() |> path_to_local_release(deployment)} #{dest |> Destination.to_string()}
+    rm #{Akd.Destination.local() |> Destination.to_string() |> path_to_local_release(deployment)}
     """
-    # rm "#{Path.join(Akd.Destination.local() |> Destination.to_string() |> path_to_local_release(deployment)}
   end
 
   # This assumes that the publish server has ssh credentials to build server
