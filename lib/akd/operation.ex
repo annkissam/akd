@@ -27,17 +27,17 @@ defmodule Akd.Operation do
   defstruct @enforce_keys ++ @optional_keys
 
   @typedoc ~s(Type representing a Command to be run)
-  @type cmd :: String.t | :exit
+  @type cmd :: String.t() | :exit
 
   @typedoc ~s(Type representind a command specific environment)
-  @type cmd_envs :: {String.t, String.t}
+  @type cmd_envs :: {String.t(), String.t()}
 
   @typedoc ~s(Generic type for an Operation struct)
   @type t :: %__MODULE__{
-    cmd_envs: [cmd_envs],
-    cmd: cmd,
-    destination: Destination.t
-  }
+          cmd_envs: [cmd_envs],
+          cmd: cmd,
+          destination: Destination.t()
+        }
 
   @doc """
   Runs a given `Operation.t` command on it's destination.
@@ -78,28 +78,31 @@ defmodule Akd.Operation do
       {:error, %IO.Stream{device: :standard_io, line_or_bytes: :line, raw: false}}
 
   """
-  @spec run(__MODULE__.t) :: {:ok, term} | {:error, term}
+  @spec run(__MODULE__.t()) :: {:ok, term} | {:error, term}
   def run(operation)
-  def run(%__MODULE__{destination: %Destination{host: :local}} = operation) do
-    Logger.info environmentalize_cmd(operation)
 
-    path = operation.destination.path
-    |> Path.expand()
+  def run(%__MODULE__{destination: %Destination{host: :local}} = operation) do
+    Logger.info(environmentalize_cmd(operation))
+
+    path =
+      operation.destination.path
+      |> Path.expand()
 
     File.mkdir_p!(path)
 
-    case System.cmd("sh", ["-c" , operation.cmd],
-            env: operation.cmd_envs,
-            cd: path,
-            into: IO.stream(:stdio, :line)) do
+    case System.cmd("sh", ["-c", operation.cmd],
+           env: operation.cmd_envs,
+           cd: path,
+           into: IO.stream(:stdio, :line)
+         ) do
       {output, 0} -> {:ok, output}
       {error, _} -> {:error, error}
     end
   end
+
   def run(op) do
     Akd.SecureConnection.securecmd(op.destination, environmentalize_cmd(op))
   end
-
 
   @doc """
   Takes an `Operation` and returns a string of commands with `cmd_envs` preprended
@@ -122,15 +125,16 @@ defmodule Akd.Operation do
       " thuum"
 
   """
-  @spec environmentalize_cmd(__MODULE__.t) :: String.t
+  @spec environmentalize_cmd(__MODULE__.t()) :: String.t()
   def environmentalize_cmd(%__MODULE__{cmd_envs: cmd_envs, cmd: cmd}) do
-    envs = cmd_envs
+    envs =
+      cmd_envs
       |> Enum.map(fn {name, value} -> "#{name}=#{value}" end)
       |> Enum.join(" ")
 
     cmd
     |> String.split("\n")
-    |> Enum.map(& envs <> " " <> &1)
+    |> Enum.map(&(envs <> " " <> &1))
     |> Enum.join("\n ")
   end
 end

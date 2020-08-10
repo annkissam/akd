@@ -24,19 +24,18 @@ defmodule Akd.Hook do
 
   alias Akd.{Deployment, Operation}
 
-  defstruct [ensure: [], ignore_failure: false,
-              main: [], rollback: [], run_ensure: true]
+  defstruct ensure: [], ignore_failure: false, main: [], rollback: [], run_ensure: true
 
   @typedoc ~s(Generic type for a Hook struct)
   @type t :: %__MODULE__{
-    ensure: [Operation.t],
-    ignore_failure: boolean(),
-    main: [Operation.t],
-    rollback: [Operation.t],
-    run_ensure: boolean()
-  }
+          ensure: [Operation.t()],
+          ignore_failure: boolean(),
+          main: [Operation.t()],
+          rollback: [Operation.t()],
+          run_ensure: boolean()
+        }
 
-  @callback get_hooks(Deployment.t, list) :: [__MODULE__.t]
+  @callback get_hooks(Deployment.t(), list) :: [__MODULE__.t()]
 
   @doc """
   This macro allows another module to behave like `Akd.Hook`.
@@ -65,10 +64,10 @@ defmodule Akd.Hook do
 
       @behaviour unquote(__MODULE__)
 
-      @spec get_hooks(Akd.Deployment.t, list) :: unquote(__MODULE__).t
-      def get_hooks(_, _), do: raise "`get_hooks/2` not defined for #{__MODULE__}"
+      @spec get_hooks(Akd.Deployment.t(), list) :: unquote(__MODULE__).t
+      def get_hooks(_, _), do: raise("`get_hooks/2` not defined for #{__MODULE__}")
 
-      defoverridable [get_hooks: 2]
+      defoverridable get_hooks: 2
     end
   end
 
@@ -82,14 +81,13 @@ defmodule Akd.Hook do
       iex> Akd.Hook.rollback(hook)
       {:ok, []}
   """
-  @spec rollback(__MODULE__.t) :: list()
+  @spec rollback(__MODULE__.t()) :: list()
   def rollback(%__MODULE__{} = hook) do
     hook
     |> Map.get(:rollback)
     |> Enum.reduce_while({:ok, []}, &runop/2)
-    |> (& {elem(&1, 0), &1 |> elem(1) |> Enum.reverse()}).()
+    |> (&{elem(&1, 0), &1 |> elem(1) |> Enum.reverse()}).()
   end
-
 
   @doc """
   Takes a `Akd.Hook.t` struct and calls the list of `Akd.Operation.t`
@@ -101,14 +99,13 @@ defmodule Akd.Hook do
       iex> Akd.Hook.main(hook)
       {:ok, []}
   """
-  @spec main(__MODULE__.t) :: list()
+  @spec main(__MODULE__.t()) :: list()
   def main(%__MODULE__{} = hook) do
     hook
     |> Map.get(:main)
     |> Enum.reduce_while({:ok, []}, &runop/2)
-    |> (& {elem(&1, 0), &1 |> elem(1) |> Enum.reverse()}).()
+    |> (&{elem(&1, 0), &1 |> elem(1) |> Enum.reverse()}).()
   end
-
 
   @doc """
   Takes a `Akd.Hook.t` struct and calls the list of `Akd.Operation.t`
@@ -127,13 +124,14 @@ defmodule Akd.Hook do
       iex> Akd.Hook.ensure(hook)
       {:ok, []}
   """
-  @spec ensure(__MODULE__.t) :: list()
+  @spec ensure(__MODULE__.t()) :: list()
   def ensure(%__MODULE__{run_ensure: false}), do: {:ok, []}
+
   def ensure(%__MODULE__{} = hook) do
     hook
     |> Map.get(:ensure)
     |> Enum.reduce_while({:ok, []}, &runop/2)
-    |> (& {elem(&1, 0), &1 |> elem(1) |> Enum.reverse()}).()
+    |> (&{elem(&1, 0), &1 |> elem(1) |> Enum.reverse()}).()
   end
 
   # Delegates to running the operation and translates the return tuple to
@@ -145,4 +143,3 @@ defmodule Akd.Hook do
     end
   end
 end
-

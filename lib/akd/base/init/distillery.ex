@@ -59,14 +59,17 @@ defmodule Akd.Init.Distillery do
                user: :current}}], rollback: [], run_ensure: true}]
 
   """
-  @spec get_hooks(Akd.Deployment.t, Keyword.t) :: list(Akd.Hook.t)
+  @spec get_hooks(Akd.Deployment.t(), Keyword.t()) :: list(Akd.Hook.t())
   def get_hooks(deployment, opts \\ []) do
     opts = uniq_merge(opts, @default_opts)
 
     destination = Akd.DestinationResolver.resolve(:build, deployment)
-    template_cmd = opts
+
+    template_cmd =
+      opts
       |> Keyword.get(:template)
       |> template_cmd()
+
     name_cmd = name_cmd(deployment.name)
 
     [init_hook(destination, deployment.mix_env, [name_cmd, template_cmd], opts)]
@@ -79,11 +82,11 @@ defmodule Akd.Init.Distillery do
     cmd_envs = [{"MIX_ENV", mix_env} | cmd_envs]
 
     form_hook opts do
-      main setup(), destination, cmd_envs: cmd_envs
-      main rel_init(switches), destination, cmd_envs: cmd_envs
+      main(setup(), destination, cmd_envs: cmd_envs)
+      main(rel_init(switches), destination, cmd_envs: cmd_envs)
 
-      ensure "rm -rf ./rel", destination
-      ensure "rm -rf _build/prod", destination
+      ensure("rm -rf ./rel", destination)
+      ensure("rm -rf _build/prod", destination)
     end
   end
 
@@ -91,8 +94,7 @@ defmodule Akd.Init.Distillery do
   # and forms a new command.
   # This currently supports only template
   defp rel_init(switches) when is_list(switches) do
-    Enum.reduce(switches, "mix release.init",
-      fn(cmd, acc) -> acc <> " " <> cmd end)
+    Enum.reduce(switches, "mix release.init", fn cmd, acc -> acc <> " " <> cmd end)
   end
 
   # These commands are to be ran before calling release init

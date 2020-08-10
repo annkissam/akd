@@ -78,26 +78,49 @@ defmodule Mix.Tasks.Akd.Gen.Dockerfile do
 
   use Mix.Task
 
-  @switches [type: :string, os: :string, osversion: :string, nodejs: :string,
-             elixir: :string, erlang: :string, asdf: :string, base: :string,
-             cleanup: :string, phxapps: :keep, envs: :keep, mixenv: :string,
-             nodename: :string, path: :string, cmd: :string]
+  @switches [
+    type: :string,
+    os: :string,
+    osversion: :string,
+    nodejs: :string,
+    elixir: :string,
+    erlang: :string,
+    asdf: :string,
+    base: :string,
+    cleanup: :string,
+    phxapps: :keep,
+    envs: :keep,
+    mixenv: :string,
+    nodename: :string,
+    path: :string,
+    cmd: :string
+  ]
 
   @aliases [type: :t, base: :b, envs: :e, nodename: :n, path: :p]
 
-  @defaults [type: "base", os: "centos", osversion: "7", nodejs: "5.1.0",
-             erlang: "20.0", elixir: "1.4.5", mixenv: "prod", cleanup: "true",
-             asdf: "0.4.1", path: "./", cmd: "start"]
+  @defaults [
+    type: "base",
+    os: "centos",
+    osversion: "7",
+    nodejs: "5.1.0",
+    erlang: "20.0",
+    elixir: "1.4.5",
+    mixenv: "prod",
+    cleanup: "true",
+    asdf: "0.4.1",
+    path: "./",
+    cmd: "start"
+  ]
 
   @errs %{
-    umbrella: "task `#{@tsk}` can only be run inside an application directory",
+    umbrella: "task `#{@tsk}` can only be run inside an application directory"
   }
 
   @doc """
   Runs the mix dockerfile to generate the dockerfile module.
   """
   def run(args) do
-    if Mix.Project.umbrella?(), do: info_raise @errs.umbrella
+    if Mix.Project.umbrella?(), do: info_raise(@errs.umbrella)
 
     generate(args)
   end
@@ -120,16 +143,16 @@ defmodule Mix.Tasks.Akd.Gen.Dockerfile do
 
   # Raise error if no name is given
   defp validate_parsed!(_) do
-    info_raise "No name given"
+    info_raise("No name given")
   end
 
   # Raise with info
   defp info_raise(message) do
-    Mix.raise """
+    Mix.raise("""
     #{message}
 
     #{@info}
-    """
+    """)
   end
 
   # This function takes two keyword lists and merges them keeping the keys

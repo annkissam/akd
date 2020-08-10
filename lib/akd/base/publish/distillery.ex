@@ -67,12 +67,13 @@ defmodule Akd.Publish.Distillery do
                user: :current}}], rollback: [], run_ensure: true}]
 
   """
-  @spec get_hooks(Akd.Deployment.t, Keyword.t) :: list(Akd.Hook.t)
+  @spec get_hooks(Akd.Deployment.t(), Keyword.t()) :: list(Akd.Hook.t())
   def get_hooks(deployment, opts \\ []) do
     opts = uniq_merge(opts, @default_opts)
+
     [
       copy_release_hook(deployment, opts),
-      publish_hook(deployment, opts),
+      publish_hook(deployment, opts)
     ]
   end
 
@@ -84,17 +85,20 @@ defmodule Akd.Publish.Distillery do
     scp_options = Keyword.get(opts, :scp_options, false)
 
     # Transfer between two remote servers by running the SCP command locally
-    scp_destination = if build.host != publish.host do
-      Akd.Destination.local()
-    else
-      build
-    end
+    scp_destination =
+      if build.host != publish.host do
+        Akd.Destination.local()
+      else
+        build
+      end
 
     form_hook opts do
-      main copy_rel(deployment, scp_options), scp_destination
+      main(copy_rel(deployment, scp_options), scp_destination)
 
-      ensure "rm #{publish.path}/#{deployment.name}.tar.gz",
+      ensure(
+        "rm #{publish.path}/#{deployment.name}.tar.gz",
         publish
+      )
     end
   end
 
@@ -104,23 +108,34 @@ defmodule Akd.Publish.Distillery do
     publish = DestinationResolver.resolve(:publish, deployment)
 
     form_hook opts do
-      main publish_rel(deployment), publish
+      main(publish_rel(deployment), publish)
     end
   end
 
   # This function returns the command to be used to copy the release from
   # build to production.
   # This assumes that you're running this command from the same server
-  defp copy_rel(%Deployment{build_at: %Destination{host: s}, publish_to: %Destination{host: s}} = deployment, _scp_options) do
+  defp copy_rel(
+         %Deployment{build_at: %Destination{host: s}, publish_to: %Destination{host: s}} =
+           deployment,
+         _scp_options
+       ) do
     """
     cp #{path_to_release(deployment.build_at.path, deployment)} #{deployment.publish_to.path}
     """
   end
 
-  defp copy_rel(%Deployment{build_at: src, publish_to: dest} = deployment, %{local_intermediate: true} = scp_options) do
+  defp copy_rel(
+         %Deployment{build_at: src, publish_to: dest} = deployment,
+         %{local_intermediate: true} = scp_options
+       ) do
     """
-    scp #{src |> Destination.to_string() |> path_to_release(deployment)} #{Akd.Destination.local() |> Destination.to_string()}
-    scp #{Akd.Destination.local() |> Destination.to_string() |> path_to_local_release(deployment)} #{dest |> Destination.to_string()}
+    scp #{src |> Destination.to_string() |> path_to_release(deployment)} #{
+      Akd.Destination.local() |> Destination.to_string()
+    }
+    scp #{Akd.Destination.local() |> Destination.to_string() |> path_to_local_release(deployment)} #{
+      dest |> Destination.to_string()
+    }
     rm #{Akd.Destination.local() |> Destination.to_string() |> path_to_local_release(deployment)}
     """
   end
@@ -128,7 +143,9 @@ defmodule Akd.Publish.Distillery do
   # This assumes that the publish server has ssh credentials to build server
   defp copy_rel(%Deployment{build_at: src, publish_to: dest} = deployment, scp_options) do
     """
-    scp #{scp_options} #{src |> Destination.to_string() |> path_to_release(deployment)} #{Destination.to_string(dest)}
+    scp #{scp_options} #{src |> Destination.to_string() |> path_to_release(deployment)} #{
+      Destination.to_string(dest)
+    }
     """
   end
 
@@ -144,7 +161,9 @@ defmodule Akd.Publish.Distillery do
   # This function returns the path to the release based on deployment name
   # and mix environment.
   defp path_to_release(base, deployment) do
-    "#{base}/_build/#{deployment.mix_env}/rel/#{deployment.name}/releases/#{deployment.vsn}/#{deployment.name}.tar.gz"
+    "#{base}/_build/#{deployment.mix_env}/rel/#{deployment.name}/releases/#{deployment.vsn}/#{
+      deployment.name
+    }.tar.gz"
   end
 
   defp path_to_local_release(base, deployment) do

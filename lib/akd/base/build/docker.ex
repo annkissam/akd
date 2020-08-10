@@ -35,8 +35,7 @@ defmodule Akd.Build.Docker do
 
   use Akd.Hook
 
-  @default_opts [run_ensure: false, ignore_failure: false, file: "Dockerfile",
-                 path: "."]
+  @default_opts [run_ensure: false, ignore_failure: false, file: "Dockerfile", path: "."]
 
   @doc """
   Callback implementation for `get_hooks/2`.
@@ -62,7 +61,7 @@ defmodule Akd.Build.Docker do
          user: :current}}], rollback: [], run_ensure: false}]
 
   """
-  @spec get_hooks(Akd.Deployment.t, Keyword.t) :: list(Akd.Hook.t)
+  @spec get_hooks(Akd.Deployment.t(), Keyword.t()) :: list(Akd.Hook.t())
   def get_hooks(deployment, opts) do
     [build_hook(deployment, uniq_merge(opts, @default_opts))]
   end
@@ -76,9 +75,9 @@ defmodule Akd.Build.Docker do
     tag = Keyword.get(opts, :tag, deployment.name <> ":" <> deployment.vsn)
 
     form_hook opts do
-      main "docker build -f #{file} -t #{tag} #{path}", destination
+      main("docker build -f #{file} -t #{tag} #{path}", destination)
 
-      ensure "docker rm $(docker ps -a -q)", destination
+      ensure("docker rm $(docker ps -a -q)", destination)
     end
   end
 

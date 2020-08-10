@@ -8,16 +8,21 @@ defmodule Akd.Mixfile do
     [
       app: :akd,
       version: @version,
-      elixir: "~> 1.5",
+      elixir: "~> 1.9",
       deps: deps(),
-      build_embedded: Mix.env == :prod,
-      start_permanent: Mix.env == :prod,
+      build_embedded: Mix.env() == :prod,
+      start_permanent: Mix.env() == :prod,
 
       # Test
       test_coverage: [tool: ExCoveralls],
-      preferred_cli_env: [coveralls: :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html": :test],
+      preferred_cli_env: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test
+      ],
       aliases: aliases(),
-      elixirc_paths: elixirc_paths(Mix.env),
+      elixirc_paths: elixirc_paths(Mix.env()),
 
       # Hex
       description: description(),
@@ -25,7 +30,7 @@ defmodule Akd.Mixfile do
 
       # Docs
       name: "Akd",
-      docs: docs(),
+      docs: docs()
     ]
   end
 
@@ -38,7 +43,7 @@ defmodule Akd.Mixfile do
       files: ["lib", "mix.exs", "README.md"],
       maintainers: ["Adi Iyengar"],
       licenses: ["MIT"],
-      links: %{"Github" => @url},
+      links: %{"Github" => @url}
     ]
   end
 
@@ -49,7 +54,7 @@ defmodule Akd.Mixfile do
       {:ex_doc, "~> 0.19", only: :dev, runtime: false},
       {:excoveralls, "~> 0.8", only: [:dev, :test]},
       {:inch_ex, "~> 1.0", only: [:dev, :test, :docs]},
-      {:simple_docker, "~> 0.1.0", runtime: false, optional: true},
+      {:simple_docker, "~> 0.1.0", runtime: false, optional: true}
     ]
   end
 
@@ -80,10 +85,10 @@ defmodule Akd.Mixfile do
   end
 
   defp git_tag(_args) do
-    System.cmd "git", ["tag", "v" <> Mix.Project.config[:version]]
-    System.cmd "git", ["push", "--tags"]
+    System.cmd("git", ["tag", "v" <> Mix.Project.config()[:version]])
+    System.cmd("git", ["push", "--tags"])
   end
 
   defp elixirc_paths(:test), do: ["lib", "priv", "test/support"]
-  defp elixirc_paths(_),     do: ["lib"]
+  defp elixirc_paths(_), do: ["lib"]
 end

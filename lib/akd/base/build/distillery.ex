@@ -92,7 +92,7 @@ defmodule Akd.Build.Distillery do
             user: :current}}], rollback: [], run_ensure: true}]
 
   """
-  @spec get_hooks(Akd.Deployment.t, Keyword.t) :: list(Akd.Hook.t)
+  @spec get_hooks(Akd.Deployment.t(), Keyword.t()) :: list(Akd.Hook.t())
   def get_hooks(deployment, opts) do
     [build_hook(deployment, uniq_merge(opts, @default_opts))]
   end
@@ -109,14 +109,22 @@ defmodule Akd.Build.Distillery do
 
     form_hook opts do
       if release_name do
-        main "mix deps.get \n mix compile \n mix release --name=#{release_name} --env=#{distillery_env}",
-          destination, cmd_envs: cmd_envs
+        main(
+          "mix deps.get \n mix compile \n mix release --name=#{release_name} --env=#{
+            distillery_env
+          }",
+          destination,
+          cmd_envs: cmd_envs
+        )
       else
-        main "mix deps.get \n mix compile \n mix release --env=#{distillery_env}",
-          destination, cmd_envs: cmd_envs
+        main(
+          "mix deps.get \n mix compile \n mix release --env=#{distillery_env}",
+          destination,
+          cmd_envs: cmd_envs
+        )
       end
 
-      ensure "rm -rf ./_build/prod/rel", destination
+      ensure("rm -rf ./_build/prod/rel", destination)
     end
   end
 

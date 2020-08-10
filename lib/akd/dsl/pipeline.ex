@@ -106,11 +106,12 @@ defmodule Akd.Dsl.Pipeline do
   """
   defmacro hook(hook, opts \\ []) do
     quote do
-      put_pipe(var!(hooks, unquote(__MODULE__)),
-        {unquote(hook), unquote(opts)})
+      put_pipe(
+        var!(hooks, unquote(__MODULE__)),
+        {unquote(hook), unquote(opts)}
+      )
     end
   end
-
 
   @doc """
   Adds a list of hooks to a pipeline. Those list of hooks are

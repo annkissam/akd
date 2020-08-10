@@ -163,5 +163,6 @@ defmodule Akd do
   defp resolve_config({:system, var_name}, default) do
     System.get_env(var_name) || default
   end
+
   defp resolve_config(value, _default), do: value
 end

@@ -82,7 +82,8 @@ defmodule Akd.Dsl.FormHook do
 
       unquote(block)
 
-      val = ops
+      val =
+        ops
         |> var!(unquote(__MODULE__))
         |> get_ops_acc()
         |> struct_hook([])
@@ -130,7 +131,8 @@ defmodule Akd.Dsl.FormHook do
 
       unquote(block)
 
-      val = ops
+      val =
+        ops
         |> var!(unquote(__MODULE__))
         |> get_ops_acc()
         |> struct_hook(unquote(opts))
@@ -156,8 +158,10 @@ defmodule Akd.Dsl.FormHook do
   """
   defmacro main(cmd, dest) do
     quote do
-      put_ops_acc(var!(ops, unquote(__MODULE__)),
-        {:main, {unquote(cmd), unquote(dest), []}})
+      put_ops_acc(
+        var!(ops, unquote(__MODULE__)),
+        {:main, {unquote(cmd), unquote(dest), []}}
+      )
     end
   end
 
@@ -178,8 +182,10 @@ defmodule Akd.Dsl.FormHook do
   """
   defmacro main(cmd, dest, cmd_envs: cmd_envs) do
     quote do
-      put_ops_acc(var!(ops, unquote(__MODULE__)),
-        {:main, {unquote(cmd), unquote(dest), unquote(cmd_envs)}})
+      put_ops_acc(
+        var!(ops, unquote(__MODULE__)),
+        {:main, {unquote(cmd), unquote(dest), unquote(cmd_envs)}}
+      )
     end
   end
 
@@ -198,8 +204,10 @@ defmodule Akd.Dsl.FormHook do
   """
   defmacro ensure(cmd, dest) do
     quote do
-      put_ops_acc(var!(ops, unquote(__MODULE__)),
-        {:ensure, {unquote(cmd), unquote(dest), []}})
+      put_ops_acc(
+        var!(ops, unquote(__MODULE__)),
+        {:ensure, {unquote(cmd), unquote(dest), []}}
+      )
     end
   end
 
@@ -220,8 +228,10 @@ defmodule Akd.Dsl.FormHook do
   """
   defmacro ensure(cmd, dest, cmd_envs: cmd_envs) do
     quote do
-      put_ops_acc(var!(ops, unquote(__MODULE__)),
-        {:ensure, {unquote(cmd), unquote(dest), unquote(cmd_envs)}})
+      put_ops_acc(
+        var!(ops, unquote(__MODULE__)),
+        {:ensure, {unquote(cmd), unquote(dest), unquote(cmd_envs)}}
+      )
     end
   end
 
@@ -240,8 +250,10 @@ defmodule Akd.Dsl.FormHook do
   """
   defmacro rollback(cmd, dest) do
     quote do
-      put_ops_acc(var!(ops, unquote(__MODULE__)),
-        {:rollback, {unquote(cmd), unquote(dest), []}})
+      put_ops_acc(
+        var!(ops, unquote(__MODULE__)),
+        {:rollback, {unquote(cmd), unquote(dest), []}}
+      )
     end
   end
 
@@ -262,8 +274,10 @@ defmodule Akd.Dsl.FormHook do
   """
   defmacro rollback(cmd, dest, cmd_envs: cmd_envs) do
     quote do
-      put_ops_acc(var!(ops, unquote(__MODULE__)),
-        {:rollback, {unquote(cmd), unquote(dest), unquote(cmd_envs)}})
+      put_ops_acc(
+        var!(ops, unquote(__MODULE__)),
+        {:rollback, {unquote(cmd), unquote(dest), unquote(cmd_envs)}}
+      )
     end
   end
 
@@ -300,7 +314,7 @@ defmodule Akd.Dsl.FormHook do
       ignore_failure: !!opts[:ignore_failure],
       main: translate(ops, :main),
       rollback: translate(ops, :rollback),
-      run_ensure: Keyword.get(opts, :run_ensure, true),
+      run_ensure: Keyword.get(opts, :run_ensure, true)
     }
   end
 
@@ -317,6 +331,7 @@ defmodule Akd.Dsl.FormHook do
   defp struct_op({cmd, dst, cmd_envs}) when is_binary(dst) do
     struct_op({cmd, Akd.Destination.parse(dst), cmd_envs})
   end
+
   defp struct_op({cmd, dst, cmd_envs}) do
     %Akd.Operation{cmd: cmd, destination: dst, cmd_envs: cmd_envs}
   end

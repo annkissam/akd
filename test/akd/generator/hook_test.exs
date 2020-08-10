@@ -5,17 +5,17 @@ defmodule Akd.Generator.HookTest do
   @test_hook_path Path.join([@app_path, "lib", "test_hook.ex"])
 
   setup do
-    old_dir = File.cwd!
+    old_dir = File.cwd!()
     File.cd!(@app_path)
 
     # Cleanup for the test
     {:ok, _} = File.rm_rf(@test_hook_path)
 
-    on_exit fn ->
+    on_exit(fn ->
       # Cleanup after the tests
       {:ok, _} = File.rm_rf(@test_hook_path)
       File.cd!(old_dir)
-    end
+    end)
 
     []
   end

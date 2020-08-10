@@ -198,14 +198,17 @@ defmodule Akd.DeployHelper do
                             publish_to: %Akd.Destination{host: :local, path: ".",
                                          user: :current}, vsn: "0.1.1"}
   """
-  @spec add_hook(Deployment.t, Hook.t | tuple()) :: Deployment.t
+  @spec add_hook(Deployment.t(), Hook.t() | tuple()) :: Deployment.t()
   def add_hook(deployment, hook)
+
   def add_hook(%Deployment{hooks: hooks} = deployment, %Hook{} = hook) do
     %Deployment{deployment | hooks: hooks ++ [hook]}
   end
+
   def add_hook(%Deployment{hooks: hooks} = deployment, {%Hook{} = hook, _}) do
     %Deployment{deployment | hooks: hooks ++ [hook]}
   end
+
   def add_hook(deployment, {mod, opts}) when is_atom(mod) do
     deployment
     |> get_hooks(mod, opts)
@@ -217,13 +220,14 @@ defmodule Akd.DeployHelper do
   # prevents this function from calling main operations further.
   defp failure_and_hooks(hook, {failure, called_hooks}) do
     with false <- failure,
-      {:ok, _output} <- Hook.main(hook)
-    do
+         {:ok, _output} <- Hook.main(hook) do
       {failure, [hook | called_hooks]}
     else
       {:error, _err} ->
         {!hook.ignore_failure, called_hooks}
-      true -> {true, called_hooks}
+
+      true ->
+        {true, called_hooks}
     end
   end
 

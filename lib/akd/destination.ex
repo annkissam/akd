@@ -22,20 +22,20 @@ defmodule Akd.Destination do
   to produce custom hooks.
   """
 
-  defstruct [user: :current, host: :local, path: "."]
+  defstruct user: :current, host: :local, path: "."
 
   @typedoc ~s(A `Akd.Destination.user` can be either a string or `:current`)
-  @type user :: String.t | :current
+  @type user :: String.t() | :current
 
   @typedoc ~s(A `Akd.Destination.host` can be either a string or `:local`)
-  @type host :: String.t | :local
+  @type host :: String.t() | :local
 
   @typedoc ~s(Generic type for Akd.Destination)
   @type t :: %__MODULE__{
-    user: user,
-    host: host,
-    path: String.t
-  }
+          user: user,
+          host: host,
+          path: String.t()
+        }
 
   @doc """
   Takes an `Akd.Destination.t` struct, `dest` and parses it into a readable string.
@@ -57,9 +57,10 @@ defmodule Akd.Destination do
       "dragonborn@skyrim:whiterun"
 
   """
-  @spec to_string(__MODULE__.t) :: String.t
+  @spec to_string(__MODULE__.t()) :: String.t()
   def to_string(dest)
   def to_string(%__MODULE__{user: :current, host: :local, path: path}), do: path
+
   def to_string(%__MODULE__{user: user, host: ip, path: path}) do
     "#{user}@#{ip}:#{path}"
   end
@@ -85,12 +86,11 @@ defmodule Akd.Destination do
       ** (MatchError) no match of right hand side value: ["arrowtotheknee"]
 
   """
-  @spec parse(String.t) :: __MODULE__.t
+  @spec parse(String.t()) :: __MODULE__.t()
   def parse(string) do
     [user, host, path] = Regex.split(~r{@|:}, string)
     %__MODULE__{user: user, host: host, path: path}
   end
-
 
   @doc """
   Takes a string path and returns a local `Akd.Destination.t` struct which
@@ -106,7 +106,7 @@ defmodule Akd.Destination do
       %Akd.Destination{host: :local, path: "/fus/ro/dah", user: :current}
 
   """
-  @spec local(String.t) :: __MODULE__.t
+  @spec local(String.t()) :: __MODULE__.t()
   def local(path \\ ".") do
     %__MODULE__{user: :current, host: :local, path: path}
   end

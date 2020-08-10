@@ -44,7 +44,7 @@ defmodule Akd.Generator.Task do
     ```
 
   """
-  @spec gen(list, Keyword.t) :: :ok | {:error, String.t}
+  @spec gen(list, Keyword.t()) :: :ok | {:error, String.t()}
   def gen([name | _], opts) do
     name
     |> validate_and_format_opts(opts)
@@ -55,7 +55,8 @@ defmodule Akd.Generator.Task do
   # This function validates the name and options sent to the generator
   # and formats the options making it ready for the template to read from.
   defp validate_and_format_opts(name, opts) do
-    opts = @hooks
+    opts =
+      @hooks
       |> Enum.reduce(opts, &resolve_hook_opts/2)
       |> Keyword.put_new(:path, @path)
       |> Keyword.put_new(:with_phx, false)
@@ -85,7 +86,7 @@ defmodule Akd.Generator.Task do
 
   # This function gives the location for the template which will be used
   # by the generator
-  defp template(), do:  "#{__DIR__}/templates/task.ex.eex"
+  defp template(), do: "#{__DIR__}/templates/task.ex.eex"
 
   # This function takes formatted options and returns a tuple.
   # First element of the tuple is the path to file and second element is

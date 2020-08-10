@@ -187,12 +187,14 @@ defmodule Akd.Fetch.Git do
              destination: %Akd.Destination{host: :local, path: ".",
              user: :current}}], rollback: [], run_ensure: false}]
   """
-  @spec get_hooks(Akd.Deployment.t, Keyword.t) :: list(Akd.Hook.t)
+  @spec get_hooks(Akd.Deployment.t(), Keyword.t()) :: list(Akd.Hook.t())
   def get_hooks(deployment, opts \\ []) do
     opts = uniq_merge(opts, @default_opts)
     src = Keyword.get(opts, :src) || Map.get(deployment.data, :git_src)
-    branch = Keyword.get(opts, :branch) ||
-      Map.get(deployment.data, :git_branch) || "master"
+
+    branch =
+      Keyword.get(opts, :branch) ||
+        Map.get(deployment.data, :git_branch) || "master"
 
     destination = Akd.DestinationResolver.resolve(:build, deployment)
 
@@ -201,18 +203,19 @@ defmodule Akd.Fetch.Git do
 
   # This function takes a source, branch, destination and options and
   # returns an Akd.Hook.t struct using the form_hook DSL.
-  defp fetch_hook(nil, _, _, _), do: raise @errmsg[:no_src]
+  defp fetch_hook(nil, _, _, _), do: raise(@errmsg[:no_src])
+
   defp fetch_hook(src, branch, destination, opts) do
     form_hook opts do
-      main "git status; if [[ $? != 0 ]]; then git clone #{src} .; fi", destination
-      main "git fetch", destination
-      main "git reset --hard", destination
-      main "git clean -fd", destination
-      main "git checkout #{branch}", destination
-      main "git pull", destination
+      main("git status; if [[ $? != 0 ]]; then git clone #{src} .; fi", destination)
+      main("git fetch", destination)
+      main("git reset --hard", destination)
+      main("git clean -fd", destination)
+      main("git checkout #{branch}", destination)
+      main("git pull", destination)
 
-      ensure "rm -rf ./*", destination
-      ensure "rm -rf ./.*", destination
+      ensure("rm -rf ./*", destination)
+      ensure("rm -rf ./.*", destination)
     end
   end
 

@@ -32,8 +32,12 @@ defmodule Akd.Build.Phoenix.Brunch do
 
   use Akd.Hook
 
-  @default_opts [run_ensure: true, ignore_failure: false,
-    brunch: "node_modules/brunch/bin/brunch", brunch_config: "."]
+  @default_opts [
+    run_ensure: true,
+    ignore_failure: false,
+    brunch: "node_modules/brunch/bin/brunch",
+    brunch_config: "."
+  ]
 
   @doc """
   Callback implementation for `get_hooks/2`.
@@ -64,7 +68,7 @@ defmodule Akd.Build.Phoenix.Brunch do
                     user: :current}}], rollback: [], run_ensure: true}]
 
   """
-  @spec get_hooks(Akd.Deployment.t, Keyword.t) :: list(Akd.Hook.t)
+  @spec get_hooks(Akd.Deployment.t(), Keyword.t()) :: list(Akd.Hook.t())
   def get_hooks(deployment, opts \\ []) do
     opts = uniq_merge(opts, @default_opts)
     brunch = Keyword.get(opts, :brunch)
@@ -82,11 +86,10 @@ defmodule Akd.Build.Phoenix.Brunch do
     cmd_envs = [{"MIX_ENV", mix_env} | cmd_envs]
 
     form_hook opts do
-      main "mix deps.get \n mix compile", destination,
-        cmd_envs: cmd_envs
+      main("mix deps.get \n mix compile", destination, cmd_envs: cmd_envs)
 
-      main "cd #{brunch_config} \n #{brunch} build --production", destination
-      main "mix phx.digest", destination, cmd_envs: cmd_envs
+      main("cd #{brunch_config} \n #{brunch} build --production", destination)
+      main("mix phx.digest", destination, cmd_envs: cmd_envs)
 
       # ensure "rm -rf deps", destination
     end

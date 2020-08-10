@@ -42,7 +42,7 @@ defmodule Akd.Generator.Hook do
     ```
 
   """
-  @spec gen(list, Keyword.t) :: :ok | {:error, String.t}
+  @spec gen(list, Keyword.t()) :: :ok | {:error, String.t()}
   def gen([name | _], opts) do
     name
     |> validate_and_format_opts(opts)
@@ -64,7 +64,7 @@ defmodule Akd.Generator.Hook do
 
   # This function gives the location for the template which will be used
   # by the generator
-  defp template(), do:  "#{__DIR__}/templates/hook.ex.eex"
+  defp template(), do: "#{__DIR__}/templates/hook.ex.eex"
 
   # This function takes formatted options and returns a tuple.
   # First element of the tuple is the path to file and second element is
