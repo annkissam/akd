@@ -176,13 +176,10 @@ defmodule Akd.DeployHelper do
       ...> publish_to: Akd.Destination.local("."),
       ...> name: "name",
       ...> vsn: "0.1.1"}
-      iex> Akd.DeployHelper.add_hook(deployment, {Akd.Init.Distillery, []})
+      iex> Akd.DeployHelper.add_hook(deployment, {Akd.Init.Release, []})
       %Akd.Deployment{build_at: %Akd.Destination{host: :local, path: ".",
           user: :current},
-         hooks: [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm -rf ./rel",
-             cmd_envs: [],
-             destination: %Akd.Destination{host: :local, path: ".",
-              user: :current}},
+         hooks: [%Akd.Hook{ensure: [
             %Akd.Operation{cmd: "rm -rf _build/prod", cmd_envs: [],
              destination: %Akd.Destination{host: :local, path: ".",
             user: :current}}], ignore_failure: false,
@@ -190,7 +187,7 @@ defmodule Akd.DeployHelper do
             cmd_envs: [{"MIX_ENV", "prod"}],
             destination: %Akd.Destination{host: :local, path: ".",
                    user: :current}},
-             %Akd.Operation{cmd: "mix release.init --name name ",
+             %Akd.Operation{cmd: "mix release.init",
                    cmd_envs: [{"MIX_ENV", "prod"}],
                    destination: %Akd.Destination{host: :local, path: ".",
                     user: :current}}], rollback: [], run_ensure: true}],

@@ -1,10 +1,10 @@
-defmodule Akd.Publish.Distillery do
+defmodule Akd.Publish.Release do
   @moduledoc """
   A native Hook module that comes shipped with Akd.
 
   This module uses `Akd.Hook`.
 
-  Provides a set of operations that copies a built distillery release from
+  Provides a set of operations that copies a built release from
   the `build_at` location to `publish_to` destination, and then publishes
   the release (by uncompressing the released tar file).
 
@@ -42,7 +42,7 @@ defmodule Akd.Publish.Distillery do
   Callback implementation for `get_hooks/2`.
 
   This function returns a list of operations that can be used to publish a release
-  using distillery on the `publish_to` destination of a deployment.
+  on the `publish_to` destination of a deployment.
 
   ## Examples
 
@@ -51,12 +51,12 @@ defmodule Akd.Publish.Distillery do
       ...> publish_to: Akd.Destination.local("."),
       ...> name: "name",
       ...> vsn: "0.1.1"}
-      iex> Akd.Publish.Distillery.get_hooks(deployment, [])
+      iex> Akd.Publish.Release  .get_hooks(deployment, [])
       [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm ./name.tar.gz",
             cmd_envs: [],
             destination: %Akd.Destination{host: :local, path: ".",
              user: :current}}], ignore_failure: false,
-          main: [%Akd.Operation{cmd: "cp ./_build/prod/rel/name/releases/0.1.1/name.tar.gz .\\n",
+          main: [%Akd.Operation{cmd: "cp ./_build/prod/name-0.1.1.tar.gz .\\n",
             cmd_envs: [],
             destination: %Akd.Destination{host: :local, path: ".",
              user: :current}}], rollback: [], run_ensure: true},
@@ -161,13 +161,11 @@ defmodule Akd.Publish.Distillery do
   # This function returns the path to the release based on deployment name
   # and mix environment.
   defp path_to_release(base, deployment) do
-    "#{base}/_build/#{deployment.mix_env}/rel/#{deployment.name}/releases/#{deployment.vsn}/#{
-      deployment.name
-    }.tar.gz"
+    "#{base}/_build/#{deployment.mix_env}/#{deployment.name}-#{deployment.vsn}.tar.gz"
   end
 
   defp path_to_local_release(base, deployment) do
-    "#{base}/#{deployment.name}.tar.gz"
+    "#{base}/#{deployment.name}-#{deployment.vsn}.tar.gz"
   end
 
   # This function takes two keyword lists and merges them keeping the keys
