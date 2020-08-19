@@ -37,14 +37,12 @@ defmodule Akd.Eval.Release do
       ...> publish_to: Akd.Destination.local("."),
       ...> name: "name",
       ...> vsn: "0.1.1"}
-      iex> Akd.Stop.Release.get_hooks(deployment, [])
+      iex> Akd.Eval.Release.get_hooks(deployment, [eval: "IO.inspect(:ok)"])
       [%Akd.Hook{ensure: [], ignore_failure: false,
-          main: [%Akd.Operation{cmd: "bin/name stop", cmd_envs: [],
+          main: [%Akd.Operation{cmd: ~s[bin/name eval "IO.inspect(:ok)"], cmd_envs: [],
             destination: %Akd.Destination{host: :local, path: ".",
            user: :current}}],
-         rollback: [%Akd.Operation{cmd: "bin/name start", cmd_envs: [],
-           destination: %Akd.Destination{host: :local, path: ".",
-            user: :current}}], run_ensure: true}]
+         rollback: [], run_ensure: true}]
 
   """
   @spec get_hooks(Akd.Deployment.t(), Keyword.t()) :: list(Akd.Hook.t())

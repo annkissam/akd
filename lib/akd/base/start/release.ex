@@ -37,7 +37,7 @@ defmodule Akd.Start.Release do
       ...> publish_to: Akd.Destination.local("."),
       ...> name: "name",
       ...> vsn: "0.1.1"}
-      iex> Akd.Start.Release.get_hooks(deployment, [eval: "IO.inspect(:ok)"])
+      iex> Akd.Start.Release.get_hooks(deployment, [])
       [%Akd.Hook{ensure: [], ignore_failure: false,
           main: [%Akd.Operation{cmd: "bin/name start", cmd_envs: [],
             destination: %Akd.Destination{host: :local, path: ".",
