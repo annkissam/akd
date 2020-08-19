@@ -74,7 +74,7 @@ defmodule Akd.Init.Release do
 
     form_hook opts do
       main(setup(), destination, cmd_envs: cmd_envs)
-      main(rel_init(), destination, cmd_envs: cmd_envs)
+      # main(rel_init(), destination, cmd_envs: cmd_envs)
 
       ensure("rm -rf _build/prod", destination)
     end

@@ -83,8 +83,6 @@ defmodule Akd.Build.Phoenix.Webpack do
 
       main("cd #{assets_dir} \n npm run deploy", destination)
       main("mix phx.digest", destination, cmd_envs: cmd_envs)
-
-      # ensure "rm -rf deps", destination
     end
   end
 

@@ -4,31 +4,18 @@ defmodule Akd.Publish.Release do
 
   This module uses `Akd.Hook`.
 
-  Provides a set of operations that copies a built release from
-  the `build_at` location to `publish_to` destination, and then publishes
-  the release (by uncompressing the released tar file).
-
-  Ensures to remove the tar.gz file created by this build.
-
-  Doesn't have any Rollback operations.
-
-  When using SCP to transfer between two remote nodes you must ensure they can
-  communicate. This can be done by setting up authorized keys and known hosts on
-  the destination server, or using your local credentials (see: scp_options).
-  You will still require known hosts. Alternatively, you can use your local
-  computer as an intermediate destination (no examples provided yet).
+  Provides a set of operations to evaluate some elixir code after publishing the release
 
   # Options:
 
   * `run_ensure`: `boolean`. Specifies whether to a run a command or not.
   * `ignore_failure`: `boolean`. Specifies whether to continue if this hook fails.
-  * `scp_options`: `string`. options to pass to the SCP command, example: "-o \"ForwardAgent yes\""
+  * `eval`: `string`. Elixir code to evaluate"
 
   # Defaults:
 
   * `run_ensure`: `true`
   * `ignore_failure`: `false`
-  * `scp_options`: `""`
 
   """
 
@@ -96,7 +83,7 @@ defmodule Akd.Publish.Release do
       main(copy_rel(deployment, scp_options), scp_destination)
 
       ensure(
-        "rm #{publish.path}/#{deployment.name}.tar.gz",
+        "rm #{publish.path}/#{deployment.name}-#{deployment.vsn}.tar.gz",
         publish
       )
     end
@@ -127,7 +114,7 @@ defmodule Akd.Publish.Release do
 
   defp copy_rel(
          %Deployment{build_at: src, publish_to: dest} = deployment,
-         %{local_intermediate: true} = scp_options
+         _scp_options
        ) do
     """
     scp #{src |> Destination.to_string() |> path_to_release(deployment)} #{
@@ -140,21 +127,12 @@ defmodule Akd.Publish.Release do
     """
   end
 
-  # This assumes that the publish server has ssh credentials to build server
-  defp copy_rel(%Deployment{build_at: src, publish_to: dest} = deployment, scp_options) do
-    """
-    scp #{scp_options} #{src |> Destination.to_string() |> path_to_release(deployment)} #{
-      Destination.to_string(dest)
-    }
-    """
-  end
-
   # This function returns the command to be used to publish a release, i.e.
   # uncompress the tar.gz file associated with the deployment.
   defp publish_rel(deployment) do
     """
     cd #{deployment.publish_to.path}
-    tar xzf #{deployment.name}.tar.gz
+    tar xzf #{deployment.name}-#{deployment.vsn}.tar.gz
     """
   end
 

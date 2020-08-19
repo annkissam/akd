@@ -110,21 +110,21 @@ defmodule Akd.Build.Release do
     cmd_envs = [{"MIX_ENV", mix_env} | cmd_envs]
 
     form_hook opts do
+      main("rm -rf ./_build/#{mix_env}/rel", destination)
+
       if release_name do
         main(
-          "mix deps.get \n mix compile \n mix release --name=#{release_name} --env=#{mix_env}",
+          "mix deps.get \n mix compile \n mix release #{release_name}",
           destination,
           cmd_envs: cmd_envs
         )
       else
         main(
-          "mix deps.get \n mix compile \n mix release --env=#{mix_env}",
+          "mix deps.get \n mix compile \n mix release",
           destination,
           cmd_envs: cmd_envs
         )
       end
-
-      ensure("rm -rf ./_build/#{mix_env}/rel", destination)
     end
   end
 
