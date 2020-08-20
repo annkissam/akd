@@ -24,7 +24,7 @@ jobs:
       - run: mix local.hex --force
       - run: mix deps.get
       - run: mix test
-      - run: MIX_ENV=test mix coveralls.post -t OmijPrTsGlfifPeOpKoNf763HFptPgDgf -b $(git rev-parse --abbrev-ref HEAD)
+      - run: MIX_ENV=test mix test
       - run: MIX_ENV=docs mix inch.report
 
     parallelism: 2
