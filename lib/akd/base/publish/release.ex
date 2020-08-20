@@ -39,7 +39,7 @@ defmodule Akd.Publish.Release do
       ...> name: "name",
       ...> vsn: "0.1.1"}
       iex> Akd.Publish.Release  .get_hooks(deployment, [])
-      [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm ./name.tar.gz",
+      [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm ./name-0.1.1.tar.gz",
             cmd_envs: [],
             destination: %Akd.Destination{host: :local, path: ".",
              user: :current}}], ignore_failure: false,
@@ -48,7 +48,7 @@ defmodule Akd.Publish.Release do
             destination: %Akd.Destination{host: :local, path: ".",
              user: :current}}], rollback: [], run_ensure: true},
          %Akd.Hook{ensure: [], ignore_failure: false,
-          main: [%Akd.Operation{cmd: "cd .\\ntar xzf name.tar.gz\\n",
+          main: [%Akd.Operation{cmd: "cd .\\ntar xzf name-0.1.1.tar.gz\\n",
             cmd_envs: [],
           destination: %Akd.Destination{host: :local, path: ".",
                user: :current}}], rollback: [], run_ensure: true}]

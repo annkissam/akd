@@ -52,7 +52,7 @@ defmodule Akd.Build.Phoenix.Webpack do
             cmd_envs: [{"MIX_ENV", "prod"}],
             destination: %Akd.Destination{host: :local, path: ".",
                  user: :current}},
-           %Akd.Operation{cmd: "cd . \\n n  pm run deploy",
+           %Akd.Operation{cmd: "cd . \\n npm run deploy",
                cmd_envs: [],
                destination: %Akd.Destination{host: :local, path: ".",
                     user: :current}},

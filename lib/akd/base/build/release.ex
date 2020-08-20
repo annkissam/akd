@@ -54,11 +54,12 @@ defmodule Akd.Build.Release do
       ...> name: "name",
       ...> vsn: "0.1.1"}
       iex> Akd.Build.Release.get_hooks(deployment, [])
-      [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm -rf ./_build/prod/rel",
+      [%Akd.Hook{ensure: [], ignore_failure: false,
+          main: [%Akd.Operation{cmd: "rm -rf ./_build/prod/rel",
             cmd_envs: [],
             destination: %Akd.Destination{host: :local, path: ".",
-             user: :current}}], ignore_failure: false,
-          main: [%Akd.Operation{cmd: "mix deps.get \\n mix compile \\n mix release --env=prod",
+            user: :current}},
+            %Akd.Operation{cmd: "mix deps.get \\n mix compile \\n mix release",
             cmd_envs: [{"MIX_ENV", "prod"}],
             destination: %Akd.Destination{host: :local, path: ".",
              user: :current}}], rollback: [], run_ensure: true}]
@@ -69,11 +70,12 @@ defmodule Akd.Build.Release do
       ...> name: "name",
       ...> vsn: "0.1.1"}
       iex> Akd.Build.Release.get_hooks(deployment, [release_name: "name"])
-      [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm -rf ./_build/prod/rel",
+      [%Akd.Hook{ensure: [], ignore_failure: false,
+         main: [%Akd.Operation{cmd: "rm -rf ./_build/prod/rel",
            cmd_envs: [],
            destination: %Akd.Destination{host: :local, path: ".",
-            user: :current}}], ignore_failure: false,
-         main: [%Akd.Operation{cmd: "mix deps.get \\n mix compile \\n mix release --name=name --env=prod",
+           user: :current}},
+           %Akd.Operation{cmd: "mix deps.get \\n mix compile \\n mix release name",
            cmd_envs: [{"MIX_ENV", "prod"}],
            destination: %Akd.Destination{host: :local, path: ".",
             user: :current}}], rollback: [], run_ensure: true}]
@@ -85,11 +87,12 @@ defmodule Akd.Build.Release do
       ...> vsn: "0.1.1",
       ...> data: %{release_name: "name"}}
       iex> Akd.Build.Release.get_hooks(deployment, [])
-      [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm -rf ./_build/prod/rel",
+      [%Akd.Hook{ensure: [], ignore_failure: false,
+         main: [%Akd.Operation{cmd: "rm -rf ./_build/prod/rel",
            cmd_envs: [],
            destination: %Akd.Destination{host: :local, path: ".",
-            user: :current}}], ignore_failure: false,
-         main: [%Akd.Operation{cmd: "mix deps.get \\n mix compile \\n mix release --name=name --env=prod",
+           user: :current}},
+           %Akd.Operation{cmd: "mix deps.get \\n mix compile \\n mix release name",
            cmd_envs: [{"MIX_ENV", "prod"}],
            destination: %Akd.Destination{host: :local, path: ".",
             user: :current}}], rollback: [], run_ensure: true}]

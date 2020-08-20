@@ -186,11 +186,7 @@ defmodule Akd.DeployHelper do
             main: [%Akd.Operation{cmd: "mix deps.get \\n mix compile",
             cmd_envs: [{"MIX_ENV", "prod"}],
             destination: %Akd.Destination{host: :local, path: ".",
-                   user: :current}},
-             %Akd.Operation{cmd: "mix release.init",
-                   cmd_envs: [{"MIX_ENV", "prod"}],
-                   destination: %Akd.Destination{host: :local, path: ".",
-                    user: :current}}], rollback: [], run_ensure: true}],
+                   user: :current}}], rollback: [], run_ensure: true}],
                             mix_env: "prod", name: "name",
                             publish_to: %Akd.Destination{host: :local, path: ".",
                                          user: :current}, vsn: "0.1.1"}

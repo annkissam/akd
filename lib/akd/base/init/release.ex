@@ -50,11 +50,7 @@ defmodule Akd.Init.Release do
           main: [%Akd.Operation{cmd: "mix deps.get \\n mix compile",
             cmd_envs: [{"MIX_ENV", "prod"}],
             destination: %Akd.Destination{host: :local, path: ".",
-             user: :current}},
-           %Akd.Operation{cmd: "mix release.init",
-          cmd_envs: [{"MIX_ENV", "prod"}],
-          destination: %Akd.Destination{host: :local, path: ".",
-               user: :current}}], rollback: [], run_ensure: true}]
+             user: :current}}], rollback: [], run_ensure: true}]
 
   """
   @spec get_hooks(Akd.Deployment.t(), Keyword.t()) :: list(Akd.Hook.t())
