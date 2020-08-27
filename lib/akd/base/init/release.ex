@@ -70,16 +70,10 @@ defmodule Akd.Init.Release do
 
     form_hook opts do
       main(setup(), destination, cmd_envs: cmd_envs)
-      # main(rel_init(), destination, cmd_envs: cmd_envs)
 
       ensure("rm -rf _build/prod", destination)
     end
   end
-
-  # This function accumulates all the switches of release.init command
-  # and forms a new command.
-  # This currently supports only template
-  defp rel_init(), do: "mix release.init"
 
   # These commands are to be ran before calling release init
   defp setup(), do: "mix deps.get \n mix compile"
