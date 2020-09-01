@@ -1,4 +1,4 @@
-defmodule Akd.Stop.Distillery do
+defmodule Akd.Eval.Release do
   @moduledoc """
   A native Hook module that comes shipped with Akd.
 
@@ -28,7 +28,7 @@ defmodule Akd.Stop.Distillery do
   Callback implementation for `get_hooks/2`.
 
   This function returns a list of operations that can be used to stop an app
-  built by distillery on the `publish_to` destination of a deployment.
+  built on the `publish_to` destination of a deployment.
 
   ## Examples
 
@@ -37,34 +37,29 @@ defmodule Akd.Stop.Distillery do
       ...> publish_to: Akd.Destination.local("."),
       ...> name: "name",
       ...> vsn: "0.1.1"}
-      iex> Akd.Stop.Distillery.get_hooks(deployment, [])
+      iex> Akd.Eval.Release.get_hooks(deployment, [eval: "IO.inspect(:ok)"])
       [%Akd.Hook{ensure: [], ignore_failure: false,
-          main: [%Akd.Operation{cmd: "bin/name stop", cmd_envs: [],
+          main: [%Akd.Operation{cmd: ~s[bin/name eval "IO.inspect(:ok)"], cmd_envs: [],
             destination: %Akd.Destination{host: :local, path: ".",
            user: :current}}],
-         rollback: [%Akd.Operation{cmd: "bin/name start", cmd_envs: [],
-           destination: %Akd.Destination{host: :local, path: ".",
-            user: :current}}], run_ensure: true}]
+         rollback: [], run_ensure: true}]
 
   """
-  @spec get_hooks(Akd.Deployment.t, Keyword.t) :: list(Akd.Hook.t)
+  @spec get_hooks(Akd.Deployment.t(), Keyword.t()) :: list(Akd.Hook.t())
   def get_hooks(deployment, opts \\ []) do
     opts = uniq_merge(opts, @default_opts)
-    [stop_hook(deployment, opts)]
+    [eval_hook(deployment, opts)]
   end
 
   # This function takes a deployment and options and returns an Akd.Hook.t
   # struct using FormHook DSL
-  defp stop_hook(deployment, opts) do
+  defp eval_hook(deployment, opts) do
     destination = Akd.DestinationResolver.resolve(:publish, deployment)
     cmd_envs = Keyword.get(opts, :cmd_envs, [])
+    eval = Keyword.get(opts, :eval, ~s[IO.puts("no evaluation")])
 
     form_hook opts do
-      main "bin/#{deployment.name} stop", destination,
-        cmd_envs: cmd_envs
-
-      rollback "bin/#{deployment.name} start", destination,
-        cmd_envs: cmd_envs
+      main(~s[bin/#{deployment.name} eval "#{eval}"], destination, cmd_envs: cmd_envs)
     end
   end
 

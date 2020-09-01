@@ -26,12 +26,12 @@ defmodule Akd.Deployment do
 
   @typedoc ~s(Generic type for a Deployment struct)
   @type t :: %__MODULE__{
-    mix_env: String.t,
-    build_at: Destination.t,
-    publish_to: Destination.t,
-    name: String.t,
-    vsn: String.t,
-    hooks: [Hook.t],
-    data: Map.t
-  }
+          mix_env: String.t(),
+          build_at: Destination.t(),
+          publish_to: Destination.t(),
+          name: String.t(),
+          vsn: String.t(),
+          hooks: [Hook.t()],
+          data: Map.t()
+        }
 end

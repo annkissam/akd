@@ -9,17 +9,17 @@ defmodule Akd.Mix.Gen.TaskTest do
   @test_task_path Path.join([@app_path, "lib", "mix", "tasks", "akd", "test_task.ex"])
 
   setup do
-    old_dir = File.cwd!
+    old_dir = File.cwd!()
     File.cd!(@app_path)
 
     # Cleanup for the test
     {:ok, _} = File.rm_rf(@test_task_path)
 
-    on_exit fn ->
+    on_exit(fn ->
       # Cleanup after the tests
       {:ok, _} = File.rm_rf(@test_task_path)
       File.cd!(old_dir)
-    end
+    end)
 
     []
   end

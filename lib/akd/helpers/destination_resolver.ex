@@ -56,7 +56,7 @@ defmodule Akd.DestinationResolver do
       iex> Akd.DestinationResolver.resolve(:local, deployment)
       %Akd.Destination{user: :current, host: :local, path: "."}
   """
-  @spec resolve(Destination.t | :build | :publish | :local, Deployment.t) :: Destination.t
+  @spec resolve(Destination.t() | :build | :publish | :local, Deployment.t()) :: Destination.t()
   def resolve(dest, deployment)
 
   def resolve(%Destination{} = dest, _deployment), do: dest

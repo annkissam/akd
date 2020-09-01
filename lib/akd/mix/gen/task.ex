@@ -52,11 +52,15 @@ defmodule Mix.Tasks.Akd.Gen.Task do
 
   use Mix.Task
 
-  @switches [fetcher: :string, initer: :string,
-             builder: :string, publisher: :string, with_phx: :boolean]
+  @switches [
+    fetcher: :string,
+    initer: :string,
+    builder: :string,
+    publisher: :string,
+    with_phx: :boolean
+  ]
 
-  @aliases [f: :fetcher, i: :initer,
-            b: :builder, p: :publisher, w: :with_phx]
+  @aliases [f: :fetcher, i: :initer, b: :builder, p: :publisher, w: :with_phx]
 
   @errs %{
     umbrella: "task `#{@tsk}` can only be run inside an application directory",
@@ -68,15 +72,14 @@ defmodule Mix.Tasks.Akd.Gen.Task do
   Runs the mix task to generate the task module.
   """
   def run(args) do
-    if Mix.Project.umbrella?(), do: info_raise @errs.umbrella
+    if Mix.Project.umbrella?(), do: info_raise(@errs.umbrella)
 
     generate(args)
   end
 
   # Generates the task module with args
   defp generate(args) do
-    {task_opts, parsed, _} =
-      OptionParser.parse(args, switches: @switches, aliases: @aliases)
+    {task_opts, parsed, _} = OptionParser.parse(args, switches: @switches, aliases: @aliases)
 
     parsed
     |> validate_parsed!()
@@ -86,21 +89,21 @@ defmodule Mix.Tasks.Akd.Gen.Task do
   # Validates parsed arguments, expects there to be a name
   defp validate_parsed!([name | tail]) do
     mod = "Mix.Tasks.Akd." <> name
-    if Enum.member?(Mix.Task.load_all(), mod), do: info_raise @errs.task
+    if Enum.member?(Mix.Task.load_all(), mod), do: info_raise(@errs.task)
     [mod | tail]
   end
 
   # Raise error if no name is given
   defp validate_parsed!(_) do
-    info_raise @errs.args
+    info_raise(@errs.args)
   end
 
   # Raise with info
   defp info_raise(message) do
-    Mix.raise """
+    Mix.raise("""
     #{message}
 
     #{@info}
-    """
+    """)
   end
 end

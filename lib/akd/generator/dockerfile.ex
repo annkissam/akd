@@ -46,8 +46,9 @@ defmodule Akd.Generator.Dockerfile do
     ```
 
   """
-  @spec gen(list, Keyword.t) :: :ok | {:error, String.t}
+  @spec gen(list, Keyword.t()) :: :ok | {:error, String.t()}
   def gen([], opts), do: gen([@name], opts)
+
   def gen([name | _], opts) do
     name
     |> validate_and_format_opts(opts)
@@ -60,13 +61,15 @@ defmodule Akd.Generator.Dockerfile do
   defp validate_and_format_opts(name, opts) do
     opts = Keyword.put_new(opts, :path, @path)
 
-    opts = opts
+    opts =
+      opts
       |> Keyword.get_values(:envs)
       |> Enum.map(&String.split(&1, "="))
       |> Enum.map(&List.to_tuple/1)
       |> (&Keyword.put(opts, :envs, &1)).()
 
-    opts = opts
+    opts =
+      opts
       |> Keyword.get_values(:phxapps)
       |> (&Keyword.put(opts, :phxapps, &1)).()
 

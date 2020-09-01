@@ -176,36 +176,32 @@ defmodule Akd.DeployHelper do
       ...> publish_to: Akd.Destination.local("."),
       ...> name: "name",
       ...> vsn: "0.1.1"}
-      iex> Akd.DeployHelper.add_hook(deployment, {Akd.Init.Distillery, []})
+      iex> Akd.DeployHelper.add_hook(deployment, {Akd.Init.Release, []})
       %Akd.Deployment{build_at: %Akd.Destination{host: :local, path: ".",
           user: :current},
-         hooks: [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm -rf ./rel",
-             cmd_envs: [],
-             destination: %Akd.Destination{host: :local, path: ".",
-              user: :current}},
+         hooks: [%Akd.Hook{ensure: [
             %Akd.Operation{cmd: "rm -rf _build/prod", cmd_envs: [],
              destination: %Akd.Destination{host: :local, path: ".",
             user: :current}}], ignore_failure: false,
             main: [%Akd.Operation{cmd: "mix deps.get \\n mix compile",
             cmd_envs: [{"MIX_ENV", "prod"}],
             destination: %Akd.Destination{host: :local, path: ".",
-                   user: :current}},
-             %Akd.Operation{cmd: "mix release.init --name name ",
-                   cmd_envs: [{"MIX_ENV", "prod"}],
-                   destination: %Akd.Destination{host: :local, path: ".",
-                    user: :current}}], rollback: [], run_ensure: true}],
+                   user: :current}}], rollback: [], run_ensure: true}],
                             mix_env: "prod", name: "name",
                             publish_to: %Akd.Destination{host: :local, path: ".",
                                          user: :current}, vsn: "0.1.1"}
   """
-  @spec add_hook(Deployment.t, Hook.t | tuple()) :: Deployment.t
+  @spec add_hook(Deployment.t(), Hook.t() | tuple()) :: Deployment.t()
   def add_hook(deployment, hook)
+
   def add_hook(%Deployment{hooks: hooks} = deployment, %Hook{} = hook) do
     %Deployment{deployment | hooks: hooks ++ [hook]}
   end
+
   def add_hook(%Deployment{hooks: hooks} = deployment, {%Hook{} = hook, _}) do
     %Deployment{deployment | hooks: hooks ++ [hook]}
   end
+
   def add_hook(deployment, {mod, opts}) when is_atom(mod) do
     deployment
     |> get_hooks(mod, opts)
@@ -217,13 +213,14 @@ defmodule Akd.DeployHelper do
   # prevents this function from calling main operations further.
   defp failure_and_hooks(hook, {failure, called_hooks}) do
     with false <- failure,
-      {:ok, _output} <- Hook.main(hook)
-    do
+         {:ok, _output} <- Hook.main(hook) do
       {failure, [hook | called_hooks]}
     else
       {:error, _err} ->
         {!hook.ignore_failure, called_hooks}
-      true -> {true, called_hooks}
+
+      true ->
+        {true, called_hooks}
     end
   end
 

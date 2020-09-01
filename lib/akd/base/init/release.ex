@@ -1,4 +1,4 @@
-defmodule Akd.Init.Distillery do
+defmodule Akd.Init.Release do
   @moduledoc """
   A native Hook module that comes shipped with Akd.
 
@@ -42,69 +42,41 @@ defmodule Akd.Init.Distillery do
       ...> publish_to: Akd.Destination.local("."),
       ...> name: "name",
       ...> vsn: "0.1.1"}
-      iex> Akd.Init.Distillery.get_hooks(deployment, [])
-      [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm -rf ./rel", cmd_envs: [],
+      iex> Akd.Init.Release.get_hooks(deployment, [])
+      [%Akd.Hook{ensure: [%Akd.Operation{cmd: "rm -rf _build/prod",
+            cmd_envs: [],
             destination: %Akd.Destination{host: :local, path: ".",
-             user: :current}},
-           %Akd.Operation{cmd: "rm -rf _build/prod", cmd_envs: [],
-            destination: %Akd.Destination{host: :local, path: ".",
-             user: :current}}], ignore_failure: false,
+            user: :current}}], ignore_failure: false,
           main: [%Akd.Operation{cmd: "mix deps.get \\n mix compile",
             cmd_envs: [{"MIX_ENV", "prod"}],
             destination: %Akd.Destination{host: :local, path: ".",
-             user: :current}},
-           %Akd.Operation{cmd: "mix release.init --name name ",
-          cmd_envs: [{"MIX_ENV", "prod"}],
-          destination: %Akd.Destination{host: :local, path: ".",
-               user: :current}}], rollback: [], run_ensure: true}]
+             user: :current}}], rollback: [], run_ensure: true}]
 
   """
-  @spec get_hooks(Akd.Deployment.t, Keyword.t) :: list(Akd.Hook.t)
+  @spec get_hooks(Akd.Deployment.t(), Keyword.t()) :: list(Akd.Hook.t())
   def get_hooks(deployment, opts \\ []) do
     opts = uniq_merge(opts, @default_opts)
 
     destination = Akd.DestinationResolver.resolve(:build, deployment)
-    template_cmd = opts
-      |> Keyword.get(:template)
-      |> template_cmd()
-    name_cmd = name_cmd(deployment.name)
 
-    [init_hook(destination, deployment.mix_env, [name_cmd, template_cmd], opts)]
+    [init_hook(destination, deployment.mix_env, opts)]
   end
 
   # This function takes a destination, a mix_env, switches and options
   # and returns an Akd.Hook.t struct using form_hook DSL.
-  defp init_hook(destination, mix_env, switches, opts) do
+  defp init_hook(destination, mix_env, opts) do
     cmd_envs = Keyword.get(opts, :cmd_envs, [])
     cmd_envs = [{"MIX_ENV", mix_env} | cmd_envs]
 
     form_hook opts do
-      main setup(), destination, cmd_envs: cmd_envs
-      main rel_init(switches), destination, cmd_envs: cmd_envs
+      main(setup(), destination, cmd_envs: cmd_envs)
 
-      ensure "rm -rf ./rel", destination
-      ensure "rm -rf _build/prod", destination
+      ensure("rm -rf _build/prod", destination)
     end
-  end
-
-  # This function accumulates all the switches of release.init command
-  # and forms a new command.
-  # This currently supports only template
-  defp rel_init(switches) when is_list(switches) do
-    Enum.reduce(switches, "mix release.init",
-      fn(cmd, acc) -> acc <> " " <> cmd end)
   end
 
   # These commands are to be ran before calling release init
   defp setup(), do: "mix deps.get \n mix compile"
-
-  # This function returns sub-command associated with template switch
-  defp template_cmd(nil), do: ""
-  defp template_cmd(path), do: "--template #{path}"
-
-  # This function returns sub-command associated with name switch
-  defp name_cmd(nil), do: ""
-  defp name_cmd(name), do: "--name #{name}"
 
   # This function takes two keyword lists and merges them keeping the keys
   # unique. If there are multiple values for a key, it takes the value from

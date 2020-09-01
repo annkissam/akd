@@ -32,10 +32,10 @@ defmodule Akd.SecureConnection do
       {:error, %IO.Stream{device: :standard_io, line_or_bytes: :line, raw: false}}
   """
   def ssh(user, scoped_ip, operations, stdio \\ false) do
-    Logger.info "ssh #{user}@#{scoped_ip}"
-    Logger.info "running: #{operations}"
+    Logger.info("ssh #{user}@#{scoped_ip}")
+    Logger.info("running: #{operations}")
 
-    opts = stdio && [into: IO.stream(:stdio, :line)] || []
+    opts = (stdio && [into: IO.stream(:stdio, :line)]) || []
 
     case System.cmd("ssh", ["#{user}@#{scoped_ip}", operations], opts) do
       {output, 0} -> {:ok, output}
@@ -59,10 +59,9 @@ defmodule Akd.SecureConnection do
       {:error, %IO.Stream{device: :standard_io, line_or_bytes: :line, raw: false}}
   """
   def scp(src, dest, opts \\ []) do
-    Logger.info "scp #{src} #{dest}"
+    Logger.info("scp #{src} #{dest}")
 
-    case System.cmd("scp", opts ++ [src, dest], [into: IO.stream(:stdio, :line)])
-      do
+    case System.cmd("scp", opts ++ [src, dest], into: IO.stream(:stdio, :line)) do
       {output, 0} -> {:ok, output}
       {error, _} -> {:error, error}
     end

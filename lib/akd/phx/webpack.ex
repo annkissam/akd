@@ -1,13 +1,11 @@
-defmodule Akd.Build.Phoenix.Brunch do
+defmodule Akd.Build.Phoenix.Webpack do
   @moduledoc """
   A native Hook module that comes shipped with Akd.
 
   This module uses `Akd.Hook`.
 
-  Provides a set of operations that build a brunch release for a given phoenix app
-  at a deployment's `build_at` destination. This hook assumes that an executable
-  brunch binary file is already present or initialized by either
-  a previously executed hook or manually.
+  Provides a set of operations that build a webpack release for a given phoenix app
+  at a deployment's `build_at` destination.
 
   Ensures to cleanup and empty the deps folder created by this build.
 
@@ -17,17 +15,14 @@ defmodule Akd.Build.Phoenix.Brunch do
 
   * `run_ensure`: `boolean`. Specifies whether to a run a command or not.
   * `ignore_failure`: `boolean`. Specifies whether to continue if this hook fails.
-  * `brunch`: `string`. Path to brunch executable from project's root.
-  * `brunch_config`: `string`. Path to brunch config from project's root.
   * `cmd_envs`: `list` of `tuples`. Specifies the environments to provide while
-        building the distillery release.
+  * `assets_dir`: `string` with the directory address for the assets.
 
   # Defaults:
 
   * `run_ensure`: `true`
   * `ignore_failure`: `false`
-  * `brunch`: "node_modules/brunch/bin/brunch"
-  * `brunch_config`: "."
+  * `assets_dir`: `.`
   """
 
   use Akd.Hook
@@ -35,14 +30,13 @@ defmodule Akd.Build.Phoenix.Brunch do
   @default_opts [
     run_ensure: true,
     ignore_failure: false,
-    brunch: "node_modules/brunch/bin/brunch",
-    brunch_config: "."
+    assets_dir: "."
   ]
 
   @doc """
   Callback implementation for `get_hooks/2`.
 
-  This function returns a list of operations that can be used to build a brunch
+  This function returns a list of operations that can be used to build a webpack
   release on the `build_at` destination of a deployment.
 
   ## Examples
@@ -52,13 +46,13 @@ defmodule Akd.Build.Phoenix.Brunch do
       ...> publish_to: Akd.Destination.local("."),
       ...> name: "name",
       ...> vsn: "0.1.1"}
-      iex> Akd.Build.Phoenix.Brunch.get_hooks(deployment, [])
+      iex> Akd.Build.Phoenix.Webpack.get_hooks(deployment, [])
       [%Akd.Hook{ensure: [], ignore_failure: false,
         main: [%Akd.Operation{cmd: "mix deps.get \\n mix compile",
             cmd_envs: [{"MIX_ENV", "prod"}],
             destination: %Akd.Destination{host: :local, path: ".",
                  user: :current}},
-           %Akd.Operation{cmd: "cd . \\n node_modules/brunch/bin/brunch build --production",
+           %Akd.Operation{cmd: "cd . \\n npm run deploy",
                cmd_envs: [],
                destination: %Akd.Destination{host: :local, path: ".",
                     user: :current}},
@@ -71,15 +65,14 @@ defmodule Akd.Build.Phoenix.Brunch do
   @spec get_hooks(Akd.Deployment.t(), Keyword.t()) :: list(Akd.Hook.t())
   def get_hooks(deployment, opts \\ []) do
     opts = uniq_merge(opts, @default_opts)
-    brunch = Keyword.get(opts, :brunch)
-    brunch_config = Keyword.get(opts, :brunch_config)
+    assets_dir = Keyword.get(opts, :assets_dir)
 
-    [build_hook(deployment, brunch, brunch_config, opts)]
+    [build_hook(deployment, assets_dir, opts)]
   end
 
   # This function takes a deployment and options and returns an Akd.Hook.t
   # struct using FormHook DSL
-  defp build_hook(deployment, brunch, brunch_config, opts) do
+  defp build_hook(deployment, assets_dir, opts) do
     destination = Akd.DestinationResolver.resolve(:build, deployment)
     mix_env = deployment.mix_env
     cmd_envs = Keyword.get(opts, :cmd_envs, [])
@@ -88,10 +81,8 @@ defmodule Akd.Build.Phoenix.Brunch do
     form_hook opts do
       main("mix deps.get \n mix compile", destination, cmd_envs: cmd_envs)
 
-      main("cd #{brunch_config} \n #{brunch} build --production", destination)
+      main("cd #{assets_dir} \n npm run deploy", destination)
       main("mix phx.digest", destination, cmd_envs: cmd_envs)
-
-      # ensure "rm -rf deps", destination
     end
   end
 

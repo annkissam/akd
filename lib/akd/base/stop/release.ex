@@ -1,41 +1,34 @@
-defmodule Akd.Build.Phoenix.Npm do
+defmodule Akd.Stop.Release do
   @moduledoc """
   A native Hook module that comes shipped with Akd.
 
   This module uses `Akd.Hook`.
 
-  Provides a set of operations that build a npm release for a given phoenix app
-  at a deployment's `build_at` destination. This hook assumes that a package.json
-  is present.
+  Provides a set of operations that can stop an app built and released using
+  distillery.
 
-  Ensures to cleanup and remove `node_modules` folder created by this build.
-
-  Doesn't have any Rollback operations.
+  If fails, it restarts the stopped node.
 
   # Options:
 
   * `run_ensure`: `boolean`. Specifies whether to a run a command or not.
   * `ignore_failure`: `boolean`. Specifies whether to continue if this hook fails.
-  * `cmd_envs`: `list` of `tuples`. Specifies the environments to provide while
-        building the distillery release.
-  * `package_path`: `string`. Path to package.json
 
   # Defaults:
 
   * `run_ensure`: `true`
   * `ignore_failure`: `false`
-  * `package_path`: `"."`
   """
 
   use Akd.Hook
 
-  @default_opts [run_ensure: true, ignore_failure: false, package_path: "."]
+  @default_opts [run_ensure: true, ignore_failure: false]
 
   @doc """
   Callback implementation for `get_hooks/2`.
 
-  This function returns a list of operations that can be used to build a npm
-  release on the `build_at` destination of a deployment.
+  This function returns a list of operations that can be used to stop an app
+  built on the `publish_to` destination of a deployment.
 
   ## Examples
 
@@ -44,30 +37,32 @@ defmodule Akd.Build.Phoenix.Npm do
       ...> publish_to: Akd.Destination.local("."),
       ...> name: "name",
       ...> vsn: "0.1.1"}
-      iex> Akd.Build.Phoenix.Npm.get_hooks(deployment, [])
+      iex> Akd.Stop.Release.get_hooks(deployment, [])
       [%Akd.Hook{ensure: [], ignore_failure: false,
-          main: [%Akd.Operation{cmd: "cd  \\n npm install", cmd_envs: [],
+          main: [%Akd.Operation{cmd: "bin/name stop", cmd_envs: [],
             destination: %Akd.Destination{host: :local, path: ".",
-             user: :current}}], rollback: [], run_ensure: true}]
+           user: :current}}],
+         rollback: [%Akd.Operation{cmd: "bin/name start", cmd_envs: [],
+           destination: %Akd.Destination{host: :local, path: ".",
+            user: :current}}], run_ensure: true}]
 
   """
+  @spec get_hooks(Akd.Deployment.t(), Keyword.t()) :: list(Akd.Hook.t())
   def get_hooks(deployment, opts \\ []) do
     opts = uniq_merge(opts, @default_opts)
-    package_path = Keyword.get(opts, :package)
-
-    [build_hook(deployment, opts, package_path)]
+    [stop_hook(deployment, opts)]
   end
 
   # This function takes a deployment and options and returns an Akd.Hook.t
   # struct using FormHook DSL
-  defp build_hook(deployment, opts, package_path) do
-    destination = Akd.DestinationResolver.resolve(:build, deployment)
+  defp stop_hook(deployment, opts) do
+    destination = Akd.DestinationResolver.resolve(:publish, deployment)
     cmd_envs = Keyword.get(opts, :cmd_envs, [])
 
     form_hook opts do
-      main("cd #{package_path} \n npm install", destination, cmd_envs: cmd_envs)
+      main("bin/#{deployment.name} stop", destination, cmd_envs: cmd_envs)
 
-      # ensure "cd #{package_path} \n rm -rf node_modules", destination
+      rollback("bin/#{deployment.name} start", destination, cmd_envs: cmd_envs)
     end
   end
 

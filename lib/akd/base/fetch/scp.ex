@@ -62,7 +62,7 @@ defmodule Akd.Fetch.Scp do
             user: :current}}], rollback: [], run_ensure: true}]
 
   """
-  @spec get_hooks(Akd.Deployment.t, Keyword.t) :: list(Akd.Hook.t)
+  @spec get_hooks(Akd.Deployment.t(), Keyword.t()) :: list(Akd.Hook.t())
   def get_hooks(deployment, opts) do
     opts = uniq_merge(opts, @default_opts)
     src = Keyword.get(opts, :src)
@@ -78,11 +78,12 @@ defmodule Akd.Fetch.Scp do
     excludes = Keyword.get(opts, :exclude, ~w(_build .git deps))
 
     form_hook opts do
-      main rsync_cmd(src, dest, excludes), Akd.Destination.local()
+      main(rsync_cmd(src, dest, excludes), Akd.Destination.local())
 
-      ensure "rm -rf ./*", destination
+      ensure("rm -rf ./*", destination)
     end
   end
+
   defp fetch_hook(%Akd.Destination{} = src, deployment, opts) do
     src = Akd.Destination.to_string(src)
     fetch_hook(src, deployment, opts)
@@ -91,7 +92,7 @@ defmodule Akd.Fetch.Scp do
   # This function returns an rsync command with all the
   # `exclude` switches added to it.
   defp rsync_cmd(src, dest, excludes) do
-    Enum.reduce(excludes, "rsync -krav -e ssh", fn(ex, cmd) ->
+    Enum.reduce(excludes, "rsync -krav -e ssh", fn ex, cmd ->
       cmd <> " --exclude=\"#{ex}\""
     end) <> " #{src} #{dest}"
   end

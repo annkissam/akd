@@ -1,11 +1,10 @@
-defmodule Akd.Start.Distillery do
+defmodule Akd.Start.Release do
   @moduledoc """
   A native Hook module that comes shipped with Akd.
 
   This module uses `Akd.Hook`.
 
-  Provides a set of operations that can start an app built and released using
-  distillery.
+  Provides a set of operations that can start an app built and released.
 
   If fails, it stops the started node.
 
@@ -38,7 +37,7 @@ defmodule Akd.Start.Distillery do
       ...> publish_to: Akd.Destination.local("."),
       ...> name: "name",
       ...> vsn: "0.1.1"}
-      iex> Akd.Start.Distillery.get_hooks(deployment, [])
+      iex> Akd.Start.Release.get_hooks(deployment, [])
       [%Akd.Hook{ensure: [], ignore_failure: false,
           main: [%Akd.Operation{cmd: "bin/name start", cmd_envs: [],
             destination: %Akd.Destination{host: :local, path: ".",
@@ -48,7 +47,7 @@ defmodule Akd.Start.Distillery do
              user: :current}}], run_ensure: true}]
 
   """
-  @spec get_hooks(Akd.Deployment.t, Keyword.t) :: list(Akd.Hook.t)
+  @spec get_hooks(Akd.Deployment.t(), Keyword.t()) :: list(Akd.Hook.t())
   def get_hooks(deployment, opts \\ []) do
     opts = uniq_merge(opts, @default_opts)
     [start_hook(deployment, opts)]
@@ -61,11 +60,9 @@ defmodule Akd.Start.Distillery do
     cmd_envs = Keyword.get(opts, :cmd_envs, [])
 
     form_hook opts do
-      main "bin/#{deployment.name} start", destination,
-        cmd_envs: cmd_envs
+      main("bin/#{deployment.name} start", destination, cmd_envs: cmd_envs)
 
-      rollback "bin/#{deployment.name} stop", destination,
-        cmd_envs: cmd_envs
+      rollback("bin/#{deployment.name} stop", destination, cmd_envs: cmd_envs)
     end
   end
 
